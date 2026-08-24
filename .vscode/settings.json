@@ -1,0 +1,6 @@
+{
+  "livePreview.defaultPreviewPath": "/index.html",
+  "livePreview.portNumber": 5500,
+  "livePreview.openPreviewTarget": "External Browser",
+  "files.encoding": "utf8"
+}
