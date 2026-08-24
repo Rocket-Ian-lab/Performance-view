@@ -211,6 +211,12 @@ td.strong{color:var(--ink); font-weight:600}
 .src{display:inline-flex; align-items:center; gap:6px; font-size:11.5px; color:var(--muted);
   background:var(--surface-2); border:1px solid var(--hair-2); padding:3px 9px; border-radius:999px}
 .src i{width:7px;height:7px;border-radius:50%;background:var(--ops);display:inline-block}
+.lang{display:inline-flex; margin-left:6px; border:1px solid var(--hair-2); border-radius:999px;
+  overflow:hidden; background:var(--surface-2); vertical-align:middle}
+.lang button{font:inherit; font-size:11px; font-weight:600; letter-spacing:.02em; padding:3px 10px;
+  background:transparent; color:var(--muted); border:0; cursor:pointer; line-height:1.6}
+.lang button[aria-pressed="true"]{background:var(--anchor); color:var(--surface)}
+.lang button:hover:not([aria-pressed="true"]){color:var(--ink)}
 #toast{position:fixed; left:50%; bottom:26px; transform:translateX(-50%); z-index:60; background:var(--anchor);
   color:var(--surface); font-size:13px; padding:9px 16px; border-radius:9px; opacity:0; transition:opacity .2s; pointer-events:none;
   box-shadow:0 8px 24px -8px rgba(0,0,0,.5); max-width:min(90vw,560px); text-align:center}
@@ -221,14 +227,15 @@ td.strong{color:var(--ink); font-weight:600}
 
   <header class="mast">
     <div>
-      <div class="eyebrow">Outbound Operations</div>
-      <h1>Outbound Productivity Bridge</h1>
-      <p class="sub">Start from engineered baseline productivity (UPH), apply volume, workforce and operations constraints in sequence, land on the final expected productivity — then compare against actuals to find which center handles each constraint best.</p>
+      <div class="eyebrow" data-i18n="eyebrow">Outbound Operations</div>
+      <h1 data-i18n="h1">Outbound Productivity Bridge</h1>
+      <p class="sub" data-i18n="sub">Start from engineered baseline productivity (UPH), apply volume, workforce and operations constraints in sequence, land on the final expected productivity — then compare against actuals to find which center handles each constraint best.</p>
     </div>
     <div class="stamp">
-      Period <b>2026-08</b><br>
-      Unit <b>UPH (pcs/man·hr)</b><br>
+      <span data-i18n="st_period">Period</span> <b>2026-08</b><br>
+      <span data-i18n="st_unit">Unit</span> <b data-i18n="unit_val">UPH (pcs/man·hr)</b><br>
       <span class="src" id="srcBadge"><i></i><span id="srcLabel">Sample data</span></span>
+      <span class="lang" id="langTog" role="group" aria-label="Language / 언어"><button type="button" data-lang="en">EN</button><button type="button" data-lang="ko">한국어</button></span>
     </div>
   </header>
 
@@ -236,53 +243,53 @@ td.strong{color:var(--ink); font-weight:600}
   <section class="panel">
     <div class="rail">
       <div class="rail-row">
-        <span class="rail-label">Center</span>
+        <span class="rail-label" data-i18n="rail_center">Center</span>
         <div id="centerChips" class="rail-row" style="gap:8px"></div>
       </div>
       <div class="rail-row">
-        <span class="rail-label">Constraints</span>
+        <span class="rail-label" data-i18n="rail_con">Constraints</span>
         <div id="conChips" class="rail-row" style="gap:8px"></div>
-        <button class="linkish" id="resetTogglesBtn" type="button">Re-apply all</button>
+        <button class="linkish" id="resetTogglesBtn" type="button" data-i18n="btn_reapply">Re-apply all</button>
       </div>
       <div class="rail-row">
-        <span class="rail-label">Data</span>
-        <button class="btn" id="uploadBtn" type="button">⬆ Upload Excel</button>
+        <span class="rail-label" data-i18n="rail_data">Data</span>
+        <button class="btn" id="uploadBtn" type="button" data-i18n="btn_upload">⬆ Upload Excel</button>
         <input type="file" id="fileInput" accept=".xlsx" style="display:none">
-        <button class="btn" id="resetDataBtn" type="button">Reset to sample</button>
-        <span class="rail-note" style="padding-left:2px">Upload the Excel model's <b>Data</b> sheet layout — Korean or English headers both work. Edits are saved in this browser.</span>
+        <button class="btn" id="resetDataBtn" type="button" data-i18n="btn_reset">Reset to sample</button>
+        <span class="rail-note" style="padding-left:2px" data-i18n-html="rail_uphint">Upload the Excel model's <b>Data</b> sheet layout — Korean or English headers both work. Edits are saved in this browser.</span>
       </div>
       <p class="rail-note" id="railNote"></p>
     </div>
     <!-- ADD CONSTRAINT FORM -->
     <div class="form" id="addForm">
-      <h3 id="formTitle">Add a constraint</h3>
+      <h3 id="formTitle" data-i18n="form_title">Add a constraint</h3>
       <div class="f-grid">
         <div class="f-field" style="grid-column:span 2">
-          <label>NAME</label>
-          <input id="fName" type="text" placeholder="e.g. Equipment downtime" maxlength="40">
+          <label data-i18n="f_name">NAME</label>
+          <input id="fName" type="text" placeholder="e.g. Equipment downtime" data-i18n-ph="f_name_ph" maxlength="40">
         </div>
         <div class="f-field">
-          <label>GROUP</label>
+          <label data-i18n="f_group">GROUP</label>
           <select id="fGroup">
-            <option value="vol">Volume</option>
-            <option value="hr">Workforce</option>
-            <option value="ops" selected>Operations</option>
+            <option value="vol" data-i18n="g_vol">Volume</option>
+            <option value="hr" data-i18n="g_hr">Workforce</option>
+            <option value="ops" selected data-i18n="g_ops">Operations</option>
           </select>
         </div>
         <div class="f-field" style="grid-column:span 2">
-          <label>DESCRIPTION (OPTIONAL)</label>
-          <input id="fDesc" type="text" placeholder="What causes this loss" maxlength="80">
+          <label data-i18n="f_desc">DESCRIPTION (OPTIONAL)</label>
+          <input id="fDesc" type="text" placeholder="What causes this loss" data-i18n-ph="f_desc_ph" maxlength="80">
         </div>
       </div>
-      <label style="font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.04em">LOSS RATE PER CENTER (%)</label>
+      <label style="font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.04em" data-i18n="f_rates">LOSS RATE PER CENTER (%)</label>
       <div class="rate-grid" id="fRates" style="margin-top:6px"></div>
       <div style="display:flex; gap:8px; align-items:center">
-        <button class="btn primary" id="fAddBtn" type="button">Add constraint</button>
-        <button class="btn" id="fCancelBtn" type="button">Cancel</button>
+        <button class="btn primary" id="fAddBtn" type="button" data-i18n="f_add">Add constraint</button>
+        <button class="btn" id="fCancelBtn" type="button" data-i18n="f_cancel">Cancel</button>
         <span class="rail-note" id="fMsg"></span>
       </div>
       <div class="mng">
-        <label style="font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.04em">MANAGE CONSTRAINTS</label>
+        <label style="font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.04em" data-i18n="f_manage">MANAGE CONSTRAINTS</label>
         <div id="mngList"></div>
       </div>
     </div>
@@ -298,19 +305,19 @@ td.strong{color:var(--ink); font-weight:600}
     <div class="panel-hd">
       <div>
         <h2 id="bridgeTitle">Productivity bridge</h2>
-        <p>Constraints applied in sequence — each loss is a share of what remains after the previous step.</p>
+        <p data-i18n="br_sub">Constraints applied in sequence — each loss is a share of what remains after the previous step.</p>
       </div>
       <div class="num" id="bridgeSummary" style="font-size:12.5px; color:var(--ink-2)"></div>
     </div>
     <div class="panel-bd"><svg id="bridge" class="chart" role="img" aria-label="Productivity bridge for the selected center"></svg></div>
     <div class="legend">
-      <span><i class="sw-anchor2"></i>Baseline</span>
-      <span><i class="sw-vol"></i>Volume</span>
-      <span><i class="sw-hr"></i>Workforce</span>
-      <span><i class="sw-ops"></i>Operations</span>
-      <span><i class="sw-anchor"></i>Final expected</span>
-      <span><i class="sw-actual"></i>Actual</span>
-      <span style="color:var(--muted)">┆ Target UPH</span>
+      <span><i class="sw-anchor2"></i><span data-i18n="lg_baseline">Baseline</span></span>
+      <span><i class="sw-vol"></i><span data-i18n="g_vol">Volume</span></span>
+      <span><i class="sw-hr"></i><span data-i18n="g_hr">Workforce</span></span>
+      <span><i class="sw-ops"></i><span data-i18n="g_ops">Operations</span></span>
+      <span><i class="sw-anchor"></i><span data-i18n="lg_final">Final expected</span></span>
+      <span><i class="sw-actual"></i><span data-i18n="lg_actual">Actual</span></span>
+      <span style="color:var(--muted)" data-i18n="lg_target_uph">┆ Target UPH</span>
     </div>
   </section>
 
@@ -319,19 +326,19 @@ td.strong{color:var(--ink); font-weight:600}
     <section class="panel">
       <div class="panel-hd">
         <div>
-          <h2>Center comparison — loss composition vs baseline</h2>
-          <p>Full bar = baseline; dark segment = final expected; vertical line = actual.</p>
+          <h2 data-i18n="cmp_title">Center comparison — loss composition vs baseline</h2>
+          <p data-i18n="cmp_sub">Full bar = baseline; dark segment = final expected; vertical line = actual.</p>
         </div>
       </div>
       <div class="panel-bd"><svg id="compare" class="chart" role="img" aria-label="Loss composition vs baseline by center"></svg></div>
       <div class="legend">
-        <span><i class="sw-anchor"></i>Final expected</span>
-        <span><i class="sw-vol"></i>Volume</span>
-        <span><i class="sw-hr"></i>Workforce</span>
-        <span><i class="sw-ops"></i>Operations</span>
-        <span style="color:var(--muted)">┆ Target</span>
-        <span style="color:var(--muted)">│ Actual</span>
-        <span style="color:var(--muted)">▲▼ Execution gap</span>
+        <span><i class="sw-anchor"></i><span data-i18n="lg_final">Final expected</span></span>
+        <span><i class="sw-vol"></i><span data-i18n="g_vol">Volume</span></span>
+        <span><i class="sw-hr"></i><span data-i18n="g_hr">Workforce</span></span>
+        <span><i class="sw-ops"></i><span data-i18n="g_ops">Operations</span></span>
+        <span style="color:var(--muted)" data-i18n="lg_target">┆ Target</span>
+        <span style="color:var(--muted)" data-i18n="lg_actual_line">│ Actual</span>
+        <span style="color:var(--muted)" data-i18n="lg_execgap">▲▼ Execution gap</span>
       </div>
     </section>
 
@@ -339,8 +346,8 @@ td.strong{color:var(--ink); font-weight:600}
     <section class="panel">
       <div class="panel-hd">
         <div>
-          <h2>Loss intensity by constraint</h2>
-          <p>Share of baseline lost (%). Darker = larger loss.</p>
+          <h2 data-i18n="heat_title">Loss intensity by constraint</h2>
+          <p data-i18n="heat_sub">Share of baseline lost (%). Darker = larger loss.</p>
         </div>
       </div>
       <div class="panel-bd"><svg id="heat" class="chart" role="img" aria-label="Loss-rate heatmap by center and constraint"></svg></div>
@@ -352,8 +359,8 @@ td.strong{color:var(--ink); font-weight:600}
   <section class="panel">
     <div class="panel-hd">
       <div>
-        <h2>Execution gap — actual vs final expected</h2>
-        <p>Actual minus the fully-constrained expectation. Positive = the floor out-performed the model.</p>
+        <h2 data-i18n="exec_title">Execution gap — actual vs final expected</h2>
+        <p data-i18n="exec_sub">Actual minus the fully-constrained expectation. Positive = the floor out-performed the model.</p>
       </div>
       <div class="num" id="execSummary" style="font-size:12.5px; color:var(--ink-2)"></div>
     </div>
@@ -364,16 +371,16 @@ td.strong{color:var(--ink); font-weight:600}
   <section class="panel">
     <div class="panel-hd">
       <div>
-        <h2>Constraint response — best-performing center</h2>
-        <p>For each constraint, the center with the lowest loss rate handled it best. Use these as benchmarking targets.</p>
+        <h2 data-i18n="best_title">Constraint response — best-performing center</h2>
+        <p data-i18n="best_sub">For each constraint, the center with the lowest loss rate handled it best. Use these as benchmarking targets.</p>
       </div>
     </div>
     <div class="cards" id="bestCards"></div>
     <div class="panel-bd"><svg id="dots" class="chart" role="img" aria-label="Loss-rate distribution by constraint with best performer"></svg></div>
     <div class="legend">
-      <span><i style="background:var(--ink)"></i>Best (lowest loss rate)</span>
-      <span><i style="background:transparent;border:1.5px solid var(--axis)"></i>Other centers</span>
-      <span style="color:var(--muted)">Further left = smaller loss — hover a dot for center detail</span>
+      <span><i style="background:var(--ink)"></i><span data-i18n="lg_best">Best (lowest loss rate)</span></span>
+      <span><i style="background:transparent;border:1.5px solid var(--axis)"></i><span data-i18n="lg_other">Other centers</span></span>
+      <span style="color:var(--muted)" data-i18n="lg_hint">Further left = smaller loss — hover a dot for center detail</span>
     </div>
   </section>
 
@@ -381,17 +388,16 @@ td.strong{color:var(--ink); font-weight:600}
   <section class="panel">
     <div class="panel-hd">
       <div>
-        <h2>Detail table</h2>
-        <p>Loss in UPH per constraint — toggled-off constraints are excluded. *Execution gap always uses the all-constraints scenario, so toggles never move it.</p>
+        <h2 data-i18n="tbl_title">Detail table</h2>
+        <p data-i18n="tbl_sub">Loss in UPH per constraint — toggled-off constraints are excluded. *Execution gap always uses the all-constraints scenario, so toggles never move it.</p>
       </div>
     </div>
     <div class="tbl-wrap"><table id="tbl"></table></div>
   </section>
 
   <p class="foot">
-    Formula — <code>final expected = baseline × Π(1 − rateᵢ)</code>, applied in the order listed (volume → workforce → operations); each loss in UPH is the rate times what remained after the previous step.
-    Execution gap = actual − fully-constrained expectation: positive means the floor beat the model, negative means the model is missing a loss.<br>
-    Figures are sample data. Upload your own Excel (same layout as the model's Data sheet) or edit constraints directly — everything recalculates.
+    <span data-i18n-html="foot1">Formula — <code>final expected = baseline × Π(1 − rateᵢ)</code>, applied in the order listed (volume → workforce → operations); each loss in UPH is the rate times what remained after the previous step. Execution gap = actual − fully-constrained expectation: positive means the floor beat the model, negative means the model is missing a loss.</span><br>
+    <span data-i18n-html="foot2">Figures are sample data. Upload your own Excel (same layout as the model's Data sheet) or edit constraints directly — everything recalculates.</span>
   </p>
 </div>
 
@@ -406,22 +412,176 @@ td.strong{color:var(--ink); font-weight:600}
 const SAMPLE = {
   source: "Sample data",
   centers: [
-    {id:"DT", name:"Dongtan FC-1", sname:"Dongtan", code:"DT-CFC", base:212, target:165, actual:162.4, hc:186, note:"Automated sorter"},
-    {id:"IC", name:"Incheon FC",   sname:"Incheon", code:"IC-FC",  base:198, target:145, actual:138.9, hc:154, note:"Mixed fresh goods"},
-    {id:"GH", name:"Gimhae FC",    sname:"Gimhae",  code:"GH-FC",  base:176, target:120, actual:127.1, hc:121, note:"Expanded 6 months ago"},
-    {id:"GJ", name:"Gwangju FC",   sname:"Gwangju", code:"GJ-FC",  base:164, target:118, actual:110.2, hc:98,  note:"High manual share"},
-    {id:"DJ", name:"Daejeon Hub",  sname:"Daejeon", code:"DJ-HUB", base:205, target:148, actual:156.8, hc:203, note:"Hub transfer combined"}
+    {id:"DT", name:"Dongtan FC-1", sname:"Dongtan", nameKo:"동탄 1센터", snameKo:"동탄", code:"DT-CFC", base:212, target:165, actual:162.4, hc:186, note:"Automated sorter", noteKo:"자동화 소터 운영"},
+    {id:"IC", name:"Incheon FC",   sname:"Incheon", nameKo:"인천센터", snameKo:"인천", code:"IC-FC",  base:198, target:145, actual:138.9, hc:154, note:"Mixed fresh goods", noteKo:"신선 혼재"},
+    {id:"GH", name:"Gimhae FC",    sname:"Gimhae",  nameKo:"김해센터", snameKo:"김해", code:"GH-FC",  base:176, target:120, actual:127.1, hc:121, note:"Expanded 6 months ago", noteKo:"증설 6개월차"},
+    {id:"GJ", name:"Gwangju FC",   sname:"Gwangju", nameKo:"광주센터", snameKo:"광주", code:"GJ-FC",  base:164, target:118, actual:110.2, hc:98,  note:"High manual share", noteKo:"수작업 비중 높음"},
+    {id:"DJ", name:"Daejeon Hub",  sname:"Daejeon", nameKo:"대전 HUB", snameKo:"대전", code:"DJ-HUB", base:205, target:148, actual:156.8, hc:203, note:"Hub transfer combined", noteKo:"허브 중계 병행"}
   ],
   constraints: [
-    {id:"mix",   group:"vol", name:"Small multi-SKU order mix", short:"Order mix",   desc:"Fewer lines per order — less picked per meter traveled", rates:{DT:4.5, IC:6.2, GH:3.4, GJ:7.5, DJ:2.8}},
-    {id:"peak",  group:"vol", name:"Volume swings & peak load", short:"Peak swings", desc:"Idle and overload losses from hourly volume variance", rates:{DT:3.2, IC:4.0, GH:5.5, GJ:2.8, DJ:6.5}},
-    {id:"new",   group:"hr",  name:"New-hire ratio",            short:"New hires",   desc:"Productivity gap of staff still on the learning curve", rates:{DT:6.0, IC:3.5, GH:8.5, GJ:4.2, DJ:5.0}},
-    {id:"ojt",   group:"hr",  name:"Training & OJT hours",      short:"Training",    desc:"Hours spent on training and safety checks, not picking", rates:{DT:2.4, IC:1.8, GH:3.6, GJ:2.0, DJ:2.2}},
-    {id:"wait",  group:"ops", name:"Waiting & supply delays",   short:"Wait/delay",  desc:"Pick waiting caused by upstream process delays", rates:{DT:5.5, IC:7.0, GH:4.2, GJ:6.4, DJ:3.6}},
-    {id:"stock", group:"ops", name:"Stock-outs & rework",       short:"Stockout",    desc:"Re-search and re-pick driven by inventory inaccuracy", rates:{DT:2.0, IC:3.2, GH:2.6, GJ:4.5, DJ:1.8}},
-    {id:"brk",   group:"ops", name:"Breaks & indirect work",    short:"Breaks",      desc:"Statutory breaks plus tidy-up and reporting time", rates:{DT:6.5, IC:6.2, GH:6.8, GJ:7.0, DJ:6.4}}
+    {id:"mix",   group:"vol", name:"Small multi-SKU order mix", short:"Order mix",   desc:"Fewer lines per order — less picked per meter traveled", nameKo:"소량·다품종 오더 믹스", shortKo:"오더믹스", descKo:"오더당 라인수 감소로 이동거리 대비 집품량이 줄어드는 손실", rates:{DT:4.5, IC:6.2, GH:3.4, GJ:7.5, DJ:2.8}},
+    {id:"peak",  group:"vol", name:"Volume swings & peak load", short:"Peak swings", desc:"Idle and overload losses from hourly volume variance", nameKo:"물량 변동·피크 집중", shortKo:"피크변동", descKo:"시간대별 물량 편차로 인한 유휴·과부하 손실", rates:{DT:3.2, IC:4.0, GH:5.5, GJ:2.8, DJ:6.5}},
+    {id:"new",   group:"hr",  name:"New-hire ratio",            short:"New hires",   desc:"Productivity gap of staff still on the learning curve", nameKo:"신규자 투입 비율", shortKo:"신규투입", descKo:"숙련 곡선 미달 인원의 생산성 갭", rates:{DT:6.0, IC:3.5, GH:8.5, GJ:4.2, DJ:5.0}},
+    {id:"ojt",   group:"hr",  name:"Training & OJT hours",      short:"Training",    desc:"Hours spent on training and safety checks, not picking", nameKo:"교육·OJT 시간", shortKo:"교육OJT", descKo:"작업 외 교육·안전점검에 소요되는 시간", rates:{DT:2.4, IC:1.8, GH:3.6, GJ:2.0, DJ:2.2}},
+    {id:"wait",  group:"ops", name:"Waiting & supply delays",   short:"Wait/delay",  desc:"Pick waiting caused by upstream process delays", nameKo:"대기·물량 공급 지연", shortKo:"대기지연", descKo:"전공정 지연으로 발생하는 집품 대기", rates:{DT:5.5, IC:7.0, GH:4.2, GJ:6.4, DJ:3.6}},
+    {id:"stock", group:"ops", name:"Stock-outs & rework",       short:"Stockout",    desc:"Re-search and re-pick driven by inventory inaccuracy", nameKo:"결품·재작업", shortKo:"결품재작업", descKo:"재고 부정확에 따른 재탐색·재집품", rates:{DT:2.0, IC:3.2, GH:2.6, GJ:4.5, DJ:1.8}},
+    {id:"brk",   group:"ops", name:"Breaks & indirect work",    short:"Breaks",      desc:"Statutory breaks plus tidy-up and reporting time", nameKo:"휴게·간접업무", shortKo:"휴게간접", descKo:"법정 휴게 및 정리·보고 등 간접업무 시간", rates:{DT:6.5, IC:6.2, GH:6.8, GJ:7.0, DJ:6.4}}
   ]
 };
+
+/* ============ I18N ============ */
+const I18N = {
+ en:{
+  doc_title:"Outbound Productivity Bridge",
+  eyebrow:"Outbound Operations", h1:"Outbound Productivity Bridge",
+  sub:"Start from engineered baseline productivity (UPH), apply volume, workforce and operations constraints in sequence, land on the final expected productivity — then compare against actuals to find which center handles each constraint best.",
+  st_period:"Period", st_unit:"Unit", unit_val:"UPH (pcs/man·hr)",
+  src_sample:"Sample data", src_edited:" (edited)",
+  rail_center:"Center", rail_con:"Constraints", rail_data:"Data",
+  btn_reapply:"Re-apply all", btn_upload:"⬆ Upload Excel", btn_reset:"Reset to sample",
+  rail_uphint:"Upload the Excel model's <b>Data</b> sheet layout — Korean or English headers both work. Edits are saved in this browser.",
+  chip_add:"＋ Add constraint",
+  form_title:"Add a constraint", f_name:"NAME", f_name_ph:"e.g. Equipment downtime",
+  f_group:"GROUP", f_desc:"DESCRIPTION (OPTIONAL)", f_desc_ph:"What causes this loss",
+  f_rates:"LOSS RATE PER CENTER (%)", f_add:"Add constraint", f_cancel:"Cancel",
+  f_manage:"MANAGE CONSTRAINTS", btn_delete:"Delete", f_rate_ph:"e.g. 3.0",
+  g_vol:"Volume", g_hr:"Workforce", g_ops:"Operations", con_suffix:"{0} constraint",
+  kpi_base:"Weighted avg baseline", kpi_final:"Weighted avg final expected",
+  kpi_actual:"Weighted avg actual", kpi_recovery:"Recovery if lifted",
+  kpi_driver:"Largest loss driver", kpi_topexec:"Top execution center",
+  m_centers:"{0} centers · headcount-weighted ({1} people)",
+  m_vsbase:"vs baseline", m_vsmodel:"vs full-constraint model", m_noact:"No actuals in data",
+  m_lifted:"{0} lifted · vs all applied", m_toggle_hint:"Toggle a constraint off to see recovery",
+  m_combined:"Combined loss", m_nocon:"No active constraints",
+  m_vsmodel_short:"vs model", m_targets_met:"targets met {0}/{1}", m_targets_only:"Targets met {0}/{1}",
+  br_title:"{0} — productivity bridge",
+  br_sub:"Constraints applied in sequence — each loss is a share of what remains after the previous step.",
+  br_base_lab:"Baseline productivity", br_base_sub:"Engineered standard · {0}",
+  br_final:"Final expected", br_final_sub:"−{0}% vs baseline",
+  br_actual:"Actual", br_actual_sub:"Closed actuals, 2026-08", br_target:"Target {0}",
+  br_summary:"Baseline <b>{0}</b> → Final <b>{1}</b> UPH &nbsp;·&nbsp; vs target ",
+  tip_baseline:"Baseline", tip_loss:"Loss", tip_remaining:"Remaining", tip_target:"Target",
+  tip_vs_scenario:"vs current scenario",
+  cmp_title:"Center comparison — loss composition vs baseline",
+  cmp_sub:"Full bar = baseline; dark segment = final expected; vertical line = actual.",
+  seg_final:"Final expected", seg_vol:"Volume loss", seg_hr:"Workforce loss", seg_ops:"Operations loss",
+  tip_fullmodel:"Full-constraint model", tip_execgap:"Execution gap", tip_actual:"Actual",
+  heat_title:"Loss intensity by constraint", heat_sub:"Share of baseline lost (%). Darker = larger loss.",
+  heat_low:"Low", heat_high:"High (% of baseline lost)",
+  heat_tip_pct:"<span class='tv'>{0}%</span> of baseline", tip_lifted:"<br>· currently lifted",
+  exec_title:"Execution gap — actual vs final expected",
+  exec_sub:"Actual minus the fully-constrained expectation. Positive = the floor out-performed the model.",
+  exec_noact:"No actuals in the current data — add an Actual column to the center table to see execution gaps.",
+  exec_zero:"Final expected = 0", exec_below:"Below model ◀", exec_above:"▶ Above model",
+  exec_attain:"attain. {0}%", exec_summary:"Above <b>{0}</b> / below <b>{1}</b> &nbsp;·&nbsp; #1 <b>{2}</b> ",
+  best_title:"Constraint response — best-performing center",
+  best_sub:"For each constraint, the center with the lowest loss rate handled it best. Use these as benchmarking targets.",
+  best_best:"Best", best_avg:"Avg", best_worst:"Worst", best_card_m:"avg −{0}pp · worst −{1}pp",
+  best_axis:"Loss rate (% of what remained at that step)", best_avg_sub:"{0} · avg {1}%",
+  best_spread:"spread {0}pp", tip_lossrate:"Loss rate", tip_vsbest:"vs best ({0})",
+  tip_vsavg:"vs avg", tip_bestof:"{0} · best",
+  th_center:"Center", th_base:"Baseline", th_final:"Final expected", th_actual:"Actual",
+  th_gap:"Exec gap*", th_target:"Target", th_vstarget:"vs Target",
+  tbl_title:"Detail table",
+  tbl_sub:"Loss in UPH per constraint — toggled-off constraints are excluded. *Execution gap always uses the all-constraints scenario, so toggles never move it.",
+  lg_baseline:"Baseline", lg_final:"Final expected", lg_actual:"Actual",
+  lg_target_uph:"┆ Target UPH", lg_target:"┆ Target", lg_actual_line:"│ Actual",
+  lg_execgap:"▲▼ Execution gap", lg_best:"Best (lowest loss rate)", lg_other:"Other centers",
+  lg_hint:"Further left = smaller loss — hover a dot for center detail",
+  note_lifted:"{0} lifted — {1} · showing productivity if these were fully resolved.",
+  note_hint:"Click a constraint chip to lift it and see the productivity you would recover.",
+  ts_min_con:"At least one constraint is required.", ts_reset:"Reset to sample data.",
+  ts_name_req:"Name is required.", ts_rate_req:"Enter a loss rate (%) for at least one center.",
+  ts_added:"Constraint \"{0}\" added.", ts_reading:"Reading {0} …",
+  ts_loaded:"Loaded {0} centers · {1} constraints from {2}", ts_upload_fail:"Upload failed: ",
+  err_zip:"Not a valid .xlsx file (zip signature missing)",
+  err_nocenter:"No center table found — need a header row with ID + Base (기준 생산성)",
+  err_nocon:"No constraint table found — need ID + Active (적용) + one rate column per center ID",
+  foot1:"Formula — <code>final expected = baseline × Π(1 − rate\u1d62)</code>, applied in the order listed (volume → workforce → operations); each loss in UPH is the rate times what remained after the previous step. Execution gap = actual − fully-constrained expectation: positive means the floor beat the model, negative means the model is missing a loss.",
+  foot2:"Figures are sample data. Upload your own Excel (same layout as the model's Data sheet) or edit constraints directly — everything recalculates."
+ },
+ ko:{
+  doc_title:"출고 생산성 브릿지",
+  eyebrow:"출고 운영", h1:"출고 생산성 브릿지",
+  sub:"설계 기준 생산성(UPH)에서 물량·인력·운영 제약을 차례로 적용해 최종 예상 생산성을 구하고, 실제 실적과 대조해 어느 센터가 각 제약에 가장 잘 대응했는지 가려냅니다.",
+  st_period:"기준월", st_unit:"단위", unit_val:"UPH (개/인·시)",
+  src_sample:"샘플 데이터", src_edited:" (수정됨)",
+  rail_center:"센터", rail_con:"제약", rail_data:"데이터",
+  btn_reapply:"전체 적용으로 되돌리기", btn_upload:"⬆ 엑셀 업로드", btn_reset:"샘플로 초기화",
+  rail_uphint:"엑셀 모델의 <b>Data</b> 시트를 그대로 업로드하세요 — 한글·영문 헤더 모두 인식합니다. 수정 내용은 이 브라우저에 저장됩니다.",
+  chip_add:"＋ 제약 추가",
+  form_title:"제약 추가", f_name:"이름", f_name_ph:"예: 설비 다운타임",
+  f_group:"구분", f_desc:"설명 (선택)", f_desc_ph:"이 손실의 원인",
+  f_rates:"센터별 제약률 (%)", f_add:"제약 추가", f_cancel:"취소",
+  f_manage:"제약 관리", btn_delete:"삭제", f_rate_ph:"예: 3.0",
+  g_vol:"물량", g_hr:"인력", g_ops:"운영", con_suffix:"{0} 제약",
+  kpi_base:"가중 평균 기준 생산성", kpi_final:"가중 평균 최종 예상",
+  kpi_actual:"가중 평균 실적", kpi_recovery:"제약 해제 시 회복분",
+  kpi_driver:"최대 손실 제약", kpi_topexec:"실행력 1위 센터",
+  m_centers:"{0}개 센터 · 인원 가중 ({1}명)",
+  m_vsbase:"기준 대비", m_vsmodel:"전체 제약 예상 대비", m_noact:"데이터에 실적 없음",
+  m_lifted:"{0}개 해제 · 전체 적용 대비", m_toggle_hint:"제약을 해제하면 회복 가능분이 표시됩니다",
+  m_combined:"합산 손실", m_nocon:"적용 중인 제약 없음",
+  m_vsmodel_short:"예상 대비", m_targets_met:"목표 달성 {0}/{1}", m_targets_only:"목표 달성 {0}/{1}",
+  br_title:"{0} 생산성 브릿지",
+  br_sub:"제약을 순차 적용 — 각 단계의 손실은 직전 단계까지 남은 생산성에 대한 비율입니다.",
+  br_base_lab:"기준 생산성", br_base_sub:"설계 기준 · {0}",
+  br_final:"최종 예상", br_final_sub:"기준 대비 −{0}%",
+  br_actual:"실적", br_actual_sub:"2026-08 확정 실적", br_target:"목표 {0}",
+  br_summary:"기준 <b>{0}</b> → 최종 <b>{1}</b> UPH &nbsp;·&nbsp; 목표 대비 ",
+  tip_baseline:"기준 생산성", tip_loss:"손실", tip_remaining:"잔여", tip_target:"목표",
+  tip_vs_scenario:"현재 시나리오 예상 대비",
+  cmp_title:"센터 비교 — 기준 대비 손실 구성",
+  cmp_sub:"막대 전체 = 기준 생산성, 진한 구간 = 최종 예상, 세로선 = 실제 실적.",
+  seg_final:"최종 예상", seg_vol:"물량 손실", seg_hr:"인력 손실", seg_ops:"운영 손실",
+  tip_fullmodel:"전체 제약 예상", tip_execgap:"실행 갭", tip_actual:"실적",
+  heat_title:"제약별 손실 강도", heat_sub:"기준 생산성 대비 손실 비중(%). 진할수록 손실이 큽니다.",
+  heat_low:"낮음", heat_high:"높음 (기준 대비 손실 %)",
+  heat_tip_pct:"기준 대비 <span class='tv'>{0}%</span>", tip_lifted:"<br>· 현재 해제됨",
+  exec_title:"실행 갭 — 최종 예상 대비 실적",
+  exec_sub:"실적에서 전체 제약을 적용한 예상을 뺀 값입니다. 양수면 현장이 모델보다 잘했다는 뜻입니다.",
+  exec_noact:"현재 데이터에 실적이 없습니다 — 센터 표에 실적(Actual) 열을 추가하면 실행 갭이 표시됩니다.",
+  exec_zero:"최종 예상 = 0", exec_below:"예상 미달 ◀", exec_above:"▶ 예상 초과",
+  exec_attain:"달성 {0}%", exec_summary:"예상 초과 <b>{0}</b> / 미달 <b>{1}</b> &nbsp;·&nbsp; 1위 <b>{2}</b> ",
+  best_title:"제약별 대응력 — 가장 잘 막은 센터",
+  best_sub:"각 제약에서 제약률이 가장 낮은 센터가 그 제약에 가장 잘 대응한 곳입니다. 벤치마킹 대상으로 삼으세요.",
+  best_best:"최우수", best_avg:"평균", best_worst:"최저", best_card_m:"평균 −{0}pp · 최저 −{1}pp",
+  best_axis:"제약률 (직전 단계 잔여 대비 손실 %)", best_avg_sub:"{0} · 평균 {1}%",
+  best_spread:"격차 {0}pp", tip_lossrate:"제약률", tip_vsbest:"최우수({0}) 대비",
+  tip_vsavg:"평균 대비", tip_bestof:"{0} · 최우수",
+  th_center:"센터", th_base:"기준", th_final:"최종 예상", th_actual:"실적",
+  th_gap:"실행 갭*", th_target:"목표", th_vstarget:"목표 대비",
+  tbl_title:"상세 표",
+  tbl_sub:"제약별 손실 UPH — 해제한 제약은 계산에서 제외됩니다. *실행 갭은 항상 전체 제약 적용 시나리오 기준이라 토글의 영향을 받지 않습니다.",
+  lg_baseline:"기준 생산성", lg_final:"최종 예상", lg_actual:"실적",
+  lg_target_uph:"┆ 목표 UPH", lg_target:"┆ 목표", lg_actual_line:"│ 실적",
+  lg_execgap:"▲▼ 실행 갭", lg_best:"최우수 (손실률 최소)", lg_other:"기타 센터",
+  lg_hint:"왼쪽일수록 손실이 적음 — 점에 마우스를 올리면 센터별 값이 표시됩니다",
+  note_lifted:"{0}개 해제 — {1} · 해당 제약이 완전히 개선됐을 때의 생산성입니다.",
+  note_hint:"제약 칩을 클릭하면 그 제약을 개선했을 때 회복 가능분을 확인할 수 있습니다.",
+  ts_min_con:"제약은 최소 1개가 필요합니다.", ts_reset:"샘플 데이터로 되돌렸습니다.",
+  ts_name_req:"이름을 입력하세요.", ts_rate_req:"센터 한 곳 이상에 제약률(%)을 입력하세요.",
+  ts_added:"제약 \"{0}\"을(를) 추가했습니다.", ts_reading:"{0} 읽는 중 …",
+  ts_loaded:"{2}에서 센터 {0}개 · 제약 {1}개를 불러왔습니다", ts_upload_fail:"업로드 실패: ",
+  err_zip:"올바른 .xlsx 파일이 아닙니다 (zip 서명 없음)",
+  err_nocenter:"센터 표를 찾지 못했습니다 — ID + 기준 생산성(Base) 헤더 행이 필요합니다",
+  err_nocon:"제약 표를 찾지 못했습니다 — ID + 적용(Active) + 센터ID별 제약률 열이 필요합니다",
+  foot1:"계산식 — <code>최종 예상 = 기준 × Π(1 − 제약률\u1d62)</code>, 표시된 순서(물량 → 인력 → 운영)대로 적용합니다. 각 손실 UPH는 제약률 × 직전 단계 잔여값입니다. 실행 갭 = 실적 − 전체 제약 적용 예상: 양수면 현장이 모델을 넘어선 것이고, 음수면 모델이 놓친 손실이 있다는 신호입니다.",
+  foot2:"수치는 샘플입니다. 직접 만든 엑셀(모델의 Data 시트와 같은 형식)을 업로드하거나 제약을 바로 수정하면 전체가 다시 계산됩니다."
+ }
+};
+let LANG = (function(){
+  try{ const v = localStorage.getItem("opb-lang"); if(v === "en" || v === "ko") return v; }catch(e){}
+  return String(navigator.language || "en").toLowerCase().indexOf("ko") === 0 ? "ko" : "en";
+})();
+const T  = k => { const d = I18N[LANG] || I18N.en; return d[k] != null ? d[k] : (I18N.en[k] != null ? I18N.en[k] : k); };
+const TF = (k, ...a) => String(T(k)).replace(/\{(\d+)\}/g, (m,i) => a[i] != null ? a[i] : "");
+const LX = (o, f) => (LANG === "ko" && o && o[f + "Ko"]) ? o[f + "Ko"] : (o ? o[f] : "");
+const GNAME = new Proxy({}, { get: (_, g) => T("g_" + String(g)) });
+function srcLabel(src){
+  if(!src) return T("src_sample");
+  return String(src).replace(/^Sample data/, T("src_sample")).replace(/ \(edited\)$/, T("src_edited"));
+}
 
 /* ============ STATE & PERSISTENCE ============ */
 const LS_KEY = "opb-data-v1";
@@ -448,7 +608,6 @@ const n0 = v => Math.round(v).toLocaleString("en-US");
 const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));
 const GCLASS = {vol:"b-vol", hr:"b-hr", ops:"b-ops"};
 const SW = {vol:"sw-vol", hr:"sw-hr", ops:"sw-ops"};
-const GNAME = {vol:"Volume", hr:"Workforce", ops:"Operations"};
 const centerOf = id => DB.centers.find(c => c.id === id);
 const hasAct = () => DB.centers.some(c => c.actual != null && !isNaN(c.actual));
 function toast(msg, ms){
@@ -500,7 +659,7 @@ async function parseXlsx(buf){
   for(let i = buf.byteLength - 22; i >= lo; i--){
     if(dv.getUint32(i, true) === 0x06054b50){ eocd = i; break; }
   }
-  if(eocd < 0) throw new Error("Not a valid .xlsx file (zip signature missing)");
+  if(eocd < 0) throw new Error(T("err_zip"));
   const count = dv.getUint16(eocd + 10, true);
   let off = dv.getUint32(eocd + 16, true);
   const entries = {};
@@ -674,8 +833,8 @@ function extractData(sheets){
       }
     }
   }
-  if(!centers) throw new Error("No center table found — need a header row with ID + Base(기준 생산성)");
-  if(!cons) throw new Error("No constraint table found — need ID + Active(적용) + one rate column per center ID");
+  if(!centers) throw new Error(T("err_nocenter"));
+  if(!cons) throw new Error(T("err_nocon"));
   return {centers, constraints: cons};
 }
 
@@ -694,31 +853,49 @@ document.body.addEventListener("mousemove", e => {
 });
 document.body.addEventListener("mouseleave", () => { tip.style.opacity = 0; });
 
+/* ============ LANGUAGE ============ */
+function applyStatic(){
+  document.documentElement.lang = (LANG === "ko") ? "ko" : "en";
+  document.title = T("doc_title");
+  document.querySelectorAll("[data-i18n]").forEach(el => { el.textContent = T(el.getAttribute("data-i18n")); });
+  document.querySelectorAll("[data-i18n-html]").forEach(el => { el.innerHTML = T(el.getAttribute("data-i18n-html")); });
+  document.querySelectorAll("[data-i18n-ph]").forEach(el => { el.placeholder = T(el.getAttribute("data-i18n-ph")); });
+  document.querySelectorAll("#langTog button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.lang === LANG)));
+}
+function setLang(v){
+  if((v !== "en" && v !== "ko") || v === LANG) return;
+  LANG = v;
+  try{ localStorage.setItem("opb-lang", v); }catch(e){}
+  applyStatic(); render(); renderForm();
+}
+
 /* ============ CONTROLS ============ */
 function renderChips(){
   $("#centerChips").innerHTML = DB.centers.map(c =>
-    `<button class="chip" type="button" role="radio" aria-pressed="${c.id===state.center}" data-center="${esc(c.id)}">${esc(c.name)}</button>`
+    `<button class="chip" type="button" role="radio" aria-pressed="${c.id===state.center}" data-center="${esc(c.id)}">${esc(LX(c,"name"))}</button>`
   ).join("");
   $("#conChips").innerHTML = DB.constraints.map(k =>
     `<button class="chip g-${k.group}" type="button" aria-checked="${!state.off.has(k.id)}" data-con="${esc(k.id)}"
-      data-tip="<b>${esc(k.name)}</b>${esc(k.desc || GNAME[k.group] + " constraint")}"><span class="dot"></span>${esc(k.short)}</button>`
+      data-tip="<b>${esc(LX(k,"name"))}</b>${esc(LX(k,"desc") || TF("con_suffix", GNAME[k.group]))}"><span class="dot"></span>${esc(LX(k,"short"))}</button>`
   ).join("") +
-  `<button class="chip add" type="button" id="addChip">＋ Add constraint</button>`;
-  $("#srcLabel").textContent = DB.source || "Sample data";
+  `<button class="chip add" type="button" id="addChip">${esc(T("chip_add"))}</button>`;
+  $("#srcLabel").textContent = srcLabel(DB.source);
 }
 function renderForm(){
   $("#fRates").innerHTML = DB.centers.map(c =>
-    `<div class="f-field"><label>${esc(c.sname.toUpperCase())}</label>
-     <input type="number" step="0.1" min="0" max="60" data-rate="${esc(c.id)}" placeholder="e.g. 3.0"></div>`
+    `<div class="f-field"><label>${esc(String(LX(c,"sname")).toUpperCase())}</label>
+     <input type="number" step="0.1" min="0" max="60" data-rate="${esc(c.id)}" placeholder="${esc(T("f_rate_ph"))}"></div>`
   ).join("");
   $("#mngList").innerHTML = DB.constraints.map(k =>
     `<div class="mng-row"><i class="dot" style="width:8px;height:8px;border-radius:2px;background:var(--${k.group==='vol'?'vol':k.group==='hr'?'hr':'ops'})"></i>
-     <span style="flex:1">${esc(k.name)} <span style="color:var(--muted)">· ${GNAME[k.group]}</span></span>
-     <button class="x" type="button" data-del="${esc(k.id)}">Delete</button></div>`
+     <span style="flex:1">${esc(LX(k,"name"))} <span style="color:var(--muted)">· ${esc(GNAME[k.group])}</span></span>
+     <button class="x" type="button" data-del="${esc(k.id)}">${esc(T("btn_delete"))}</button></div>`
   ).join("");
 }
 
 document.addEventListener("click", e => {
+  const lb = e.target.closest("[data-lang]");
+  if(lb){ setLang(lb.dataset.lang); return; }
   const cb = e.target.closest("[data-center]");
   if(cb){ state.center = cb.dataset.center; render(); return; }
   const kb = e.target.closest("[data-con]");
@@ -726,7 +903,7 @@ document.addEventListener("click", e => {
   const del = e.target.closest("[data-del]");
   if(del){
     const id = del.dataset.del;
-    if(DB.constraints.length <= 1){ toast("At least one constraint is required."); return; }
+    if(DB.constraints.length <= 1){ toast(T("ts_min_con")); return; }
     DB.constraints = DB.constraints.filter(k => k.id !== id);
     state.off.delete(id); DB.source = (DB.source||"Sample data").replace(/ \(edited\)$/,"") + " (edited)";
     saveDB(); render(); renderForm(); return;
@@ -738,11 +915,11 @@ document.addEventListener("click", e => {
   if(e.target.id === "resetDataBtn"){
     DB = clone(SAMPLE); state.center = DB.centers[0].id; state.off.clear();
     try{ localStorage.removeItem(LS_KEY); }catch(err){}
-    render(); renderForm(); toast("Reset to sample data."); return;
+    render(); renderForm(); toast(T("ts_reset")); return;
   }
   if(e.target.id === "fAddBtn"){
     const name = $("#fName").value.trim();
-    if(!name){ $("#fMsg").textContent = "Name is required."; return; }
+    if(!name){ $("#fMsg").textContent = T("ts_name_req"); return; }
     const id = "c_" + name.toLowerCase().replace(/[^a-z0-9]+/g,"_").slice(0,20) + "_" + (DB.constraints.length+1);
     const rates = {}; let any = false;
     document.querySelectorAll("[data-rate]").forEach(inp => {
@@ -750,7 +927,7 @@ document.addEventListener("click", e => {
       rates[inp.dataset.rate] = isNaN(v) ? 0 : Math.min(60, Math.max(0, v));
       if(!isNaN(v) && v > 0) any = true;
     });
-    if(!any){ $("#fMsg").textContent = "Enter a loss rate (%) for at least one center."; return; }
+    if(!any){ $("#fMsg").textContent = T("ts_rate_req"); return; }
     DB.constraints.push({ id, group: $("#fGroup").value, name,
       short: name.length > 14 ? name.slice(0,13) + "…" : name,
       desc: $("#fDesc").value.trim(), rates, custom: true });
@@ -759,7 +936,7 @@ document.addEventListener("click", e => {
     $("#fName").value = ""; $("#fDesc").value = ""; $("#fMsg").textContent = "";
     document.querySelectorAll("[data-rate]").forEach(i => i.value = "");
     render(); renderForm();
-    toast(`Constraint "${name}" added.`);
+    toast(TF("ts_added", name));
     return;
   }
 });
@@ -768,7 +945,7 @@ $("#fileInput").addEventListener("change", async e => {
   const f = e.target.files[0]; e.target.value = "";
   if(!f) return;
   try{
-    toast("Reading " + f.name + " …");
+    toast(TF("ts_reading", f.name));
     const buf = await f.arrayBuffer();
     const sheets = await parseXlsx(buf);
     const data = extractData(sheets);
@@ -777,9 +954,9 @@ $("#fileInput").addEventListener("change", async e => {
     state.center = DB.centers[0].id;
     state.off = new Set(data.constraints.filter(k => k.active === false).map(k => k.id));
     saveDB(); render(); renderForm();
-    toast(`Loaded ${DB.centers.length} centers · ${DB.constraints.length} constraints from ${f.name}`);
+    toast(TF("ts_loaded", DB.centers.length, DB.constraints.length, f.name));
   }catch(err){
-    toast("Upload failed: " + err.message, 5200);
+    toast(T("ts_upload_fail") + err.message, 5200);
   }
 });
 
@@ -802,17 +979,17 @@ function renderKpis(){
   const ex = HA ? execRows()[0] : null;
 
   const kpis = [
-    { k:"Weighted avg baseline", v:n1(wBase), u:"UPH", m:`${DB.centers.length} centers · headcount-weighted (${n0(hcSum)} people)` },
-    { k:"Weighted avg final expected", v:n1(wFinal), u:"UPH",
-      m:`vs baseline <span class="tag down">−${n1((wBase-wFinal)/wBase*100)}%</span>` },
-    { k:"Weighted avg actual", v: HA ? n1(wAct) : "—", u: HA ? "UPH" : "",
-      m: HA ? `vs full-constraint model <span class="tag ${wAct-wFull>=0?"up":"down"}">${wAct-wFull>=0?"+":"−"}${n1(Math.abs(wAct-wFull))}</span>` : "No actuals in data" },
-    { k:"Recovery if lifted", v:(gain>0?"+":"")+n1(gain), u:"UPH",
-      m: state.off.size ? `${state.off.size} lifted · vs all applied` : "Toggle a constraint off to see recovery" },
-    { k:"Largest loss driver", v: top ? top.short : "—", u:"",
-      m: top ? `Combined loss <span class="num">${n1(topVal)}</span> UPH · ${GNAME[top.group]}` : "No active constraints", small:true },
-    { k:"Top execution center", v: ex ? ex.c.sname : "—", u:"",
-      m: ex ? `vs model <span class="tag ${ex.gap>=0?"up":"down"}">${ex.gap>=0?"+":"−"}${n1(Math.abs(ex.gap))} UPH</span> · targets met ${met}/${DB.centers.length}` : `Targets met ${met}/${DB.centers.length}`, small:true }
+    { k:T("kpi_base"), v:n1(wBase), u:"UPH", m:TF("m_centers", DB.centers.length, n0(hcSum)) },
+    { k:T("kpi_final"), v:n1(wFinal), u:"UPH",
+      m:`${T("m_vsbase")} <span class="tag down">−${n1((wBase-wFinal)/wBase*100)}%</span>` },
+    { k:T("kpi_actual"), v: HA ? n1(wAct) : "—", u: HA ? "UPH" : "",
+      m: HA ? `${T("m_vsmodel")} <span class="tag ${wAct-wFull>=0?"up":"down"}">${wAct-wFull>=0?"+":"−"}${n1(Math.abs(wAct-wFull))}</span>` : T("m_noact") },
+    { k:T("kpi_recovery"), v:(gain>0?"+":"")+n1(gain), u:"UPH",
+      m: state.off.size ? TF("m_lifted", state.off.size) : T("m_toggle_hint") },
+    { k:T("kpi_driver"), v: top ? LX(top,"short") : "—", u:"",
+      m: top ? `${T("m_combined")} <span class="num">${n1(topVal)}</span> UPH · ${esc(GNAME[top.group])}` : T("m_nocon"), small:true },
+    { k:T("kpi_topexec"), v: ex ? LX(ex.c,"sname") : "—", u:"",
+      m: ex ? `${T("m_vsmodel_short")} <span class="tag ${ex.gap>=0?"up":"down"}">${ex.gap>=0?"+":"−"}${n1(Math.abs(ex.gap))} UPH</span> · ${TF("m_targets_met", met, DB.centers.length)}` : TF("m_targets_only", met, DB.centers.length), small:true }
   ];
   $("#kpis").innerHTML = kpis.map(x =>
     `<div class="kpi"><div class="k">${x.k}</div>
@@ -846,52 +1023,52 @@ function renderBridge(){
     const y = top + i * rowH, bh = 22, by = y + (rowH - bh)/2;
     if(row.type === "base"){
       const w = x(r.base) - x(0);
-      s += `<text class="row-label" x="${L-14}" y="${y+rowH/2+1}" text-anchor="end" style="font-weight:600;fill:var(--ink)">Baseline productivity</text>`;
-      s += `<text class="row-sub" x="${L-14}" y="${y+rowH/2+15}" text-anchor="end">Engineered standard · ${esc(r.c.code)}</text>`;
+      s += `<text class="row-label" x="${L-14}" y="${y+rowH/2+1}" text-anchor="end" style="font-weight:600;fill:var(--ink)">${esc(T("br_base_lab"))}</text>`;
+      s += `<text class="row-sub" x="${L-14}" y="${y+rowH/2+15}" text-anchor="end">${esc(TF("br_base_sub", r.c.code))}</text>`;
       s += `<rect class="bar-anchor-2" x="${x(0)}" y="${by}" width="${w.toFixed(1)}" height="${bh}" rx="4"
-             data-tip="<b>Baseline</b><span class='tv'>${n1(r.base)}</span> UPH"/>`;
+             data-tip="<b>${esc(T("tip_baseline"))}</b><span class='tv'>${n1(r.base)}</span> UPH"/>`;
       s += `<text class="val" x="${(x(r.base)+10).toFixed(1)}" y="${by+16}">${n1(r.base)}</text>`;
       prevEndX = x(r.base);
     } else if(row.type === "step"){
       const st = row.s;
       const x1 = x(st.to), x2 = x(st.from), w = Math.max(1.5, x2 - x1);
-      s += `<text class="row-label" x="${L-14}" y="${y+rowH/2+1}" text-anchor="end">${esc(st.name)}</text>`;
-      s += `<text class="row-sub" x="${L-14}" y="${y+rowH/2+15}" text-anchor="end">${GNAME[st.group]} · −${n1(st.rate)}%</text>`;
+      s += `<text class="row-label" x="${L-14}" y="${y+rowH/2+1}" text-anchor="end">${esc(LX(st,"name"))}</text>`;
+      s += `<text class="row-sub" x="${L-14}" y="${y+rowH/2+15}" text-anchor="end">${esc(GNAME[st.group])} · −${n1(st.rate)}%</text>`;
       if(prevEndX !== null) s += `<line class="connector" x1="${prevEndX.toFixed(1)}" y1="${y-(rowH-bh)/2}" x2="${x2.toFixed(1)}" y2="${by}"/>`;
       s += `<rect class="${GCLASS[st.group]}" x="${x1.toFixed(1)}" y="${by}" width="${w.toFixed(1)}" height="${bh}" rx="4"
-             data-tip="<b>${esc(st.name)}</b>${esc(st.desc || GNAME[st.group] + " constraint")}<br>Loss <span class='tv'>−${n1(st.loss)}</span> UPH (−${n1(st.rate)}%)<br>Remaining <span class='tv'>${n1(st.to)}</span> UPH"/>`;
+             data-tip="<b>${esc(LX(st,"name"))}</b>${esc(LX(st,"desc") || TF("con_suffix", GNAME[st.group]))}<br>${esc(T("tip_loss"))} <span class='tv'>−${n1(st.loss)}</span> UPH (−${n1(st.rate)}%)<br>${esc(T("tip_remaining"))} <span class='tv'>${n1(st.to)}</span> UPH"/>`;
       s += `<text class="val-neg" x="${(x1-10).toFixed(1)}" y="${by+16}" text-anchor="end">−${n1(st.loss)}</text>`;
       prevEndX = x1;
     } else if(row.type === "final"){
       const w = x(r.final) - x(0);
-      s += `<text class="row-label" x="${L-14}" y="${y+rowH/2+1}" text-anchor="end" style="font-weight:600;fill:var(--ink)">Final expected</text>`;
-      s += `<text class="row-sub" x="${L-14}" y="${y+rowH/2+15}" text-anchor="end">−${n1(r.lossPct)}% vs baseline</text>`;
+      s += `<text class="row-label" x="${L-14}" y="${y+rowH/2+1}" text-anchor="end" style="font-weight:600;fill:var(--ink)">${esc(T("br_final"))}</text>`;
+      s += `<text class="row-sub" x="${L-14}" y="${y+rowH/2+15}" text-anchor="end">${esc(TF("br_final_sub", n1(r.lossPct)))}</text>`;
       if(prevEndX !== null) s += `<line class="connector" x1="${prevEndX.toFixed(1)}" y1="${y-(rowH-bh)/2}" x2="${x(r.final).toFixed(1)}" y2="${by}"/>`;
       s += `<rect class="bar-anchor" x="${x(0)}" y="${by}" width="${w.toFixed(1)}" height="${bh}" rx="4"
-             data-tip="<b>Final expected</b><span class='tv'>${n1(r.final)}</span> UPH<br>Target <span class='tv'>${n1(r.target)}</span> UPH"/>`;
+             data-tip="<b>${esc(T("br_final"))}</b><span class='tv'>${n1(r.final)}</span> UPH<br>${esc(T("tip_target"))} <span class='tv'>${n1(r.target)}</span> UPH"/>`;
       s += `<text class="val" x="${(x(r.final)+10).toFixed(1)}" y="${by+16}">${n1(r.final)}</text>`;
       const tx = x(r.target), yb = top + rows.length*rowH + 4;
       s += `<line class="target" x1="${tx.toFixed(1)}" y1="${by-9}" x2="${tx.toFixed(1)}" y2="${yb}"/>`;
-      s += `<text class="target-lab" x="${tx.toFixed(1)}" y="${yb+18}" text-anchor="middle">Target ${n0(r.target)}</text>`;
+      s += `<text class="target-lab" x="${tx.toFixed(1)}" y="${yb+18}" text-anchor="middle">${esc(TF("br_target", n0(r.target)))}</text>`;
     } else {
       const act = r.c.actual, gap = act - r.final;
       const w = x(act) - x(0);
-      s += `<text class="row-label" x="${L-14}" y="${y+rowH/2+1}" text-anchor="end" style="font-weight:600;fill:var(--ink)">Actual</text>`;
-      s += `<text class="row-sub" x="${L-14}" y="${y+rowH/2+15}" text-anchor="end">Closed actuals, 2026-08</text>`;
+      s += `<text class="row-label" x="${L-14}" y="${y+rowH/2+1}" text-anchor="end" style="font-weight:600;fill:var(--ink)">${esc(T("br_actual"))}</text>`;
+      s += `<text class="row-sub" x="${L-14}" y="${y+rowH/2+15}" text-anchor="end">${esc(T("br_actual_sub"))}</text>`;
       s += `<rect class="bar-actual" x="${(x(0)+0.75).toFixed(1)}" y="${(by+0.75).toFixed(1)}" width="${(w-1.5).toFixed(1)}" height="${bh-1.5}" rx="4"
-             data-tip="<b>Actual</b><span class='tv'>${n1(act)}</span> UPH<br>vs current scenario <span class='tv'>${gap>=0?"+":"−"}${n1(Math.abs(gap))}</span> UPH"/>`;
+             data-tip="<b>${esc(T("br_actual"))}</b><span class='tv'>${n1(act)}</span> UPH<br>${esc(T("tip_vs_scenario"))} <span class='tv'>${gap>=0?"+":"−"}${n1(Math.abs(gap))}</span> UPH"/>`;
       s += `<text class="val" x="${(x(act)+10).toFixed(1)}" y="${by+16}">${n1(act)}</text>`;
       s += `<text class="val" x="${(x(act)+10+String(n1(act)).length*8.4).toFixed(1)}" y="${by+16}" style="font-size:11.5px;fill:var(--${gap>=0?"good":"crit"})">${gap>=0?"▲":"▼"}${n1(Math.abs(gap))}</text>`;
     }
   });
   s += `<line class="axis-line" x1="${L}" y1="${top + rows.length*rowH + 4}" x2="${R}" y2="${top + rows.length*rowH + 4}"/>`;
   s += `</svg>`;
-  $("#bridge").outerHTML = s.replace("<svg ", `<svg id="bridge" class="chart" role="img" aria-label="Productivity bridge for ${esc(r.c.name)}" `);
+  $("#bridge").outerHTML = s.replace("<svg ", `<svg id="bridge" class="chart" role="img" aria-label="${esc(TF("br_title", LX(r.c,"name")))}" `);
 
   const diff = r.final - r.target;
-  $("#bridgeTitle").textContent = `${r.c.name} — productivity bridge`;
+  $("#bridgeTitle").textContent = TF("br_title", LX(r.c,"name"));
   $("#bridgeSummary").innerHTML =
-    `Baseline <b>${n1(r.base)}</b> → Final <b>${n1(r.final)}</b> UPH &nbsp;·&nbsp; vs target ` +
+    TF("br_summary", n1(r.base), n1(r.final)) +
     `<span class="tag ${diff>=0?"up":"down"}">${diff>=0?"+":"−"}${n1(Math.abs(diff))}</span>`;
 }
 
@@ -912,12 +1089,12 @@ function renderCompare(){
   rows.forEach((r, i) => {
     const y = top + i*rowH, bh = 20, by = y + 8;
     const sel = r.c.id === state.center;
-    s += `<text class="row-label" x="${L-10}" y="${by+15}" text-anchor="end" ${sel?'style="fill:var(--ink);font-weight:600"':""}>${esc(r.c.sname)}</text>`;
+    s += `<text class="row-label" x="${L-10}" y="${by+15}" text-anchor="end" ${sel?'style="fill:var(--ink);font-weight:600"':""}>${esc(LX(r.c,"sname"))}</text>`;
     const segs = [
-      {w:r.final, cls:"bar-anchor", lab:"Final expected"},
-      {w:r.groups.vol, cls:"b-vol", lab:"Volume loss"},
-      {w:r.groups.hr, cls:"b-hr", lab:"Workforce loss"},
-      {w:r.groups.ops, cls:"b-ops", lab:"Operations loss"}
+      {w:r.final, cls:"bar-anchor", lab:T("seg_final")},
+      {w:r.groups.vol, cls:"b-vol", lab:T("seg_vol")},
+      {w:r.groups.hr, cls:"b-hr", lab:T("seg_hr")},
+      {w:r.groups.ops, cls:"b-ops", lab:T("seg_ops")}
     ];
     let acc = 0;
     segs.forEach((sg, j) => {
@@ -925,7 +1102,7 @@ function renderCompare(){
       const x1 = x(acc), x2 = x(acc + sg.w);
       const w = Math.max(1, x2 - x1 - (j < segs.length-1 ? 2 : 0));
       s += `<rect class="${sg.cls}" x="${x1.toFixed(1)}" y="${by}" width="${w.toFixed(1)}" height="${bh}" rx="${j===0?4:2}"
-             data-tip="<b>${esc(r.c.name)} · ${sg.lab}</b><span class='tv'>${n1(sg.w)}</span> UPH (${n1(sg.w/r.base*100)}%)"/>`;
+             data-tip="<b>${esc(LX(r.c,"name"))} · ${esc(sg.lab)}</b><span class='tv'>${n1(sg.w)}</span> UPH (${n1(sg.w/r.base*100)}%)"/>`;
       acc += sg.w;
     });
     const tx = x(r.target);
@@ -934,7 +1111,7 @@ function renderCompare(){
       const ax = x(r.c.actual), gap = r.c.actual - fullOf(r.c.id).final;
       s += `<line class="actual-mark" x1="${ax.toFixed(1)}" y1="${by-4}" x2="${ax.toFixed(1)}" y2="${by+bh+4}"/>`;
       s += `<rect class="hit" x="${(ax-6).toFixed(1)}" y="${by-6}" width="12" height="${bh+12}"
-             data-tip="<b>${esc(r.c.name)} · Actual</b><span class='tv'>${n1(r.c.actual)}</span> UPH<br>Full-constraint model <span class='tv'>${n1(fullOf(r.c.id).final)}</span> UPH<br>Execution gap <span class='tv'>${gap>=0?"+":"−"}${n1(Math.abs(gap))}</span>"/>`;
+             data-tip="<b>${esc(LX(r.c,"name"))} · ${esc(T("tip_actual"))}</b><span class='tv'>${n1(r.c.actual)}</span> UPH<br>${esc(T("tip_fullmodel"))} <span class='tv'>${n1(fullOf(r.c.id).final)}</span> UPH<br>${esc(T("tip_execgap"))} <span class='tv'>${gap>=0?"+":"−"}${n1(Math.abs(gap))}</span>"/>`;
       s += `<text class="val" x="${(x(r.base)+8).toFixed(1)}" y="${by+15}" style="font-size:11.5px">${n1(r.final)}</text>`;
       s += `<text class="val" x="${(x(r.base)+56).toFixed(1)}" y="${by+15}" style="font-size:11px;fill:var(--${gap>=0?"good":"crit"})">${gap>=0?"▲":"▼"}${n1(Math.abs(gap))}</text>`;
     } else {
@@ -956,36 +1133,36 @@ function renderHeat(){
   let s = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" style="width:100%;height:auto">`;
   DB.constraints.forEach((k, j) => {
     const cx = L + j*cw + cw/2;
-    const lab = k.short.length > 10 ? k.short.slice(0,9) + "…" : k.short;
+    const ks = String(LX(k,"short")); const lab = ks.length > 10 ? ks.slice(0,9) + "…" : ks;
     s += `<text class="row-sub" x="${cx.toFixed(1)}" y="${top-22}" text-anchor="middle">${esc(lab)}</text>`;
     s += `<rect x="${(L+j*cw).toFixed(1)}" y="${top-16}" width="${(cw-2).toFixed(1)}" height="3" rx="1.5" class="${GCLASS[k.group]}" opacity=".85"/>`;
   });
   rows.forEach((r, i) => {
     const y = top + i*(cellH+gapY);
     const sel = r.c.id === state.center;
-    s += `<text class="row-label" x="${L-10}" y="${y+cellH/2+5}" text-anchor="end" ${sel?'style="fill:var(--ink);font-weight:600"':""}>${esc(r.c.sname)}</text>`;
+    s += `<text class="row-label" x="${L-10}" y="${y+cellH/2+5}" text-anchor="end" ${sel?'style="fill:var(--ink);font-weight:600"':""}>${esc(LX(r.c,"sname"))}</text>`;
     DB.constraints.forEach((k, j) => {
       const st = r.steps.find(v => v.id === k.id);
       const pct = st.loss / r.base * 100;
       const lv = heatLevel(pct);
       const dim = state.off.has(k.id) ? ' opacity=".18"' : "";
       s += `<g${dim}><rect class="lv${lv}" x="${(L+j*cw).toFixed(1)}" y="${y}" width="${(cw-3).toFixed(1)}" height="${cellH}" rx="4"
-        data-tip="<b>${esc(r.c.name)} · ${esc(k.name)}</b>Loss <span class='tv'>${n1(st.loss)}</span> UPH<br><span class='tv'>${n1(pct)}%</span> of baseline${state.off.has(k.id)?"<br>· currently lifted":""}"/>
+        data-tip="<b>${esc(LX(r.c,"name"))} · ${esc(LX(k,"name"))}</b>${esc(T("tip_loss"))} <span class='tv'>${n1(st.loss)}</span> UPH<br>${TF("heat_tip_pct", n1(pct))}${state.off.has(k.id)?T("tip_lifted"):""}"/>
         <text class="cell-txt t${lv}" x="${(L+j*cw+(cw-3)/2).toFixed(1)}" y="${y+cellH/2+4}" text-anchor="middle">${n1(pct)}</text></g>`;
     });
   });
   s += `</svg>`;
   $("#heat").outerHTML = s.replace("<svg ", `<svg id="heat" class="chart" role="img" aria-label="Loss-rate heatmap" `);
   $("#heatLegend").innerHTML =
-    `<span style="color:var(--muted)">Low</span>` +
+    `<span style="color:var(--muted)">${esc(T("heat_low"))}</span>` +
     [1,2,3,4,5].map(l => `<span><i style="background:var(--seq${l})"></i></span>`).join("") +
-    `<span style="color:var(--muted)">High (% of baseline lost)</span>`;
+    `<span style="color:var(--muted)">${esc(T("heat_high"))}</span>`;
 }
 
 /* ============ EXECUTION GAP ============ */
 function renderExec(){
   if(!hasAct()){
-    $("#exec").outerHTML = `<svg id="exec" class="chart" viewBox="0 0 980 60"><text x="490" y="34" text-anchor="middle" style="fill:var(--muted);font-size:13px">No actuals in the current data — add an Actual column to the center table to see execution gaps.</text></svg>`;
+    $("#exec").outerHTML = `<svg id="exec" class="chart" viewBox="0 0 980 60"><text x="490" y="34" text-anchor="middle" style="fill:var(--muted);font-size:13px">${esc(T("exec_noact"))}</text></svg>`;
     $("#execSummary").innerHTML = "";
     return;
   }
@@ -997,9 +1174,9 @@ function renderExec(){
   const x = v => mid + (v / range) * half;
 
   let s = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" style="width:100%;height:auto">`;
-  s += `<text class="row-sub" x="${mid}" y="${top-22}" text-anchor="middle">Final expected = 0</text>`;
-  s += `<text class="row-sub" x="${L}" y="${top-22}" text-anchor="start">Below model ◀</text>`;
-  s += `<text class="row-sub" x="${R}" y="${top-22}" text-anchor="end">▶ Above model</text>`;
+  s += `<text class="row-sub" x="${mid}" y="${top-22}" text-anchor="middle">${esc(T("exec_zero"))}</text>`;
+  s += `<text class="row-sub" x="${L}" y="${top-22}" text-anchor="start">${esc(T("exec_below"))}</text>`;
+  s += `<text class="row-sub" x="${R}" y="${top-22}" text-anchor="end">${esc(T("exec_above"))}</text>`;
   s += `<line class="axis-line" x1="${mid}" y1="${top-12}" x2="${mid}" y2="${top+rows.length*rowH+2}"/>`;
 
   rows.forEach((r, i) => {
@@ -1007,19 +1184,19 @@ function renderExec(){
     const sel = r.c.id === state.center;
     const pos = r.gap >= 0;
     const x1 = pos ? mid : x(r.gap), w = Math.max(2, Math.abs(x(r.gap) - mid));
-    s += `<text class="row-label" x="${L-14}" y="${by+13}" text-anchor="end" ${sel?'style="fill:var(--ink);font-weight:600"':""}>${esc(r.c.name)}</text>`;
+    s += `<text class="row-label" x="${L-14}" y="${by+13}" text-anchor="end" ${sel?'style="fill:var(--ink);font-weight:600"':""}>${esc(LX(r.c,"name"))}</text>`;
     s += `<text class="rank" x="18" y="${by+13}" text-anchor="start">${i+1}</text>`;
     s += `<rect class="${pos?"b-good":"b-crit"}" x="${x1.toFixed(1)}" y="${by}" width="${w.toFixed(1)}" height="${bh}" rx="3"
-           data-tip="<b>${esc(r.c.name)}</b>Final expected <span class='tv'>${n1(r.exp)}</span> UPH<br>Actual <span class='tv'>${n1(r.act)}</span> UPH<br>Execution gap <span class='tv'>${pos?"+":"−"}${n1(Math.abs(r.gap))}</span> UPH (${n1((r.ratio-1)*100)}%)"/>`;
+           data-tip="<b>${esc(LX(r.c,"name"))}</b>${esc(T("br_final"))} <span class='tv'>${n1(r.exp)}</span> UPH<br>${esc(T("tip_actual"))} <span class='tv'>${n1(r.act)}</span> UPH<br>${esc(T("tip_execgap"))} <span class='tv'>${pos?"+":"−"}${n1(Math.abs(r.gap))}</span> UPH (${n1((r.ratio-1)*100)}%)"/>`;
     s += `<text class="val" x="${(pos ? x(r.gap)+8 : x(r.gap)-8).toFixed(1)}" y="${by+13}" text-anchor="${pos?"start":"end"}"
            style="font-size:12px;fill:var(--${pos?"good":"crit"})">${pos?"+":"−"}${n1(Math.abs(r.gap))}</text>`;
     s += `<text class="val" x="${W-124}" y="${by+13}" text-anchor="end" style="font-size:11.5px;fill:var(--ink-2);font-weight:400">${n1(r.exp)} → ${n1(r.act)}</text>`;
-    s += `<text class="val" x="${W-10}" y="${by+13}" text-anchor="end" style="font-size:11.5px;fill:var(--muted);font-weight:400">attain. ${n1(r.ratio*100)}%</text>`;
+    s += `<text class="val" x="${W-10}" y="${by+13}" text-anchor="end" style="font-size:11.5px;fill:var(--muted);font-weight:400">${esc(TF("exec_attain", n1(r.ratio*100)))}</text>`;
   });
   s += `</svg>`;
   $("#exec").outerHTML = s.replace("<svg ", `<svg id="exec" class="chart" role="img" aria-label="Execution gap by center" `);
   const beat = rows.filter(r => r.gap >= 0).length;
-  $("#execSummary").innerHTML = `Above <b>${beat}</b> / below <b>${rows.length-beat}</b> &nbsp;·&nbsp; #1 <b>${esc(rows[0].c.sname)}</b> <span class="tag up">+${n1(rows[0].gap)}</span>`;
+  $("#execSummary").innerHTML = TF("exec_summary", beat, rows.length-beat, esc(LX(rows[0].c,"sname"))) + `<span class="tag up">+${n1(rows[0].gap)}</span>`;
 }
 
 /* ============ BEST RESPONDER ============ */
@@ -1030,10 +1207,10 @@ function renderBest(){
 
   $("#bestCards").innerHTML = data.map(d => {
     const d1 = d.avg - d.best.rate, d2 = d.worst.rate - d.best.rate;
-    return `<div class="card" data-tip="<b>${esc(d.k.name)}</b>Best: ${esc(d.best.c.name)} <span class='tv'>${n1(d.best.rate)}%</span><br>Avg <span class='tv'>${n1(d.avg)}%</span> · Worst ${esc(d.worst.c.sname)} <span class='tv'>${n1(d.worst.rate)}%</span>">
-      <div class="c-k"><i class="${SW[d.k.group]}"></i>${esc(d.k.short)}</div>
-      <div class="c-v">${esc(d.best.c.sname)} <span style="font-size:13px;font-weight:500;color:var(--ink-2)" class="num">${n1(d.best.rate)}%</span>${d.best.c.id === execTop ? ' <span style="font-size:11px;color:var(--good);font-weight:600" title="Top execution center">★</span>' : ""}</div>
-      <div class="c-m" style="color:var(--muted)">avg −${n1(d1)}pp · worst −${n1(d2)}pp</div>
+    return `<div class="card" data-tip="<b>${esc(LX(d.k,"name"))}</b>${esc(T("best_best"))}: ${esc(LX(d.best.c,"name"))} <span class='tv'>${n1(d.best.rate)}%</span><br>${esc(T("best_avg"))} <span class='tv'>${n1(d.avg)}%</span> · ${esc(T("best_worst"))} ${esc(LX(d.worst.c,"sname"))} <span class='tv'>${n1(d.worst.rate)}%</span>">
+      <div class="c-k"><i class="${SW[d.k.group]}"></i>${esc(LX(d.k,"short"))}</div>
+      <div class="c-v">${esc(LX(d.best.c,"sname"))} <span style="font-size:13px;font-weight:500;color:var(--ink-2)" class="num">${n1(d.best.rate)}%</span>${d.best.c.id === execTop ? ` <span style="font-size:11px;color:var(--good);font-weight:600" title="${esc(T("kpi_topexec"))}">★</span>` : ""}</div>
+      <div class="c-m" style="color:var(--muted)">${esc(TF("best_card_m", n1(d1), n1(d2)))}</div>
     </div>`;
   }).join("");
 
@@ -1048,23 +1225,23 @@ function renderBest(){
     s += `<line class="grid-line" x1="${x(t).toFixed(1)}" y1="${top-14}" x2="${x(t).toFixed(1)}" y2="${top+data.length*rowH-8}"/>`;
     s += `<text class="tick val" x="${x(t).toFixed(1)}" y="${top-20}" text-anchor="middle">${t}%</text>`;
   }
-  s += `<text class="tick" x="${L}" y="${top-38}" text-anchor="start">Loss rate (% of what remained at that step)</text>`;
+  s += `<text class="tick" x="${L}" y="${top-38}" text-anchor="start">${esc(T("best_axis"))}</text>`;
 
   data.forEach((d, i) => {
     const y = top + i*rowH, cy = y + rowH/2 - 4;
-    s += `<text class="row-label" x="${L-16}" y="${cy+1}" text-anchor="end">${esc(d.k.name)}</text>`;
-    s += `<text class="row-sub" x="${L-16}" y="${cy+15}" text-anchor="end">${GNAME[d.k.group]} · avg ${n1(d.avg)}%</text>`;
+    s += `<text class="row-label" x="${L-16}" y="${cy+1}" text-anchor="end">${esc(LX(d.k,"name"))}</text>`;
+    s += `<text class="row-sub" x="${L-16}" y="${cy+15}" text-anchor="end">${esc(TF("best_avg_sub", GNAME[d.k.group], n1(d.avg)))}</text>`;
     s += `<line x1="${x(d.best.rate).toFixed(1)}" y1="${cy}" x2="${x(d.worst.rate).toFixed(1)}" y2="${cy}" stroke="var(--grid)" stroke-width="3" stroke-linecap="round"/>`;
     d.rows.slice(1).forEach(rw => {
       s += `<circle class="dot-o" cx="${x(rw.rate).toFixed(1)}" cy="${cy}" r="5.5"
-             data-tip="<b>${esc(rw.c.name)} · ${esc(d.k.name)}</b>Loss rate <span class='tv'>${n1(rw.rate)}%</span><br>Loss <span class='tv'>${n1(rw.loss)}</span> UPH<br>vs best (${esc(d.best.c.sname)}) <span class='tv'>+${n1(rw.rate-d.best.rate)}pp</span>"/>`;
+             data-tip="<b>${esc(LX(rw.c,"name"))} · ${esc(LX(d.k,"name"))}</b>${esc(T("tip_lossrate"))} <span class='tv'>${n1(rw.rate)}%</span><br>${esc(T("tip_loss"))} <span class='tv'>${n1(rw.loss)}</span> UPH<br>${esc(TF("tip_vsbest", LX(d.best.c,"sname")))} <span class='tv'>+${n1(rw.rate-d.best.rate)}pp</span>"/>`;
     });
     const bx = x(d.best.rate), wx = x(d.worst.rate);
     s += `<circle class="${GCLASS[d.k.group]}" cx="${bx.toFixed(1)}" cy="${cy}" r="7"
-           data-tip="<b>${esc(d.best.c.name)} · best</b>Loss rate <span class='tv'>${n1(d.best.rate)}%</span><br>Loss <span class='tv'>${n1(d.best.loss)}</span> UPH<br>vs avg <span class='tv'>−${n1(d.avg-d.best.rate)}pp</span>"/>`;
-    s += `<text class="best-lab" x="${(bx-13).toFixed(1)}" y="${cy+4}" text-anchor="end">${esc(d.best.c.sname)} ${n1(d.best.rate)}</text>`;
-    s += `<text class="worst-lab" x="${(wx+13).toFixed(1)}" y="${cy+4}" text-anchor="start">${esc(d.worst.c.sname)} ${n1(d.worst.rate)}</text>`;
-    s += `<text class="val" x="${W-10}" y="${cy+4}" text-anchor="end" style="font-size:11.5px;fill:var(--ink-2);font-weight:400">spread ${n1(d.worst.rate-d.best.rate)}pp</text>`;
+           data-tip="<b>${esc(TF("tip_bestof", LX(d.best.c,"name")))}</b>${esc(T("tip_lossrate"))} <span class='tv'>${n1(d.best.rate)}%</span><br>${esc(T("tip_loss"))} <span class='tv'>${n1(d.best.loss)}</span> UPH<br>${esc(T("tip_vsavg"))} <span class='tv'>−${n1(d.avg-d.best.rate)}pp</span>"/>`;
+    s += `<text class="best-lab" x="${(bx-13).toFixed(1)}" y="${cy+4}" text-anchor="end">${esc(LX(d.best.c,"sname"))} ${n1(d.best.rate)}</text>`;
+    s += `<text class="worst-lab" x="${(wx+13).toFixed(1)}" y="${cy+4}" text-anchor="start">${esc(LX(d.worst.c,"sname"))} ${n1(d.worst.rate)}</text>`;
+    s += `<text class="val" x="${W-10}" y="${cy+4}" text-anchor="end" style="font-size:11.5px;fill:var(--ink-2);font-weight:400">${esc(TF("best_spread", n1(d.worst.rate-d.best.rate)))}</text>`;
   });
   s += `</svg>`;
   $("#dots").outerHTML = s.replace("<svg ", `<svg id="dots" class="chart" role="img" aria-label="Loss-rate distribution by constraint" `);
@@ -1074,13 +1251,13 @@ function renderBest(){
 function renderTable(){
   const rows = DB.centers.map(c => compute(c.id, state.off));
   const HA = hasAct();
-  let h = `<thead><tr><th>Center</th><th>Baseline</th>` +
-    DB.constraints.map(k => `<th${state.off.has(k.id)?' style="opacity:.4;text-decoration:line-through"':""}>${esc(k.short)}</th>`).join("") +
-    `<th>Final expected</th><th>Actual</th><th>Exec gap*</th><th>Target</th><th>vs Target</th></tr></thead><tbody>`;
+  let h = `<thead><tr><th>${esc(T("th_center"))}</th><th>${esc(T("th_base"))}</th>` +
+    DB.constraints.map(k => `<th${state.off.has(k.id)?' style="opacity:.4;text-decoration:line-through"':""}>${esc(LX(k,"short"))}</th>`).join("") +
+    `<th>${esc(T("th_final"))}</th><th>${esc(T("th_actual"))}</th><th>${esc(T("th_gap"))}</th><th>${esc(T("th_target"))}</th><th>${esc(T("th_vstarget"))}</th></tr></thead><tbody>`;
   rows.forEach(r => {
     const ok = r.final >= r.target;
     const gap = (HA && r.c.actual != null) ? r.c.actual - fullOf(r.c.id).final : null;
-    h += `<tr><td>${esc(r.c.name)}<br><span style="color:var(--muted);font-size:11px">${esc(r.c.note||"")}</span></td>` +
+    h += `<tr><td>${esc(LX(r.c,"name"))}<br><span style="color:var(--muted);font-size:11px">${esc(LX(r.c,"note")||"")}</span></td>` +
       `<td class="n">${n1(r.base)}</td>` +
       r.steps.map(s => `<td class="n"${s.active?"":' style="opacity:.35"'}>${s.active?"−"+n1(s.loss):"—"}</td>`).join("") +
       `<td class="n strong">${n1(r.final)}</td>` +
@@ -1104,11 +1281,12 @@ function render(){
   renderExec();
   renderBest();
   renderTable();
-  const offNames = DB.constraints.filter(k => state.off.has(k.id)).map(k => k.short);
+  const offNames = DB.constraints.filter(k => state.off.has(k.id)).map(k => LX(k,"short"));
   $("#railNote").textContent = offNames.length
-    ? `${offNames.length} lifted — ${offNames.join(", ")} · showing productivity if these were fully resolved.`
-    : "Click a constraint chip to lift it and see the productivity you would recover.";
+    ? TF("note_lifted", offNames.length, offNames.join(", "))
+    : T("note_hint");
 }
+applyStatic();
 render();
 renderForm();
 })();
