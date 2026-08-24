@@ -1,12 +1,12 @@
 <!doctype html>
-<html lang="ko">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>출고 생산성 브릿지</title>
+<title>Outbound Productivity Bridge</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap">
 <style>
 :root{
   color-scheme: light;
@@ -56,7 +56,7 @@
 *{box-sizing:border-box}
 body{
   margin:0; background:var(--page); color:var(--ink);
-  font-family:"IBM Plex Sans KR", system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-family:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
   font-weight:400; line-height:1.55; -webkit-font-smoothing:antialiased;
 }
 .num{font-family:"IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace; font-variant-numeric:tabular-nums;}
@@ -111,7 +111,7 @@ h1{margin:6px 0 4px; font-size:clamp(26px,3.4vw,38px); font-weight:700; letter-s
 
 /* ---------- charts ---------- */
 .chart{width:100%; display:block; overflow:visible;}
-.chart text{font-family:"IBM Plex Sans KR", system-ui, sans-serif;}
+.chart text{font-family:"IBM Plex Sans", system-ui, sans-serif;}
 .chart .val{font-family:"IBM Plex Mono", monospace; font-variant-numeric:tabular-nums;}
 .axis-line{stroke:var(--axis); stroke-width:1}
 .grid-line{stroke:var(--grid); stroke-width:1}
@@ -184,23 +184,51 @@ td.strong{color:var(--ink); font-weight:600}
 .grid2{display:grid; grid-template-columns:1fr; gap:18px;}
 @media (min-width:900px){.grid2{grid-template-columns:1fr 1fr;}}
 @media (prefers-reduced-motion: reduce){*{transition:none !important; animation:none !important}}
-</style>
+
+/* ---------- toolbar & forms ---------- */
+.btn{appearance:none; border:1px solid var(--hair); background:var(--surface-2); color:var(--ink);
+  font:inherit; font-size:12.5px; font-weight:500; padding:6px 13px; border-radius:8px; cursor:pointer;
+  display:inline-flex; align-items:center; gap:6px; transition:border-color .14s, background .14s;}
+.btn:hover{border-color:var(--axis)}
+.btn:focus-visible{outline:2px solid var(--vol); outline-offset:2px}
+.btn.primary{background:var(--anchor); color:var(--surface); border-color:var(--anchor)}
+.btn.danger{color:var(--crit)}
+.chip.add{border-style:dashed; color:var(--muted)}
+.form{display:none; border-top:1px solid var(--hair-2); padding:14px 18px 16px; background:var(--sunken)}
+.form.open{display:block}
+.form h3{margin:0 0 10px; font-size:13px; font-weight:600}
+.f-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px; margin-bottom:10px}
+.f-field{display:flex; flex-direction:column; gap:4px}
+.f-field label{font-size:11px; color:var(--muted); font-weight:600; letter-spacing:.04em}
+.f-field input,.f-field select{font:inherit; font-size:13px; padding:6px 9px; border:1px solid var(--hair);
+  border-radius:7px; background:var(--surface); color:var(--ink)}
+.f-field input:focus-visible,.f-field select:focus-visible{outline:2px solid var(--vol); outline-offset:1px}
+.rate-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(110px,1fr)); gap:8px; margin-bottom:12px}
+.mng{margin-top:14px; border-top:1px dashed var(--hair); padding-top:10px}
+.mng-row{display:flex; align-items:center; gap:8px; padding:4px 0; font-size:12.5px; color:var(--ink-2)}
+.mng-row .x{appearance:none; border:0; background:none; color:var(--crit); cursor:pointer; font:inherit; font-size:12px; padding:2px 6px; border-radius:5px}
+.mng-row .x:hover{background:var(--crit-soft)}
+.src{display:inline-flex; align-items:center; gap:6px; font-size:11.5px; color:var(--muted);
+  background:var(--surface-2); border:1px solid var(--hair-2); padding:3px 9px; border-radius:999px}
+.src i{width:7px;height:7px;border-radius:50%;background:var(--ops);display:inline-block}
+#toast{position:fixed; left:50%; bottom:26px; transform:translateX(-50%); z-index:60; background:var(--anchor);
+  color:var(--surface); font-size:13px; padding:9px 16px; border-radius:9px; opacity:0; transition:opacity .2s; pointer-events:none;
+  box-shadow:0 8px 24px -8px rgba(0,0,0,.5); max-width:min(90vw,560px); text-align:center}
+\n</style>
 </head>
 <body>
-
-
 <div class="wrap">
 
   <header class="mast">
     <div>
-      <div class="eyebrow">Outbound Productivity Bridge</div>
-      <h1>센터별 출고 생산성 브릿지</h1>
-      <p class="sub">설계 기준 생산성(UPH)에서 출발해 물량·인력·운영 제약을 차례로 반영하고, 현장에서 실제로 기대할 수 있는 최종 예상 생산성까지의 손실 경로를 추적하고, 확정 실적과 대조해 제약별로 가장 잘 대응한 센터를 가려냅니다.</p>
+      <div class="eyebrow">Outbound Operations</div>
+      <h1>Outbound Productivity Bridge</h1>
+      <p class="sub">Start from engineered baseline productivity (UPH), apply volume, workforce and operations constraints in sequence, land on the final expected productivity — then compare against actuals to find which center handles each constraint best.</p>
     </div>
     <div class="stamp">
-      기준월 <b>2026-08</b><br>
-      단위 <b>UPH (pcs/man·hr)</b><br>
-      데이터 <b>샘플</b>
+      Period <b>2026-08</b><br>
+      Unit <b>UPH (pcs/man·hr)</b><br>
+      <span class="src" id="srcBadge"><i></i><span id="srcLabel">Sample data</span></span>
     </div>
   </header>
 
@@ -208,15 +236,55 @@ td.strong{color:var(--ink); font-weight:600}
   <section class="panel">
     <div class="rail">
       <div class="rail-row">
-        <span class="rail-label">센터</span>
+        <span class="rail-label">Center</span>
         <div id="centerChips" class="rail-row" style="gap:8px"></div>
       </div>
       <div class="rail-row">
-        <span class="rail-label">제약 적용</span>
+        <span class="rail-label">Constraints</span>
         <div id="conChips" class="rail-row" style="gap:8px"></div>
-        <button class="linkish" id="resetBtn" type="button">전체 적용으로 되돌리기</button>
+        <button class="linkish" id="resetTogglesBtn" type="button">Re-apply all</button>
+      </div>
+      <div class="rail-row">
+        <span class="rail-label">Data</span>
+        <button class="btn" id="uploadBtn" type="button">⬆ Upload Excel</button>
+        <input type="file" id="fileInput" accept=".xlsx" style="display:none">
+        <button class="btn" id="resetDataBtn" type="button">Reset to sample</button>
+        <span class="rail-note" style="padding-left:2px">Upload the Excel model's <b>Data</b> sheet layout — Korean or English headers both work. Edits are saved in this browser.</span>
       </div>
       <p class="rail-note" id="railNote"></p>
+    </div>
+    <!-- ADD CONSTRAINT FORM -->
+    <div class="form" id="addForm">
+      <h3 id="formTitle">Add a constraint</h3>
+      <div class="f-grid">
+        <div class="f-field" style="grid-column:span 2">
+          <label>NAME</label>
+          <input id="fName" type="text" placeholder="e.g. Equipment downtime" maxlength="40">
+        </div>
+        <div class="f-field">
+          <label>GROUP</label>
+          <select id="fGroup">
+            <option value="vol">Volume</option>
+            <option value="hr">Workforce</option>
+            <option value="ops" selected>Operations</option>
+          </select>
+        </div>
+        <div class="f-field" style="grid-column:span 2">
+          <label>DESCRIPTION (OPTIONAL)</label>
+          <input id="fDesc" type="text" placeholder="What causes this loss" maxlength="80">
+        </div>
+      </div>
+      <label style="font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.04em">LOSS RATE PER CENTER (%)</label>
+      <div class="rate-grid" id="fRates" style="margin-top:6px"></div>
+      <div style="display:flex; gap:8px; align-items:center">
+        <button class="btn primary" id="fAddBtn" type="button">Add constraint</button>
+        <button class="btn" id="fCancelBtn" type="button">Cancel</button>
+        <span class="rail-note" id="fMsg"></span>
+      </div>
+      <div class="mng">
+        <label style="font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.04em">MANAGE CONSTRAINTS</label>
+        <div id="mngList"></div>
+      </div>
     </div>
   </section>
 
@@ -229,20 +297,20 @@ td.strong{color:var(--ink); font-weight:600}
   <section class="panel">
     <div class="panel-hd">
       <div>
-        <h2 id="bridgeTitle">생산성 브릿지</h2>
-        <p>기준 생산성에 제약을 순차 적용 — 각 단계의 손실은 직전 단계까지 남은 생산성에 대한 비율로 계산합니다.</p>
+        <h2 id="bridgeTitle">Productivity bridge</h2>
+        <p>Constraints applied in sequence — each loss is a share of what remains after the previous step.</p>
       </div>
       <div class="num" id="bridgeSummary" style="font-size:12.5px; color:var(--ink-2)"></div>
     </div>
-    <div class="panel-bd"><svg id="bridge" class="chart" role="img" aria-label="선택 센터의 생산성 브릿지 차트"></svg></div>
+    <div class="panel-bd"><svg id="bridge" class="chart" role="img" aria-label="Productivity bridge for the selected center"></svg></div>
     <div class="legend">
-      <span><i class="sw-anchor2"></i>기준 생산성</span>
-      <span><i class="sw-vol"></i>물량·오더 특성</span>
-      <span><i class="sw-hr"></i>인력 숙련도</span>
-      <span><i class="sw-ops"></i>운영 제약</span>
-      <span><i class="sw-anchor"></i>최종 예상 생산성</span>
-      <span><i class="sw-actual"></i>실제 실적</span>
-      <span style="color:var(--muted)">┆ 목표 UPH</span>
+      <span><i class="sw-anchor2"></i>Baseline</span>
+      <span><i class="sw-vol"></i>Volume</span>
+      <span><i class="sw-hr"></i>Workforce</span>
+      <span><i class="sw-ops"></i>Operations</span>
+      <span><i class="sw-anchor"></i>Final expected</span>
+      <span><i class="sw-actual"></i>Actual</span>
+      <span style="color:var(--muted)">┆ Target UPH</span>
     </div>
   </section>
 
@@ -251,19 +319,19 @@ td.strong{color:var(--ink); font-weight:600}
     <section class="panel">
       <div class="panel-hd">
         <div>
-          <h2>센터 비교 — 기준 대비 손실 구성</h2>
-          <p>막대 전체 길이가 기준 생산성, 진한 구간이 최종 예상, 세로 실선이 실제 실적입니다.</p>
+          <h2>Center comparison — loss composition vs baseline</h2>
+          <p>Full bar = baseline; dark segment = final expected; vertical line = actual.</p>
         </div>
       </div>
-      <div class="panel-bd"><svg id="compare" class="chart" role="img" aria-label="센터별 기준 생산성 대비 제약 손실 구성"></svg></div>
+      <div class="panel-bd"><svg id="compare" class="chart" role="img" aria-label="Loss composition vs baseline by center"></svg></div>
       <div class="legend">
-        <span><i class="sw-anchor"></i>최종 예상</span>
-        <span><i class="sw-vol"></i>물량</span>
-        <span><i class="sw-hr"></i>인력</span>
-        <span><i class="sw-ops"></i>운영</span>
-        <span style="color:var(--muted)">┆ 목표</span>
-        <span style="color:var(--muted)">│ 실적</span>
-        <span style="color:var(--muted)">▲▼ 예상 대비 실행 갭</span>
+        <span><i class="sw-anchor"></i>Final expected</span>
+        <span><i class="sw-vol"></i>Volume</span>
+        <span><i class="sw-hr"></i>Workforce</span>
+        <span><i class="sw-ops"></i>Operations</span>
+        <span style="color:var(--muted)">┆ Target</span>
+        <span style="color:var(--muted)">│ Actual</span>
+        <span style="color:var(--muted)">▲▼ Execution gap</span>
       </div>
     </section>
 
@@ -271,11 +339,11 @@ td.strong{color:var(--ink); font-weight:600}
     <section class="panel">
       <div class="panel-hd">
         <div>
-          <h2>제약별 손실 강도</h2>
-          <p>기준 생산성 대비 손실 비중(%). 진할수록 손실이 큽니다.</p>
+          <h2>Loss intensity by constraint</h2>
+          <p>Share of baseline lost (%). Darker = larger loss.</p>
         </div>
       </div>
-      <div class="panel-bd"><svg id="heat" class="chart" role="img" aria-label="센터와 제약별 손실률 히트맵"></svg></div>
+      <div class="panel-bd"><svg id="heat" class="chart" role="img" aria-label="Loss-rate heatmap by center and constraint"></svg></div>
       <div class="legend" id="heatLegend"></div>
     </section>
   </div>
@@ -284,28 +352,28 @@ td.strong{color:var(--ink); font-weight:600}
   <section class="panel">
     <div class="panel-hd">
       <div>
-        <h2>실행 갭 — 최종 예상 대비 실적</h2>
-        <p>제약을 모두 반영한 기본 시나리오의 예상 생산성과 실제 실적의 차이. 양(+)이면 예상보다 잘 막아낸 센터입니다.</p>
+        <h2>Execution gap — actual vs final expected</h2>
+        <p>Actual minus the fully-constrained expectation. Positive = the floor out-performed the model.</p>
       </div>
       <div class="num" id="execSummary" style="font-size:12.5px; color:var(--ink-2)"></div>
     </div>
-    <div class="panel-bd"><svg id="exec" class="chart" role="img" aria-label="센터별 예상 대비 실적 갭"></svg></div>
+    <div class="panel-bd"><svg id="exec" class="chart" role="img" aria-label="Execution gap by center"></svg></div>
   </section>
 
   <!-- BEST RESPONDER -->
   <section class="panel">
     <div class="panel-hd">
       <div>
-        <h2>제약별 대응력 — 가장 잘 막은 센터</h2>
-        <p>같은 제약을 놓고 손실률이 가장 낮은 센터가 그 제약에 가장 잘 대응한 곳입니다. 벤치마킹 대상 선정에 사용하세요.</p>
+        <h2>Constraint response — best-performing center</h2>
+        <p>For each constraint, the center with the lowest loss rate handled it best. Use these as benchmarking targets.</p>
       </div>
     </div>
     <div class="cards" id="bestCards"></div>
-    <div class="panel-bd"><svg id="dots" class="chart" role="img" aria-label="제약별 센터 손실률 분포와 최우수 센터"></svg></div>
+    <div class="panel-bd"><svg id="dots" class="chart" role="img" aria-label="Loss-rate distribution by constraint with best performer"></svg></div>
     <div class="legend">
-      <span><i style="background:var(--ink)"></i>최우수 (손실률 최소)</span>
-      <span><i style="background:transparent;border:1.5px solid var(--axis)"></i>기타 센터</span>
-      <span style="color:var(--muted)">왼쪽일수록 손실이 적음 — 점에 마우스를 올리면 센터별 값이 표시됩니다</span>
+      <span><i style="background:var(--ink)"></i>Best (lowest loss rate)</span>
+      <span><i style="background:transparent;border:1.5px solid var(--axis)"></i>Other centers</span>
+      <span style="color:var(--muted)">Further left = smaller loss — hover a dot for center detail</span>
     </div>
   </section>
 
@@ -313,74 +381,90 @@ td.strong{color:var(--ink); font-weight:600}
   <section class="panel">
     <div class="panel-hd">
       <div>
-        <h2>상세 표</h2>
-        <p>제약별 손실 UPH — 해제한 제약은 계산에서 제외됩니다. *실행 갭은 전체 제약을 적용한 기본 시나리오 예상과 실적의 차이로, 토글의 영향을 받지 않습니다.</p>
+        <h2>Detail table</h2>
+        <p>Loss in UPH per constraint — toggled-off constraints are excluded. *Execution gap always uses the all-constraints scenario, so toggles never move it.</p>
       </div>
     </div>
     <div class="tbl-wrap"><table id="tbl"></table></div>
   </section>
 
   <p class="foot">
-    계산식 — <code>최종 예상 = 기준 × Π(1 − 제약률ᵢ)</code>. 제약은 표에 나열된 순서(물량 → 인력 → 운영)대로 적용되며, 각 손실 UPH는 직전 단계까지 남은 생산성에 제약률을 곱한 값입니다.<br>
-    실행 갭 = 실적 − 기본 시나리오 최종 예상. 양수면 예상보다 현장 실행이 좋았다는 뜻이고, 음수면 제약 모델이 잡지 못한 손실이 추가로 있다는 신호입니다. 제약별 대응력은 제약률(낮을수록 우수)로 순위를 매깁니다.<br>
-    수치는 구조 확인용 샘플입니다. 실제 WMS·근태 데이터로 <code>CENTERS</code>(기준·목표·실적)·<code>RATES</code> 값만 교체하면 그대로 동작합니다.
+    Formula — <code>final expected = baseline × Π(1 − rateᵢ)</code>, applied in the order listed (volume → workforce → operations); each loss in UPH is the rate times what remained after the previous step.
+    Execution gap = actual − fully-constrained expectation: positive means the floor beat the model, negative means the model is missing a loss.<br>
+    Figures are sample data. Upload your own Excel (same layout as the model's Data sheet) or edit constraints directly — everything recalculates.
   </p>
 </div>
 
 <div id="tip" role="status" aria-live="polite"></div>
+<div id="toast" role="status"></div>
 
 <script>
 (function(){
 "use strict";
 
-/* ============ DATA (교체 지점) ============ */
-const CENTERS = [
-  {id:"DT", name:"동탄 1센터", sname:"동탄", code:"DT-CFC", base:212, target:165, actual:162.4, hc:186, note:"자동화 소터 운영"},
-  {id:"IC", name:"인천센터",   sname:"인천", code:"IC-FC",  base:198, target:145, actual:138.9, hc:154, note:"신선 혼재"},
-  {id:"GH", name:"김해센터",   sname:"김해", code:"GH-FC",  base:176, target:120, actual:127.1, hc:121, note:"증설 6개월차"},
-  {id:"GJ", name:"광주센터",   sname:"광주", code:"GJ-FC",  base:164, target:118, actual:110.2, hc:98,  note:"수작업 비중 높음"},
-  {id:"DJ", name:"대전 HUB",   sname:"대전", code:"DJ-HUB", base:205, target:148, actual:156.8, hc:203, note:"허브 중계 병행"}
-];
-
-const CONSTRAINTS = [
-  {id:"mix",   group:"vol", gname:"물량",  name:"소량·다품종 오더 믹스", short:"오더믹스",  desc:"오더당 라인수 감소로 이동거리 대비 집품량이 줄어드는 손실"},
-  {id:"peak",  group:"vol", gname:"물량",  name:"물량 변동·피크 집중",   short:"피크변동",  desc:"시간대별 물량 편차로 인한 유휴·과부하 손실"},
-  {id:"new",   group:"hr",  gname:"인력",  name:"신규자 투입 비율",      short:"신규투입",  desc:"숙련 곡선 미달 인원의 생산성 갭"},
-  {id:"ojt",   group:"hr",  gname:"인력",  name:"교육·OJT 시간",         short:"교육OJT",   desc:"작업 외 교육·안전점검에 소요되는 시간"},
-  {id:"wait",  group:"ops", gname:"운영",  name:"대기·물량 공급 지연",   short:"대기지연",  desc:"전공정 지연으로 발생하는 집품 대기"},
-  {id:"stock", group:"ops", gname:"운영",  name:"결품·재작업",           short:"결품재작업",desc:"재고 부정확에 따른 재탐색·재집품"},
-  {id:"brk",   group:"ops", gname:"운영",  name:"휴게·간접업무",         short:"휴게간접",  desc:"법정 휴게 및 정리·보고 등 간접업무 시간"}
-];
-
-/* 각 제약률: 직전 단계까지 남은 생산성 대비 손실 비율(%) */
-const RATES = {
-  DT:{mix:4.5, peak:3.2, new:6.0, ojt:2.4, wait:5.5, stock:2.0, brk:6.5},
-  IC:{mix:6.2, peak:4.0, new:3.5, ojt:1.8, wait:7.0, stock:3.2, brk:6.2},
-  GH:{mix:3.4, peak:5.5, new:8.5, ojt:3.6, wait:4.2, stock:2.6, brk:6.8},
-  GJ:{mix:7.5, peak:2.8, new:4.2, ojt:2.0, wait:6.4, stock:4.5, brk:7.0},
-  DJ:{mix:2.8, peak:6.5, new:5.0, ojt:2.2, wait:3.6, stock:1.8, brk:6.4}
+/* ============ SAMPLE DATA ============ */
+const SAMPLE = {
+  source: "Sample data",
+  centers: [
+    {id:"DT", name:"Dongtan FC-1", sname:"Dongtan", code:"DT-CFC", base:212, target:165, actual:162.4, hc:186, note:"Automated sorter"},
+    {id:"IC", name:"Incheon FC",   sname:"Incheon", code:"IC-FC",  base:198, target:145, actual:138.9, hc:154, note:"Mixed fresh goods"},
+    {id:"GH", name:"Gimhae FC",    sname:"Gimhae",  code:"GH-FC",  base:176, target:120, actual:127.1, hc:121, note:"Expanded 6 months ago"},
+    {id:"GJ", name:"Gwangju FC",   sname:"Gwangju", code:"GJ-FC",  base:164, target:118, actual:110.2, hc:98,  note:"High manual share"},
+    {id:"DJ", name:"Daejeon Hub",  sname:"Daejeon", code:"DJ-HUB", base:205, target:148, actual:156.8, hc:203, note:"Hub transfer combined"}
+  ],
+  constraints: [
+    {id:"mix",   group:"vol", name:"Small multi-SKU order mix", short:"Order mix",   desc:"Fewer lines per order — less picked per meter traveled", rates:{DT:4.5, IC:6.2, GH:3.4, GJ:7.5, DJ:2.8}},
+    {id:"peak",  group:"vol", name:"Volume swings & peak load", short:"Peak swings", desc:"Idle and overload losses from hourly volume variance", rates:{DT:3.2, IC:4.0, GH:5.5, GJ:2.8, DJ:6.5}},
+    {id:"new",   group:"hr",  name:"New-hire ratio",            short:"New hires",   desc:"Productivity gap of staff still on the learning curve", rates:{DT:6.0, IC:3.5, GH:8.5, GJ:4.2, DJ:5.0}},
+    {id:"ojt",   group:"hr",  name:"Training & OJT hours",      short:"Training",    desc:"Hours spent on training and safety checks, not picking", rates:{DT:2.4, IC:1.8, GH:3.6, GJ:2.0, DJ:2.2}},
+    {id:"wait",  group:"ops", name:"Waiting & supply delays",   short:"Wait/delay",  desc:"Pick waiting caused by upstream process delays", rates:{DT:5.5, IC:7.0, GH:4.2, GJ:6.4, DJ:3.6}},
+    {id:"stock", group:"ops", name:"Stock-outs & rework",       short:"Stockout",    desc:"Re-search and re-pick driven by inventory inaccuracy", rates:{DT:2.0, IC:3.2, GH:2.6, GJ:4.5, DJ:1.8}},
+    {id:"brk",   group:"ops", name:"Breaks & indirect work",    short:"Breaks",      desc:"Statutory breaks plus tidy-up and reporting time", rates:{DT:6.5, IC:6.2, GH:6.8, GJ:7.0, DJ:6.4}}
+  ]
 };
 
-/* ============ STATE ============ */
-const state = { center:"DT", off:new Set() };
+/* ============ STATE & PERSISTENCE ============ */
+const LS_KEY = "opb-data-v1";
+const clone = o => JSON.parse(JSON.stringify(o));
+function loadDB(){
+  try{
+    const raw = localStorage.getItem(LS_KEY);
+    if(!raw) return null;
+    const d = JSON.parse(raw);
+    if(!d || !Array.isArray(d.centers) || !Array.isArray(d.constraints) || !d.centers.length || !d.constraints.length) return null;
+    return d;
+  }catch(e){ return null; }
+}
+function saveDB(){
+  try{ localStorage.setItem(LS_KEY, JSON.stringify(DB)); }catch(e){}
+}
+let DB = loadDB() || clone(SAMPLE);
+const state = { center: DB.centers[0].id, off: new Set() };
 
 /* ============ HELPERS ============ */
 const $ = s => document.querySelector(s);
-const n1 = v => v.toLocaleString("ko-KR",{minimumFractionDigits:1, maximumFractionDigits:1});
-const n0 = v => Math.round(v).toLocaleString("ko-KR");
+const n1 = v => v.toLocaleString("en-US",{minimumFractionDigits:1, maximumFractionDigits:1});
+const n0 = v => Math.round(v).toLocaleString("en-US");
 const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));
 const GCLASS = {vol:"b-vol", hr:"b-hr", ops:"b-ops"};
-const centerOf = id => CENTERS.find(c => c.id === id);
+const SW = {vol:"sw-vol", hr:"sw-hr", ops:"sw-ops"};
+const GNAME = {vol:"Volume", hr:"Workforce", ops:"Operations"};
+const centerOf = id => DB.centers.find(c => c.id === id);
+const hasAct = () => DB.centers.some(c => c.actual != null && !isNaN(c.actual));
+function toast(msg, ms){
+  const t = $("#toast"); t.textContent = msg; t.style.opacity = 1;
+  clearTimeout(toast._h); toast._h = setTimeout(()=>{ t.style.opacity = 0; }, ms||3200);
+}
 
 function compute(centerId, offSet){
   const c = centerOf(centerId);
   const steps = [];
   let running = c.base;
-  CONSTRAINTS.forEach(k => {
-    const rate = RATES[centerId][k.id] / 100;
+  DB.constraints.forEach(k => {
+    const rate = (k.rates[centerId] || 0) / 100;
     const active = !offSet.has(k.id);
     const loss = active ? running * rate : 0;
-    steps.push({ ...k, rate:RATES[centerId][k.id], active, from:running, to:running - loss, loss });
+    steps.push({ ...k, rate:(k.rates[centerId]||0), active, from:running, to:running - loss, loss });
     running -= loss;
   });
   const groups = {vol:0, hr:0, ops:0};
@@ -388,101 +472,347 @@ function compute(centerId, offSet){
   return { c, steps, groups, base:c.base, final:running, target:c.target,
            lossPct:(c.base - running) / c.base * 100 };
 }
-
-/* 전체 제약을 적용한 기본 시나리오 — 실적 비교의 기준이 되며 토글 영향을 받지 않음 */
-const FULL = {};
-CENTERS.forEach(c => { FULL[c.id] = compute(c.id, new Set()); });
-
-/* 제약별 대응력: 제약률이 낮을수록 잘 대응한 것 */
+function fullOf(centerId){ return compute(centerId, new Set()); }
 function byConstraint(){
-  return CONSTRAINTS.map(k => {
-    const rows = CENTERS.map(c => {
-      const st = FULL[c.id].steps.find(s => s.id === k.id);
-      return { c, rate:st.rate, loss:st.loss, pct:st.loss / FULL[c.id].base * 100 };
+  return DB.constraints.map(k => {
+    const rows = DB.centers.map(c => {
+      const f = fullOf(c.id);
+      const st = f.steps.find(s => s.id === k.id);
+      return { c, rate:st.rate, loss:st.loss, pct:st.loss / f.base * 100 };
     }).sort((a,b) => a.rate - b.rate);
     const avg = rows.reduce((a,x) => a + x.rate, 0) / rows.length;
     return { k, rows, best:rows[0], worst:rows[rows.length-1], avg };
   });
 }
-/* 실행력: 최종 예상 대비 실적 */
 function execRows(){
-  return CENTERS.map(c => {
-    const exp = FULL[c.id].final;
-    return { c, exp, act:c.actual, gap:c.actual - exp, ratio:c.actual / exp };
-  }).sort((a,b) => b.ratio - a.ratio);
+  return DB.centers.map(c => {
+    const exp = fullOf(c.id).final;
+    const act = (c.actual != null && !isNaN(c.actual)) ? c.actual : null;
+    return { c, exp, act, gap: act==null ? null : act - exp, ratio: act==null ? null : act / exp };
+  }).sort((a,b) => (b.ratio??-9) - (a.ratio??-9));
+}
+
+/* ============ XLSX PARSER (no libraries — native zip inflate) ============ */
+async function parseXlsx(buf){
+  const dv = new DataView(buf);
+  let eocd = -1;
+  const lo = Math.max(0, buf.byteLength - 22 - 65535);
+  for(let i = buf.byteLength - 22; i >= lo; i--){
+    if(dv.getUint32(i, true) === 0x06054b50){ eocd = i; break; }
+  }
+  if(eocd < 0) throw new Error("Not a valid .xlsx file (zip signature missing)");
+  const count = dv.getUint16(eocd + 10, true);
+  let off = dv.getUint32(eocd + 16, true);
+  const entries = {};
+  const td = new TextDecoder();
+  for(let n = 0; n < count; n++){
+    if(dv.getUint32(off, true) !== 0x02014b50) break;
+    const method = dv.getUint16(off + 10, true);
+    const csize  = dv.getUint32(off + 20, true);
+    const nlen = dv.getUint16(off + 28, true), elen = dv.getUint16(off + 30, true), clen = dv.getUint16(off + 32, true);
+    const lho  = dv.getUint32(off + 42, true);
+    const name = td.decode(new Uint8Array(buf, off + 46, nlen));
+    entries[name] = {method, csize, lho};
+    off += 46 + nlen + elen + clen;
+  }
+  async function readEntry(name){
+    const e = entries[name]; if(!e) return null;
+    const nlen = dv.getUint16(e.lho + 26, true), elen = dv.getUint16(e.lho + 28, true);
+    const start = e.lho + 30 + nlen + elen;
+    const data = buf.slice(start, start + e.csize);
+    if(e.method === 0) return td.decode(data);
+    const ds = new DecompressionStream("deflate-raw");
+    const stream = new Blob([data]).stream().pipeThrough(ds);
+    return await new Response(stream).text();
+  }
+  const xml = s => new DOMParser().parseFromString(s, "application/xml");
+
+  // shared strings
+  const sst = [];
+  const sstRaw = await readEntry("xl/sharedStrings.xml");
+  if(sstRaw){
+    const doc = xml(sstRaw);
+    for(const si of doc.getElementsByTagName("si")){
+      let txt = "";
+      for(const t of si.getElementsByTagName("t")) txt += t.textContent;
+      sst.push(txt);
+    }
+  }
+  // workbook sheets → file paths
+  const wbDoc = xml(await readEntry("xl/workbook.xml"));
+  const relDoc = xml(await readEntry("xl/_rels/workbook.xml.rels"));
+  const rels = {};
+  for(const r of relDoc.getElementsByTagName("Relationship")){
+    rels[r.getAttribute("Id")] = r.getAttribute("Target").replace(/^\//,"").replace(/^(?!xl\/)/, "xl/");
+  }
+  const colIdx = ref => {
+    let n = 0, i = 0;
+    while(i < ref.length && /[A-Z]/.test(ref[i])){ n = n*26 + (ref.charCodeAt(i)-64); i++; }
+    return {col:n, row:parseInt(ref.slice(i),10)};
+  };
+  const sheets = [];
+  for(const sh of wbDoc.getElementsByTagName("sheet")){
+    const rid = sh.getAttribute("r:id") || sh.getAttributeNS("http://schemas.openxmlformats.org/officeDocument/2006/relationships","id");
+    const path = rels[rid]; if(!path || !entries[path]) continue;
+    const doc = xml(await readEntry(path));
+    const grid = {}; let maxR = 0, maxC = 0;
+    for(const cel of doc.getElementsByTagName("c")){
+      const {col, row} = colIdx(cel.getAttribute("r"));
+      const t = cel.getAttribute("t");
+      let v = null;
+      if(t === "inlineStr"){
+        const is = cel.getElementsByTagName("is")[0];
+        v = is ? is.textContent : "";
+      } else {
+        const vEl = cel.getElementsByTagName("v")[0];
+        if(vEl){
+          v = t === "s" ? sst[parseInt(vEl.textContent,10)] :
+              t === "str" ? vEl.textContent :
+              t === "b" ? (vEl.textContent === "1" ? 1 : 0) :
+              parseFloat(vEl.textContent);
+        }
+      }
+      if(v !== null && v !== ""){ grid[row + ":" + col] = v; maxR = Math.max(maxR,row); maxC = Math.max(maxC,col); }
+    }
+    sheets.push({name: sh.getAttribute("name"), grid, maxR, maxC});
+  }
+  return sheets;
+}
+
+/* header synonyms: EN + KO */
+const H = {
+  id:      ["id"],
+  name:    ["센터명","name","center","center name"],
+  base:    ["기준 생산성","기준","base","baseline","standard"],
+  target:  ["목표","target","goal"],
+  actual:  ["실적","actual","result"],
+  hc:      ["인원","headcount","hc","people"],
+  note:    ["비고","note","remark","memo"],
+  group:   ["그룹","group","category"],
+  cname:   ["제약명","제약","constraint","constraint name","name"],
+  active:  ["적용","active","on","enabled","apply"]
+};
+const normH = v => String(v).trim().toLowerCase();
+const matchH = (v, keys) => keys.includes(normH(v));
+const G_MAP = {"물량":"vol","volume":"vol","vol":"vol",
+               "인력":"hr","workforce":"hr","hr":"hr","people":"hr","labor":"hr","labour":"hr",
+               "운영":"ops","operations":"ops","ops":"ops","operation":"ops"};
+
+function extractData(sheets){
+  let centers = null, cons = null;
+  for(const sh of sheets){
+    const cell = (r,c) => sh.grid[r + ":" + c];
+    for(let r = 1; r <= sh.maxR; r++){
+      for(let c = 1; c <= sh.maxC; c++){
+        if(normH(cell(r,c) ?? "") !== "id") continue;
+        // classify header row
+        const hdrs = {};
+        for(let cc = c; cc <= sh.maxC; cc++){
+          const h = cell(r, cc); if(h == null) continue;
+          hdrs[cc] = String(h).trim();
+        }
+        const vals = Object.values(hdrs).map(normH);
+        const isCenter = vals.some(v => H.base.includes(v));
+        const isCon = vals.some(v => H.active.includes(v));
+        if(isCenter && !centers){
+          const map = {};
+          for(const [cc,h] of Object.entries(hdrs)){
+            for(const key of ["name","base","target","actual","hc","note"])
+              if(matchH(h, H[key])) map[key] = +cc;
+          }
+          centers = [];
+          for(let rr = r+1; rr <= sh.maxR; rr++){
+            const idv = cell(rr, c);
+            if(idv == null || String(idv).trim() === "") break;
+            const id = String(idv).trim();
+            const num = k => { const v = map[k]!=null ? cell(rr, map[k]) : null; return (v==null||v==="") ? null : parseFloat(v); };
+            const base = num("base");
+            if(base == null || isNaN(base)) continue;
+            const name = map.name!=null ? String(cell(rr, map.name) ?? id) : id;
+            centers.push({ id, name, sname: name.split(/[\s(]/)[0] || id, code: id,
+              base, target: num("target") ?? Math.round(base*0.75),
+              actual: num("actual"), hc: num("hc") ?? 100,
+              note: map.note!=null ? String(cell(rr, map.note) ?? "") : "" });
+          }
+          if(!centers.length) centers = null;
+        } else if(isCon && centers && !cons){
+          const map = {}; const rateCols = {};
+          for(const [cc,h] of Object.entries(hdrs)){
+            for(const key of ["group","cname","active"])
+              if(matchH(h, H[key]) && map[key]==null) map[key] = +cc;
+            const cid = centers.find(x => x.id.toLowerCase() === normH(h));
+            if(cid) rateCols[cid.id] = +cc;
+          }
+          if(Object.keys(rateCols).length){
+            cons = [];
+            for(let rr = r+1; rr <= sh.maxR; rr++){
+              const idv = cell(rr, c);
+              if(idv == null || String(idv).trim() === "") break;
+              // stop at note/footer rows: ID text present but every rate cell empty
+              const anyRateCell = Object.values(rateCols).some(cc => cell(rr, cc) != null && cell(rr, cc) !== "");
+              if(!anyRateCell) break;
+              const rates = {}; const rawVals = [];
+              for(const [cid, cc] of Object.entries(rateCols)){
+                const v = parseFloat(cell(rr, cc)); rates[cid] = isNaN(v) ? 0 : v; rawVals.push(rates[cid]);
+              }
+              const name = map.cname!=null ? String(cell(rr, map.cname) ?? idv) : String(idv);
+              const grpRaw = map.group!=null ? normH(cell(rr, map.group) ?? "") : "";
+              cons.push({ id: String(idv).trim(), group: G_MAP[grpRaw] || "ops",
+                name, short: name.length > 14 ? name.slice(0,13) + "…" : name, desc: "",
+                active: map.active!=null ? (parseFloat(cell(rr, map.active)) !== 0) : true,
+                rates, _raw: rawVals });
+            }
+            if(cons.length){
+              // fraction heuristic: if every rate < 1, values are fractions (0.045 → 4.5%)
+              const all = cons.flatMap(k => k._raw).filter(v => v > 0);
+              if(all.length && all.every(v => v < 1))
+                cons.forEach(k => { for(const cid in k.rates) k.rates[cid] = k.rates[cid] * 100; });
+              cons.forEach(k => delete k._raw);
+            } else cons = null;
+          }
+        }
+      }
+    }
+  }
+  if(!centers) throw new Error("No center table found — need a header row with ID + Base(기준 생산성)");
+  if(!cons) throw new Error("No constraint table found — need ID + Active(적용) + one rate column per center ID");
+  return {centers, constraints: cons};
 }
 
 /* ============ TOOLTIP ============ */
 const tip = $("#tip");
-function bindTip(root){
-  root.addEventListener("mousemove", e => {
-    const t = e.target.closest("[data-tip]");
-    if(!t){ tip.style.opacity = 0; return; }
-    tip.innerHTML = t.getAttribute("data-tip");
-    tip.style.opacity = 1;
-    const r = tip.getBoundingClientRect();
-    let x = e.clientX + 14, y = e.clientY + 16;
-    if(x + r.width > window.innerWidth - 8) x = e.clientX - r.width - 14;
-    if(y + r.height > window.innerHeight - 8) y = e.clientY - r.height - 14;
-    tip.style.left = x + "px"; tip.style.top = y + "px";
-  });
-  root.addEventListener("mouseleave", () => { tip.style.opacity = 0; });
-}
-bindTip(document.body);
+document.body.addEventListener("mousemove", e => {
+  const t = e.target.closest("[data-tip]");
+  if(!t){ tip.style.opacity = 0; return; }
+  tip.innerHTML = t.getAttribute("data-tip");
+  tip.style.opacity = 1;
+  const r = tip.getBoundingClientRect();
+  let x = e.clientX + 14, y = e.clientY + 16;
+  if(x + r.width > window.innerWidth - 8) x = e.clientX - r.width - 14;
+  if(y + r.height > window.innerHeight - 8) y = e.clientY - r.height - 14;
+  tip.style.left = x + "px"; tip.style.top = y + "px";
+});
+document.body.addEventListener("mouseleave", () => { tip.style.opacity = 0; });
 
 /* ============ CONTROLS ============ */
 function renderChips(){
-  $("#centerChips").innerHTML = CENTERS.map(c =>
-    `<button class="chip" type="button" role="radio" aria-pressed="${c.id===state.center}" data-center="${c.id}">${esc(c.name)}</button>`
+  $("#centerChips").innerHTML = DB.centers.map(c =>
+    `<button class="chip" type="button" role="radio" aria-pressed="${c.id===state.center}" data-center="${esc(c.id)}">${esc(c.name)}</button>`
   ).join("");
-  $("#conChips").innerHTML = CONSTRAINTS.map(k =>
-    `<button class="chip g-${k.group}" type="button" aria-checked="${!state.off.has(k.id)}" data-con="${k.id}"
-      data-tip="<b>${esc(k.name)}</b>${esc(k.desc)}"><span class="dot"></span>${esc(k.short)}</button>`
+  $("#conChips").innerHTML = DB.constraints.map(k =>
+    `<button class="chip g-${k.group}" type="button" aria-checked="${!state.off.has(k.id)}" data-con="${esc(k.id)}"
+      data-tip="<b>${esc(k.name)}</b>${esc(k.desc || GNAME[k.group] + " constraint")}"><span class="dot"></span>${esc(k.short)}</button>`
+  ).join("") +
+  `<button class="chip add" type="button" id="addChip">＋ Add constraint</button>`;
+  $("#srcLabel").textContent = DB.source || "Sample data";
+}
+function renderForm(){
+  $("#fRates").innerHTML = DB.centers.map(c =>
+    `<div class="f-field"><label>${esc(c.sname.toUpperCase())}</label>
+     <input type="number" step="0.1" min="0" max="60" data-rate="${esc(c.id)}" placeholder="e.g. 3.0"></div>`
+  ).join("");
+  $("#mngList").innerHTML = DB.constraints.map(k =>
+    `<div class="mng-row"><i class="dot" style="width:8px;height:8px;border-radius:2px;background:var(--${k.group==='vol'?'vol':k.group==='hr'?'hr':'ops'})"></i>
+     <span style="flex:1">${esc(k.name)} <span style="color:var(--muted)">· ${GNAME[k.group]}</span></span>
+     <button class="x" type="button" data-del="${esc(k.id)}">Delete</button></div>`
   ).join("");
 }
+
 document.addEventListener("click", e => {
   const cb = e.target.closest("[data-center]");
   if(cb){ state.center = cb.dataset.center; render(); return; }
   const kb = e.target.closest("[data-con]");
   if(kb){ const id = kb.dataset.con; state.off.has(id) ? state.off.delete(id) : state.off.add(id); render(); return; }
-  if(e.target.id === "resetBtn"){ state.off.clear(); render(); }
+  const del = e.target.closest("[data-del]");
+  if(del){
+    const id = del.dataset.del;
+    if(DB.constraints.length <= 1){ toast("At least one constraint is required."); return; }
+    DB.constraints = DB.constraints.filter(k => k.id !== id);
+    state.off.delete(id); DB.source = (DB.source||"Sample data").replace(/ \(edited\)$/,"") + " (edited)";
+    saveDB(); render(); renderForm(); return;
+  }
+  if(e.target.id === "resetTogglesBtn"){ state.off.clear(); render(); return; }
+  if(e.target.id === "addChip"){ $("#addForm").classList.add("open"); renderForm(); $("#fName").focus(); return; }
+  if(e.target.id === "fCancelBtn"){ $("#addForm").classList.remove("open"); return; }
+  if(e.target.id === "uploadBtn"){ $("#fileInput").click(); return; }
+  if(e.target.id === "resetDataBtn"){
+    DB = clone(SAMPLE); state.center = DB.centers[0].id; state.off.clear();
+    try{ localStorage.removeItem(LS_KEY); }catch(err){}
+    render(); renderForm(); toast("Reset to sample data."); return;
+  }
+  if(e.target.id === "fAddBtn"){
+    const name = $("#fName").value.trim();
+    if(!name){ $("#fMsg").textContent = "Name is required."; return; }
+    const id = "c_" + name.toLowerCase().replace(/[^a-z0-9]+/g,"_").slice(0,20) + "_" + (DB.constraints.length+1);
+    const rates = {}; let any = false;
+    document.querySelectorAll("[data-rate]").forEach(inp => {
+      const v = parseFloat(inp.value);
+      rates[inp.dataset.rate] = isNaN(v) ? 0 : Math.min(60, Math.max(0, v));
+      if(!isNaN(v) && v > 0) any = true;
+    });
+    if(!any){ $("#fMsg").textContent = "Enter a loss rate (%) for at least one center."; return; }
+    DB.constraints.push({ id, group: $("#fGroup").value, name,
+      short: name.length > 14 ? name.slice(0,13) + "…" : name,
+      desc: $("#fDesc").value.trim(), rates, custom: true });
+    DB.source = (DB.source||"Sample data").replace(/ \(edited\)$/,"") + " (edited)";
+    saveDB();
+    $("#fName").value = ""; $("#fDesc").value = ""; $("#fMsg").textContent = "";
+    document.querySelectorAll("[data-rate]").forEach(i => i.value = "");
+    render(); renderForm();
+    toast(`Constraint "${name}" added.`);
+    return;
+  }
+});
+
+$("#fileInput").addEventListener("change", async e => {
+  const f = e.target.files[0]; e.target.value = "";
+  if(!f) return;
+  try{
+    toast("Reading " + f.name + " …");
+    const buf = await f.arrayBuffer();
+    const sheets = await parseXlsx(buf);
+    const data = extractData(sheets);
+    DB = { source: f.name, centers: data.centers,
+           constraints: data.constraints.map(k => { const {active, ...rest} = k; return rest; }) };
+    state.center = DB.centers[0].id;
+    state.off = new Set(data.constraints.filter(k => k.active === false).map(k => k.id));
+    saveDB(); render(); renderForm();
+    toast(`Loaded ${DB.centers.length} centers · ${DB.constraints.length} constraints from ${f.name}`);
+  }catch(err){
+    toast("Upload failed: " + err.message, 5200);
+  }
 });
 
 /* ============ KPI ============ */
 function renderKpis(){
-  const all = CENTERS.map(c => compute(c.id, state.off));
-  const allFull = CENTERS.map(c => compute(c.id, new Set()));
-  const wBase = all.reduce((a,r) => a + r.base * r.c.hc, 0) / all.reduce((a,r) => a + r.c.hc, 0);
-  const wFinal = all.reduce((a,r) => a + r.final * r.c.hc, 0) / all.reduce((a,r) => a + r.c.hc, 0);
-  const wFull = allFull.reduce((a,r) => a + r.final * r.c.hc, 0) / allFull.reduce((a,r) => a + r.c.hc, 0);
+  const all = DB.centers.map(c => compute(c.id, state.off));
+  const hcSum = DB.centers.reduce((a,c) => a + (c.hc||0), 0) || 1;
+  const wAvg = f => DB.centers.reduce((a,c,i) => a + f(all[i],c) * (c.hc||0), 0) / hcSum;
+  const wBase = wAvg(r => r.base), wFinal = wAvg(r => r.final);
+  const wFull = DB.centers.reduce((a,c) => a + fullOf(c.id).final * (c.hc||0), 0) / hcSum;
+  const gain = wFinal - wFull;
   const met = all.filter(r => r.final >= r.target).length;
-
-  // 최대 손실 제약 (전 센터 합산, 적용 중인 것 기준)
   const sums = {};
   all.forEach(r => r.steps.forEach(s => { if(s.active) sums[s.id] = (sums[s.id]||0) + s.loss; }));
   let topId = null, topVal = -1;
   Object.keys(sums).forEach(k => { if(sums[k] > topVal){ topVal = sums[k]; topId = k; } });
-  const top = CONSTRAINTS.find(k => k.id === topId);
-  const totalLoss = all.reduce((a,r) => a + (r.base - r.final), 0);
-
-  const gain = wFinal - wFull;
-  const hcSum = CENTERS.reduce((a,c) => a + c.hc, 0);
-  const wAct = CENTERS.reduce((a,c) => a + c.actual * c.hc, 0) / hcSum;
-  const actGap = wAct - wFull;
-  const ex = execRows()[0];
+  const top = DB.constraints.find(k => k.id === topId);
+  const HA = hasAct();
+  const wAct = HA ? DB.centers.reduce((a,c) => a + (c.actual||0) * (c.hc||0), 0) / hcSum : null;
+  const ex = HA ? execRows()[0] : null;
 
   const kpis = [
-    { k:"가중 평균 기준 생산성", v:n1(wBase), u:"UPH", m:`5개 센터 · 인원 가중 (총 ${n0(hcSum)}명)` },
-    { k:"가중 평균 최종 예상", v:n1(wFinal), u:"UPH",
-      m:`기준 대비 <span class="tag down">−${n1((wBase-wFinal)/wBase*100)}%</span>` },
-    { k:"가중 평균 실적", v:n1(wAct), u:"UPH",
-      m:`기본 시나리오 예상 대비 <span class="tag ${actGap>=0?"up":"down"}">${actGap>=0?"+":"−"}${n1(Math.abs(actGap))}</span>` },
-    { k:"제약 해제 시 회복분", v:(gain>0?"+":"")+n1(gain), u:"UPH",
-      m: state.off.size ? `해제 ${state.off.size}개 · 전체 적용 대비` : "제약을 해제하면 회복 가능분이 표시됩니다" },
-    { k:"최대 손실 제약", v: top ? top.short : "—", u:"",
-      m: top ? `합산 손실 <span class="num">${n1(topVal)}</span> UPH · ${top.gname}` : "적용 중인 제약 없음", small:true },
-    { k:"실행력 1위 센터", v: ex.c.sname, u:"",
-      m:`예상 대비 <span class="tag ${ex.gap>=0?"up":"down"}">${ex.gap>=0?"+":"−"}${n1(Math.abs(ex.gap))} UPH</span> · 목표 달성 ${met}/${CENTERS.length}`, small:true }
+    { k:"Weighted avg baseline", v:n1(wBase), u:"UPH", m:`${DB.centers.length} centers · headcount-weighted (${n0(hcSum)} people)` },
+    { k:"Weighted avg final expected", v:n1(wFinal), u:"UPH",
+      m:`vs baseline <span class="tag down">−${n1((wBase-wFinal)/wBase*100)}%</span>` },
+    { k:"Weighted avg actual", v: HA ? n1(wAct) : "—", u: HA ? "UPH" : "",
+      m: HA ? `vs full-constraint model <span class="tag ${wAct-wFull>=0?"up":"down"}">${wAct-wFull>=0?"+":"−"}${n1(Math.abs(wAct-wFull))}</span>` : "No actuals in data" },
+    { k:"Recovery if lifted", v:(gain>0?"+":"")+n1(gain), u:"UPH",
+      m: state.off.size ? `${state.off.size} lifted · vs all applied` : "Toggle a constraint off to see recovery" },
+    { k:"Largest loss driver", v: top ? top.short : "—", u:"",
+      m: top ? `Combined loss <span class="num">${n1(topVal)}</span> UPH · ${GNAME[top.group]}` : "No active constraints", small:true },
+    { k:"Top execution center", v: ex ? ex.c.sname : "—", u:"",
+      m: ex ? `vs model <span class="tag ${ex.gap>=0?"up":"down"}">${ex.gap>=0?"+":"−"}${n1(Math.abs(ex.gap))} UPH</span> · targets met ${met}/${DB.centers.length}` : `Targets met ${met}/${DB.centers.length}`, small:true }
   ];
   $("#kpis").innerHTML = kpis.map(x =>
     `<div class="kpi"><div class="k">${x.k}</div>
@@ -494,16 +824,17 @@ function renderKpis(){
 /* ============ BRIDGE ============ */
 function renderBridge(){
   const r = compute(state.center, state.off);
+  const HA = r.c.actual != null && !isNaN(r.c.actual);
   const active = r.steps.filter(s => s.active);
-  const rows = [{type:"base"}].concat(active.map(s => ({type:"step", s}))).concat([{type:"final"}, {type:"actual"}]);
+  const rows = [{type:"base"}].concat(active.map(s => ({type:"step", s}))).concat(
+    HA ? [{type:"final"},{type:"actual"}] : [{type:"final"}]);
 
-  const W = 980, L = 236, R = 928, rowH = 40, top = 44;
+  const W = 980, L = 250, R = 928, rowH = 40, top = 44;
   const H = top + rows.length * rowH + 46;
   const xmax = Math.ceil(r.base / 20) * 20;
   const x = v => L + (v / xmax) * (R - L);
 
   let s = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" style="width:100%;height:auto">`;
-  // grid + ticks
   for(let t = 0; t <= xmax; t += xmax/5){
     s += `<line class="grid-line" x1="${x(t).toFixed(1)}" y1="${top-14}" x2="${x(t).toFixed(1)}" y2="${top + rows.length*rowH + 4}"/>`;
     s += `<text class="tick val" x="${x(t).toFixed(1)}" y="${top-20}" text-anchor="middle">${n0(t)}</text>`;
@@ -515,59 +846,60 @@ function renderBridge(){
     const y = top + i * rowH, bh = 22, by = y + (rowH - bh)/2;
     if(row.type === "base"){
       const w = x(r.base) - x(0);
-      s += `<text class="row-label" x="${L-14}" y="${y+rowH/2+1}" text-anchor="end" style="font-weight:600;fill:var(--ink)">기준 생산성</text>`;
-      s += `<text class="row-sub" x="${L-14}" y="${y+rowH/2+15}" text-anchor="end">설계 표준 · ${esc(r.c.code)}</text>`;
+      s += `<text class="row-label" x="${L-14}" y="${y+rowH/2+1}" text-anchor="end" style="font-weight:600;fill:var(--ink)">Baseline productivity</text>`;
+      s += `<text class="row-sub" x="${L-14}" y="${y+rowH/2+15}" text-anchor="end">Engineered standard · ${esc(r.c.code)}</text>`;
       s += `<rect class="bar-anchor-2" x="${x(0)}" y="${by}" width="${w.toFixed(1)}" height="${bh}" rx="4"
-             data-tip="<b>기준 생산성</b><span class='tv'>${n1(r.base)}</span> UPH"/>`;
+             data-tip="<b>Baseline</b><span class='tv'>${n1(r.base)}</span> UPH"/>`;
       s += `<text class="val" x="${(x(r.base)+10).toFixed(1)}" y="${by+16}">${n1(r.base)}</text>`;
       prevEndX = x(r.base);
     } else if(row.type === "step"){
       const st = row.s;
       const x1 = x(st.to), x2 = x(st.from), w = Math.max(1.5, x2 - x1);
       s += `<text class="row-label" x="${L-14}" y="${y+rowH/2+1}" text-anchor="end">${esc(st.name)}</text>`;
-      s += `<text class="row-sub" x="${L-14}" y="${y+rowH/2+15}" text-anchor="end">${esc(st.gname)} 제약 · −${n1(st.rate)}%</text>`;
+      s += `<text class="row-sub" x="${L-14}" y="${y+rowH/2+15}" text-anchor="end">${GNAME[st.group]} · −${n1(st.rate)}%</text>`;
       if(prevEndX !== null) s += `<line class="connector" x1="${prevEndX.toFixed(1)}" y1="${y-(rowH-bh)/2}" x2="${x2.toFixed(1)}" y2="${by}"/>`;
       s += `<rect class="${GCLASS[st.group]}" x="${x1.toFixed(1)}" y="${by}" width="${w.toFixed(1)}" height="${bh}" rx="4"
-             data-tip="<b>${esc(st.name)}</b>${esc(st.desc)}<br>손실 <span class='tv'>−${n1(st.loss)}</span> UPH (−${n1(st.rate)}%)<br>잔여 <span class='tv'>${n1(st.to)}</span> UPH"/>`;
+             data-tip="<b>${esc(st.name)}</b>${esc(st.desc || GNAME[st.group] + " constraint")}<br>Loss <span class='tv'>−${n1(st.loss)}</span> UPH (−${n1(st.rate)}%)<br>Remaining <span class='tv'>${n1(st.to)}</span> UPH"/>`;
       s += `<text class="val-neg" x="${(x1-10).toFixed(1)}" y="${by+16}" text-anchor="end">−${n1(st.loss)}</text>`;
       prevEndX = x1;
     } else if(row.type === "final"){
       const w = x(r.final) - x(0);
-      s += `<text class="row-label" x="${L-14}" y="${y+rowH/2+1}" text-anchor="end" style="font-weight:600;fill:var(--ink)">최종 예상 생산성</text>`;
-      s += `<text class="row-sub" x="${L-14}" y="${y+rowH/2+15}" text-anchor="end">기준 대비 −${n1(r.lossPct)}%</text>`;
+      s += `<text class="row-label" x="${L-14}" y="${y+rowH/2+1}" text-anchor="end" style="font-weight:600;fill:var(--ink)">Final expected</text>`;
+      s += `<text class="row-sub" x="${L-14}" y="${y+rowH/2+15}" text-anchor="end">−${n1(r.lossPct)}% vs baseline</text>`;
       if(prevEndX !== null) s += `<line class="connector" x1="${prevEndX.toFixed(1)}" y1="${y-(rowH-bh)/2}" x2="${x(r.final).toFixed(1)}" y2="${by}"/>`;
       s += `<rect class="bar-anchor" x="${x(0)}" y="${by}" width="${w.toFixed(1)}" height="${bh}" rx="4"
-             data-tip="<b>최종 예상 생산성</b><span class='tv'>${n1(r.final)}</span> UPH<br>목표 <span class='tv'>${n1(r.target)}</span> UPH"/>`;
+             data-tip="<b>Final expected</b><span class='tv'>${n1(r.final)}</span> UPH<br>Target <span class='tv'>${n1(r.target)}</span> UPH"/>`;
       s += `<text class="val" x="${(x(r.final)+10).toFixed(1)}" y="${by+16}">${n1(r.final)}</text>`;
       const tx = x(r.target), yb = top + rows.length*rowH + 4;
       s += `<line class="target" x1="${tx.toFixed(1)}" y1="${by-9}" x2="${tx.toFixed(1)}" y2="${yb}"/>`;
-      s += `<text class="target-lab" x="${tx.toFixed(1)}" y="${yb+18}" text-anchor="middle">목표 ${n0(r.target)}</text>`;
+      s += `<text class="target-lab" x="${tx.toFixed(1)}" y="${yb+18}" text-anchor="middle">Target ${n0(r.target)}</text>`;
     } else {
       const act = r.c.actual, gap = act - r.final;
       const w = x(act) - x(0);
-      s += `<text class="row-label" x="${L-14}" y="${y+rowH/2+1}" text-anchor="end" style="font-weight:600;fill:var(--ink)">실제 실적</text>`;
-      s += `<text class="row-sub" x="${L-14}" y="${y+rowH/2+15}" text-anchor="end">2026-08 확정 실적</text>`;
+      s += `<text class="row-label" x="${L-14}" y="${y+rowH/2+1}" text-anchor="end" style="font-weight:600;fill:var(--ink)">Actual</text>`;
+      s += `<text class="row-sub" x="${L-14}" y="${y+rowH/2+15}" text-anchor="end">Closed actuals, 2026-08</text>`;
       s += `<rect class="bar-actual" x="${(x(0)+0.75).toFixed(1)}" y="${(by+0.75).toFixed(1)}" width="${(w-1.5).toFixed(1)}" height="${bh-1.5}" rx="4"
-             data-tip="<b>실제 실적</b><span class='tv'>${n1(act)}</span> UPH<br>현재 시나리오 예상 대비 <span class='tv'>${gap>=0?"+":"−"}${n1(Math.abs(gap))}</span> UPH"/>`;
+             data-tip="<b>Actual</b><span class='tv'>${n1(act)}</span> UPH<br>vs current scenario <span class='tv'>${gap>=0?"+":"−"}${n1(Math.abs(gap))}</span> UPH"/>`;
       s += `<text class="val" x="${(x(act)+10).toFixed(1)}" y="${by+16}">${n1(act)}</text>`;
       s += `<text class="val" x="${(x(act)+10+String(n1(act)).length*8.4).toFixed(1)}" y="${by+16}" style="font-size:11.5px;fill:var(--${gap>=0?"good":"crit"})">${gap>=0?"▲":"▼"}${n1(Math.abs(gap))}</text>`;
     }
   });
   s += `<line class="axis-line" x1="${L}" y1="${top + rows.length*rowH + 4}" x2="${R}" y2="${top + rows.length*rowH + 4}"/>`;
   s += `</svg>`;
-  $("#bridge").outerHTML = s.replace("<svg ", `<svg id="bridge" class="chart" role="img" aria-label="${esc(r.c.name)} 생산성 브릿지" `);
+  $("#bridge").outerHTML = s.replace("<svg ", `<svg id="bridge" class="chart" role="img" aria-label="Productivity bridge for ${esc(r.c.name)}" `);
 
   const diff = r.final - r.target;
-  $("#bridgeTitle").textContent = `${r.c.name} — 생산성 브릿지`;
+  $("#bridgeTitle").textContent = `${r.c.name} — productivity bridge`;
   $("#bridgeSummary").innerHTML =
-    `기준 <b>${n1(r.base)}</b> → 최종 <b>${n1(r.final)}</b> UPH &nbsp;·&nbsp; 목표 대비 ` +
+    `Baseline <b>${n1(r.base)}</b> → Final <b>${n1(r.final)}</b> UPH &nbsp;·&nbsp; vs target ` +
     `<span class="tag ${diff>=0?"up":"down"}">${diff>=0?"+":"−"}${n1(Math.abs(diff))}</span>`;
 }
 
 /* ============ COMPARE ============ */
 function renderCompare(){
-  const rows = CENTERS.map(c => compute(c.id, state.off));
-  const W = 620, L = 92, R = 496, rowH = 46, top = 34;
+  const rows = DB.centers.map(c => compute(c.id, state.off));
+  const HA = hasAct();
+  const W = 620, L = 100, R = 496, rowH = 46, top = 34;
   const H = top + rows.length * rowH + 30;
   const xmax = Math.ceil(Math.max(...rows.map(r => r.base)) / 20) * 20;
   const x = v => L + (v / xmax) * (R - L);
@@ -580,12 +912,12 @@ function renderCompare(){
   rows.forEach((r, i) => {
     const y = top + i*rowH, bh = 20, by = y + 8;
     const sel = r.c.id === state.center;
-    s += `<text class="row-label" x="${L-10}" y="${by+15}" text-anchor="end" ${sel?'style="fill:var(--ink);font-weight:600"':""}>${esc(r.c.name)}</text>`;
+    s += `<text class="row-label" x="${L-10}" y="${by+15}" text-anchor="end" ${sel?'style="fill:var(--ink);font-weight:600"':""}>${esc(r.c.sname)}</text>`;
     const segs = [
-      {w:r.final, cls:"bar-anchor", lab:"최종 예상"},
-      {w:r.groups.vol, cls:"b-vol", lab:"물량 손실"},
-      {w:r.groups.hr, cls:"b-hr", lab:"인력 손실"},
-      {w:r.groups.ops, cls:"b-ops", lab:"운영 손실"}
+      {w:r.final, cls:"bar-anchor", lab:"Final expected"},
+      {w:r.groups.vol, cls:"b-vol", lab:"Volume loss"},
+      {w:r.groups.hr, cls:"b-hr", lab:"Workforce loss"},
+      {w:r.groups.ops, cls:"b-ops", lab:"Operations loss"}
     ];
     let acc = 0;
     segs.forEach((sg, j) => {
@@ -598,69 +930,76 @@ function renderCompare(){
     });
     const tx = x(r.target);
     s += `<line class="target" x1="${tx.toFixed(1)}" y1="${by-5}" x2="${tx.toFixed(1)}" y2="${by+bh+5}"/>`;
-    const ax = x(r.c.actual), gap = r.c.actual - FULL[r.c.id].final;
-    s += `<line class="actual-mark" x1="${ax.toFixed(1)}" y1="${by-4}" x2="${ax.toFixed(1)}" y2="${by+bh+4}"/>`;
-    s += `<rect class="hit" x="${(ax-6).toFixed(1)}" y="${by-6}" width="12" height="${bh+12}"
-           data-tip="<b>${esc(r.c.name)} · 실제 실적</b><span class='tv'>${n1(r.c.actual)}</span> UPH<br>기본 시나리오 예상 <span class='tv'>${n1(FULL[r.c.id].final)}</span> UPH<br>실행 갭 <span class='tv'>${gap>=0?"+":"−"}${n1(Math.abs(gap))}</span>"/>`;
-    s += `<text class="val" x="${(x(r.base)+8).toFixed(1)}" y="${by+15}" style="font-size:11.5px">${n1(r.final)}</text>`;
-    s += `<text class="val" x="${(x(r.base)+56).toFixed(1)}" y="${by+15}" style="font-size:11px;fill:var(--${gap>=0?"good":"crit"})">${gap>=0?"▲":"▼"}${n1(Math.abs(gap))}</text>`;
+    if(HA && r.c.actual != null){
+      const ax = x(r.c.actual), gap = r.c.actual - fullOf(r.c.id).final;
+      s += `<line class="actual-mark" x1="${ax.toFixed(1)}" y1="${by-4}" x2="${ax.toFixed(1)}" y2="${by+bh+4}"/>`;
+      s += `<rect class="hit" x="${(ax-6).toFixed(1)}" y="${by-6}" width="12" height="${bh+12}"
+             data-tip="<b>${esc(r.c.name)} · Actual</b><span class='tv'>${n1(r.c.actual)}</span> UPH<br>Full-constraint model <span class='tv'>${n1(fullOf(r.c.id).final)}</span> UPH<br>Execution gap <span class='tv'>${gap>=0?"+":"−"}${n1(Math.abs(gap))}</span>"/>`;
+      s += `<text class="val" x="${(x(r.base)+8).toFixed(1)}" y="${by+15}" style="font-size:11.5px">${n1(r.final)}</text>`;
+      s += `<text class="val" x="${(x(r.base)+56).toFixed(1)}" y="${by+15}" style="font-size:11px;fill:var(--${gap>=0?"good":"crit"})">${gap>=0?"▲":"▼"}${n1(Math.abs(gap))}</text>`;
+    } else {
+      s += `<text class="val" x="${(x(r.base)+8).toFixed(1)}" y="${by+15}" style="font-size:11.5px">${n1(r.final)}</text>`;
+    }
   });
   s += `<line class="axis-line" x1="${L}" y1="${top+rows.length*rowH}" x2="${R}" y2="${top+rows.length*rowH}"/></svg>`;
-  $("#compare").outerHTML = s.replace("<svg ", `<svg id="compare" class="chart" role="img" aria-label="센터별 기준 대비 손실 구성" `);
+  $("#compare").outerHTML = s.replace("<svg ", `<svg id="compare" class="chart" role="img" aria-label="Loss composition vs baseline by center" `);
 }
 
 /* ============ HEATMAP ============ */
-function heatLevel(p){
-  if(p < 2) return 1; if(p < 3.5) return 2; if(p < 5) return 3; if(p < 6.5) return 4; return 5;
-}
+function heatLevel(p){ if(p < 2) return 1; if(p < 3.5) return 2; if(p < 5) return 3; if(p < 6.5) return 4; return 5; }
 function renderHeat(){
-  const rows = CENTERS.map(c => compute(c.id, new Set())); // 강도는 원본 제약률 기준
-  const W = 560, L = 92, top = 52, cellH = 34, gapY = 4;
-  const cw = (512 - L) / CONSTRAINTS.length;
-  const H = top + CENTERS.length * (cellH + gapY) + 16;
+  const rows = DB.centers.map(c => fullOf(c.id));
+  const W = 620, L = 100, top = 52, cellH = 34, gapY = 4;
+  const cw = (556 - L) / DB.constraints.length;
+  const H = top + DB.centers.length * (cellH + gapY) + 16;
 
   let s = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" style="width:100%;height:auto">`;
-  CONSTRAINTS.forEach((k, j) => {
+  DB.constraints.forEach((k, j) => {
     const cx = L + j*cw + cw/2;
-    s += `<text class="row-sub" x="${cx.toFixed(1)}" y="${top-22}" text-anchor="middle">${esc(k.short)}</text>`;
+    const lab = k.short.length > 10 ? k.short.slice(0,9) + "…" : k.short;
+    s += `<text class="row-sub" x="${cx.toFixed(1)}" y="${top-22}" text-anchor="middle">${esc(lab)}</text>`;
     s += `<rect x="${(L+j*cw).toFixed(1)}" y="${top-16}" width="${(cw-2).toFixed(1)}" height="3" rx="1.5" class="${GCLASS[k.group]}" opacity=".85"/>`;
   });
   rows.forEach((r, i) => {
     const y = top + i*(cellH+gapY);
     const sel = r.c.id === state.center;
-    s += `<text class="row-label" x="${L-10}" y="${y+cellH/2+5}" text-anchor="end" ${sel?'style="fill:var(--ink);font-weight:600"':""}>${esc(r.c.name)}</text>`;
-    CONSTRAINTS.forEach((k, j) => {
+    s += `<text class="row-label" x="${L-10}" y="${y+cellH/2+5}" text-anchor="end" ${sel?'style="fill:var(--ink);font-weight:600"':""}>${esc(r.c.sname)}</text>`;
+    DB.constraints.forEach((k, j) => {
       const st = r.steps.find(v => v.id === k.id);
       const pct = st.loss / r.base * 100;
       const lv = heatLevel(pct);
       const dim = state.off.has(k.id) ? ' opacity=".18"' : "";
       s += `<g${dim}><rect class="lv${lv}" x="${(L+j*cw).toFixed(1)}" y="${y}" width="${(cw-3).toFixed(1)}" height="${cellH}" rx="4"
-        data-tip="<b>${esc(r.c.name)} · ${esc(k.name)}</b>손실 <span class='tv'>${n1(st.loss)}</span> UPH<br>기준 대비 <span class='tv'>${n1(pct)}%</span>${state.off.has(k.id)?"<br>· 현재 해제됨":""}"/>
+        data-tip="<b>${esc(r.c.name)} · ${esc(k.name)}</b>Loss <span class='tv'>${n1(st.loss)}</span> UPH<br><span class='tv'>${n1(pct)}%</span> of baseline${state.off.has(k.id)?"<br>· currently lifted":""}"/>
         <text class="cell-txt t${lv}" x="${(L+j*cw+(cw-3)/2).toFixed(1)}" y="${y+cellH/2+4}" text-anchor="middle">${n1(pct)}</text></g>`;
     });
   });
   s += `</svg>`;
-  $("#heat").outerHTML = s.replace("<svg ", `<svg id="heat" class="chart" role="img" aria-label="센터·제약별 손실률 히트맵" `);
-
+  $("#heat").outerHTML = s.replace("<svg ", `<svg id="heat" class="chart" role="img" aria-label="Loss-rate heatmap" `);
   $("#heatLegend").innerHTML =
-    `<span style="color:var(--muted)">낮음</span>` +
+    `<span style="color:var(--muted)">Low</span>` +
     [1,2,3,4,5].map(l => `<span><i style="background:var(--seq${l})"></i></span>`).join("") +
-    `<span style="color:var(--muted)">높음 (기준 대비 손실 %)</span>`;
+    `<span style="color:var(--muted)">High (% of baseline lost)</span>`;
 }
 
 /* ============ EXECUTION GAP ============ */
 function renderExec(){
-  const rows = execRows();
-  const W = 980, L = 132, R = 700, rowH = 38, top = 42;
+  if(!hasAct()){
+    $("#exec").outerHTML = `<svg id="exec" class="chart" viewBox="0 0 980 60"><text x="490" y="34" text-anchor="middle" style="fill:var(--muted);font-size:13px">No actuals in the current data — add an Actual column to the center table to see execution gaps.</text></svg>`;
+    $("#execSummary").innerHTML = "";
+    return;
+  }
+  const rows = execRows().filter(r => r.act != null);
+  const W = 980, L = 140, R = 700, rowH = 38, top = 42;
   const H = top + rows.length * rowH + 26;
   const mid = (L + R) / 2, half = (R - L) / 2;
-  const range = Math.max(...rows.map(r => Math.abs(r.gap))) * 1.18;
+  const range = Math.max(...rows.map(r => Math.abs(r.gap))) * 1.18 || 1;
   const x = v => mid + (v / range) * half;
 
   let s = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" style="width:100%;height:auto">`;
-  s += `<text class="row-sub" x="${mid}" y="${top-22}" text-anchor="middle">최종 예상 = 0</text>`;
-  s += `<text class="row-sub" x="${L}" y="${top-22}" text-anchor="start">예상 미달 ◀</text>`;
-  s += `<text class="row-sub" x="${R}" y="${top-22}" text-anchor="end">▶ 예상 초과</text>`;
+  s += `<text class="row-sub" x="${mid}" y="${top-22}" text-anchor="middle">Final expected = 0</text>`;
+  s += `<text class="row-sub" x="${L}" y="${top-22}" text-anchor="start">Below model ◀</text>`;
+  s += `<text class="row-sub" x="${R}" y="${top-22}" text-anchor="end">▶ Above model</text>`;
   s += `<line class="axis-line" x1="${mid}" y1="${top-12}" x2="${mid}" y2="${top+rows.length*rowH+2}"/>`;
 
   rows.forEach((r, i) => {
@@ -671,81 +1010,82 @@ function renderExec(){
     s += `<text class="row-label" x="${L-14}" y="${by+13}" text-anchor="end" ${sel?'style="fill:var(--ink);font-weight:600"':""}>${esc(r.c.name)}</text>`;
     s += `<text class="rank" x="18" y="${by+13}" text-anchor="start">${i+1}</text>`;
     s += `<rect class="${pos?"b-good":"b-crit"}" x="${x1.toFixed(1)}" y="${by}" width="${w.toFixed(1)}" height="${bh}" rx="3"
-           data-tip="<b>${esc(r.c.name)}</b>최종 예상 <span class='tv'>${n1(r.exp)}</span> UPH<br>실제 실적 <span class='tv'>${n1(r.act)}</span> UPH<br>실행 갭 <span class='tv'>${pos?"+":"−"}${n1(Math.abs(r.gap))}</span> UPH (${n1((r.ratio-1)*100)}%)"/>`;
+           data-tip="<b>${esc(r.c.name)}</b>Final expected <span class='tv'>${n1(r.exp)}</span> UPH<br>Actual <span class='tv'>${n1(r.act)}</span> UPH<br>Execution gap <span class='tv'>${pos?"+":"−"}${n1(Math.abs(r.gap))}</span> UPH (${n1((r.ratio-1)*100)}%)"/>`;
     s += `<text class="val" x="${(pos ? x(r.gap)+8 : x(r.gap)-8).toFixed(1)}" y="${by+13}" text-anchor="${pos?"start":"end"}"
            style="font-size:12px;fill:var(--${pos?"good":"crit"})">${pos?"+":"−"}${n1(Math.abs(r.gap))}</text>`;
     s += `<text class="val" x="${W-124}" y="${by+13}" text-anchor="end" style="font-size:11.5px;fill:var(--ink-2);font-weight:400">${n1(r.exp)} → ${n1(r.act)}</text>`;
-    s += `<text class="val" x="${W-10}" y="${by+13}" text-anchor="end" style="font-size:11.5px;fill:var(--muted);font-weight:400">달성률 ${n1(r.ratio*100)}%</text>`;
+    s += `<text class="val" x="${W-10}" y="${by+13}" text-anchor="end" style="font-size:11.5px;fill:var(--muted);font-weight:400">attain. ${n1(r.ratio*100)}%</text>`;
   });
   s += `</svg>`;
-  $("#exec").outerHTML = s.replace("<svg ", `<svg id="exec" class="chart" role="img" aria-label="센터별 예상 대비 실적 갭" `);
-
+  $("#exec").outerHTML = s.replace("<svg ", `<svg id="exec" class="chart" role="img" aria-label="Execution gap by center" `);
   const beat = rows.filter(r => r.gap >= 0).length;
-  $("#execSummary").innerHTML = `예상 초과 <b>${beat}</b> / 미달 <b>${rows.length-beat}</b> 개소 &nbsp;·&nbsp; 1위 <b>${esc(rows[0].c.sname)}</b> <span class="tag up">+${n1(rows[0].gap)}</span>`;
+  $("#execSummary").innerHTML = `Above <b>${beat}</b> / below <b>${rows.length-beat}</b> &nbsp;·&nbsp; #1 <b>${esc(rows[0].c.sname)}</b> <span class="tag up">+${n1(rows[0].gap)}</span>`;
 }
 
 /* ============ BEST RESPONDER ============ */
-const SW = {vol:"sw-vol", hr:"sw-hr", ops:"sw-ops"};
 function renderBest(){
   const data = byConstraint();
-  const execTop = execRows()[0].c.id;
+  const HA = hasAct();
+  const execTop = HA ? execRows()[0].c.id : null;
 
   $("#bestCards").innerHTML = data.map(d => {
     const d1 = d.avg - d.best.rate, d2 = d.worst.rate - d.best.rate;
-    return `<div class="card" data-tip="<b>${esc(d.k.name)}</b>최우수 ${esc(d.best.c.name)} <span class='tv'>${n1(d.best.rate)}%</span><br>평균 <span class='tv'>${n1(d.avg)}%</span> · 최저 ${esc(d.worst.c.sname)} <span class='tv'>${n1(d.worst.rate)}%</span>">
+    return `<div class="card" data-tip="<b>${esc(d.k.name)}</b>Best: ${esc(d.best.c.name)} <span class='tv'>${n1(d.best.rate)}%</span><br>Avg <span class='tv'>${n1(d.avg)}%</span> · Worst ${esc(d.worst.c.sname)} <span class='tv'>${n1(d.worst.rate)}%</span>">
       <div class="c-k"><i class="${SW[d.k.group]}"></i>${esc(d.k.short)}</div>
-      <div class="c-v">${esc(d.best.c.sname)} <span style="font-size:13px;font-weight:500;color:var(--ink-2)" class="num">${n1(d.best.rate)}%</span>${d.best.c.id === execTop ? ' <span style="font-size:11px;color:var(--good);font-weight:600" title="실행력 1위 센터">★</span>' : ""}</div>
-      <div class="c-m" style="color:var(--muted)">평균 −${n1(d1)}%p · 최저 −${n1(d2)}%p</div>
+      <div class="c-v">${esc(d.best.c.sname)} <span style="font-size:13px;font-weight:500;color:var(--ink-2)" class="num">${n1(d.best.rate)}%</span>${d.best.c.id === execTop ? ' <span style="font-size:11px;color:var(--good);font-weight:600" title="Top execution center">★</span>' : ""}</div>
+      <div class="c-m" style="color:var(--muted)">avg −${n1(d1)}pp · worst −${n1(d2)}pp</div>
     </div>`;
   }).join("");
 
-  const W = 980, L = 206, R = 792, rowH = 44, top = 46;
+  const W = 980, L = 218, R = 792, rowH = 44, top = 46;
   const H = top + data.length * rowH + 24;
-  const xmax = Math.ceil(Math.max(...data.map(d => d.worst.rate)) * 1.12);
+  const xmax = Math.max(2, Math.ceil(Math.max(...data.map(d => d.worst.rate)) * 1.12));
   const x = v => L + (v / xmax) * (R - L);
+  const step = xmax > 12 ? 4 : 2;
 
   let s = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" style="width:100%;height:auto">`;
-  for(let t = 0; t <= xmax; t += 2){
+  for(let t = 0; t <= xmax; t += step){
     s += `<line class="grid-line" x1="${x(t).toFixed(1)}" y1="${top-14}" x2="${x(t).toFixed(1)}" y2="${top+data.length*rowH-8}"/>`;
     s += `<text class="tick val" x="${x(t).toFixed(1)}" y="${top-20}" text-anchor="middle">${t}%</text>`;
   }
-  s += `<text class="tick" x="${L}" y="${top-38}" text-anchor="start">제약률 (직전 단계 잔여 대비 손실 %)</text>`;
+  s += `<text class="tick" x="${L}" y="${top-38}" text-anchor="start">Loss rate (% of what remained at that step)</text>`;
 
   data.forEach((d, i) => {
     const y = top + i*rowH, cy = y + rowH/2 - 4;
     s += `<text class="row-label" x="${L-16}" y="${cy+1}" text-anchor="end">${esc(d.k.name)}</text>`;
-    s += `<text class="row-sub" x="${L-16}" y="${cy+15}" text-anchor="end">${esc(d.k.gname)} 제약 · 평균 ${n1(d.avg)}%</text>`;
+    s += `<text class="row-sub" x="${L-16}" y="${cy+15}" text-anchor="end">${GNAME[d.k.group]} · avg ${n1(d.avg)}%</text>`;
     s += `<line x1="${x(d.best.rate).toFixed(1)}" y1="${cy}" x2="${x(d.worst.rate).toFixed(1)}" y2="${cy}" stroke="var(--grid)" stroke-width="3" stroke-linecap="round"/>`;
     d.rows.slice(1).forEach(rw => {
       s += `<circle class="dot-o" cx="${x(rw.rate).toFixed(1)}" cy="${cy}" r="5.5"
-             data-tip="<b>${esc(rw.c.name)} · ${esc(d.k.name)}</b>제약률 <span class='tv'>${n1(rw.rate)}%</span><br>손실 <span class='tv'>${n1(rw.loss)}</span> UPH<br>최우수 ${esc(d.best.c.sname)} 대비 <span class='tv'>+${n1(rw.rate-d.best.rate)}%p</span>"/>`;
+             data-tip="<b>${esc(rw.c.name)} · ${esc(d.k.name)}</b>Loss rate <span class='tv'>${n1(rw.rate)}%</span><br>Loss <span class='tv'>${n1(rw.loss)}</span> UPH<br>vs best (${esc(d.best.c.sname)}) <span class='tv'>+${n1(rw.rate-d.best.rate)}pp</span>"/>`;
     });
     const bx = x(d.best.rate), wx = x(d.worst.rate);
     s += `<circle class="${GCLASS[d.k.group]}" cx="${bx.toFixed(1)}" cy="${cy}" r="7"
-           data-tip="<b>${esc(d.best.c.name)} · 최우수</b>제약률 <span class='tv'>${n1(d.best.rate)}%</span><br>손실 <span class='tv'>${n1(d.best.loss)}</span> UPH<br>평균 대비 <span class='tv'>−${n1(d.avg-d.best.rate)}%p</span>"/>`;
+           data-tip="<b>${esc(d.best.c.name)} · best</b>Loss rate <span class='tv'>${n1(d.best.rate)}%</span><br>Loss <span class='tv'>${n1(d.best.loss)}</span> UPH<br>vs avg <span class='tv'>−${n1(d.avg-d.best.rate)}pp</span>"/>`;
     s += `<text class="best-lab" x="${(bx-13).toFixed(1)}" y="${cy+4}" text-anchor="end">${esc(d.best.c.sname)} ${n1(d.best.rate)}</text>`;
     s += `<text class="worst-lab" x="${(wx+13).toFixed(1)}" y="${cy+4}" text-anchor="start">${esc(d.worst.c.sname)} ${n1(d.worst.rate)}</text>`;
-    s += `<text class="val" x="${W-10}" y="${cy+4}" text-anchor="end" style="font-size:11.5px;fill:var(--ink-2);font-weight:400">격차 ${n1(d.worst.rate-d.best.rate)}%p</text>`;
+    s += `<text class="val" x="${W-10}" y="${cy+4}" text-anchor="end" style="font-size:11.5px;fill:var(--ink-2);font-weight:400">spread ${n1(d.worst.rate-d.best.rate)}pp</text>`;
   });
   s += `</svg>`;
-  $("#dots").outerHTML = s.replace("<svg ", `<svg id="dots" class="chart" role="img" aria-label="제약별 센터 손실률 분포" `);
+  $("#dots").outerHTML = s.replace("<svg ", `<svg id="dots" class="chart" role="img" aria-label="Loss-rate distribution by constraint" `);
 }
 
 /* ============ TABLE ============ */
 function renderTable(){
-  const rows = CENTERS.map(c => compute(c.id, state.off));
-  let h = `<thead><tr><th>센터</th><th>기준</th>` +
-    CONSTRAINTS.map(k => `<th${state.off.has(k.id)?' style="opacity:.4;text-decoration:line-through"':""}>${esc(k.short)}</th>`).join("") +
-    `<th>최종 예상</th><th>실적</th><th>실행 갭*</th><th>목표</th><th>달성</th></tr></thead><tbody>`;
+  const rows = DB.centers.map(c => compute(c.id, state.off));
+  const HA = hasAct();
+  let h = `<thead><tr><th>Center</th><th>Baseline</th>` +
+    DB.constraints.map(k => `<th${state.off.has(k.id)?' style="opacity:.4;text-decoration:line-through"':""}>${esc(k.short)}</th>`).join("") +
+    `<th>Final expected</th><th>Actual</th><th>Exec gap*</th><th>Target</th><th>vs Target</th></tr></thead><tbody>`;
   rows.forEach(r => {
     const ok = r.final >= r.target;
-    const gap = r.c.actual - FULL[r.c.id].final;
-    h += `<tr><td>${esc(r.c.name)}<br><span style="color:var(--muted);font-size:11px">${esc(r.c.note)}</span></td>` +
+    const gap = (HA && r.c.actual != null) ? r.c.actual - fullOf(r.c.id).final : null;
+    h += `<tr><td>${esc(r.c.name)}<br><span style="color:var(--muted);font-size:11px">${esc(r.c.note||"")}</span></td>` +
       `<td class="n">${n1(r.base)}</td>` +
       r.steps.map(s => `<td class="n"${s.active?"":' style="opacity:.35"'}>${s.active?"−"+n1(s.loss):"—"}</td>`).join("") +
       `<td class="n strong">${n1(r.final)}</td>` +
-      `<td class="n strong">${n1(r.c.actual)}</td>` +
-      `<td class="n" style="color:var(--${gap>=0?"good":"crit"})">${gap>=0?"+":"−"}${n1(Math.abs(gap))}</td>` +
+      `<td class="n strong">${r.c.actual!=null?n1(r.c.actual):"—"}</td>` +
+      `<td class="n"${gap!=null?` style="color:var(--${gap>=0?"good":"crit"})"`:""}>${gap!=null?(gap>=0?"+":"−")+n1(Math.abs(gap)):"—"}</td>` +
       `<td class="n">${n0(r.target)}</td>` +
       `<td><span class="pill ${ok?"ok":"no"}">${ok?"+":"−"}${n1(Math.abs(r.final-r.target))}</span></td></tr>`;
   });
@@ -755,6 +1095,7 @@ function renderTable(){
 
 /* ============ RENDER ============ */
 function render(){
+  if(!centerOf(state.center)) state.center = DB.centers[0].id;
   renderChips();
   renderKpis();
   renderBridge();
@@ -763,14 +1104,15 @@ function render(){
   renderExec();
   renderBest();
   renderTable();
-  const offNames = CONSTRAINTS.filter(k => state.off.has(k.id)).map(k => k.short);
+  const offNames = DB.constraints.filter(k => state.off.has(k.id)).map(k => k.short);
   $("#railNote").textContent = offNames.length
-    ? `해제된 제약 ${offNames.length}개 — ${offNames.join(", ")} · 해당 제약이 완전히 개선됐을 때의 생산성을 보여줍니다.`
-    : "제약 칩을 눌러 해제하면 그 제약을 개선했을 때의 최종 예상 생산성을 바로 확인할 수 있습니다.";
+    ? `${offNames.length} lifted — ${offNames.join(", ")} · showing productivity if these were fully resolved.`
+    : "Click a constraint chip to lift it and see the productivity you would recover.";
 }
 render();
+renderForm();
 })();
-</script>
 
+</script>
 </body>
 </html>
