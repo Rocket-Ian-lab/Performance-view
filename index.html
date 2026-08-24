@@ -229,7 +229,7 @@ td.strong{color:var(--ink); font-weight:600}
     <div>
       <div class="eyebrow" data-i18n="eyebrow">Outbound Operations</div>
       <h1 data-i18n="h1">Outbound Productivity Bridge</h1>
-      <p class="sub" data-i18n="sub">Start from engineered baseline productivity (UPH), apply volume, workforce and operations constraints in sequence, land on the final expected productivity — then compare against actuals to find which center handles each constraint best.</p>
+      <p class="sub" data-i18n="sub">Volume, workforce, and operations constraints are applied in sequence to baseline UPH to arrive at final expected productivity. Comparing against actuals yields the execution gap and the best-performing center for each constraint.</p>
     </div>
     <div class="stamp">
       <span data-i18n="st_period">Period</span> <b>2026-08</b><br>
@@ -304,8 +304,8 @@ td.strong{color:var(--ink); font-weight:600}
   <section class="panel">
     <div class="panel-hd">
       <div>
-        <h2 id="bridgeTitle">Productivity bridge</h2>
-        <p data-i18n="br_sub">Constraints applied in sequence — each loss is a share of what remains after the previous step.</p>
+        <h2 id="bridgeTitle">Productivity Bridge</h2>
+        <p data-i18n="br_sub">Note: Constraints are applied in sequence. Each loss equals the productivity remaining after the previous step multiplied by that rate.</p>
       </div>
       <div class="num" id="bridgeSummary" style="font-size:12.5px; color:var(--ink-2)"></div>
     </div>
@@ -326,8 +326,8 @@ td.strong{color:var(--ink); font-weight:600}
     <section class="panel">
       <div class="panel-hd">
         <div>
-          <h2 data-i18n="cmp_title">Center comparison — loss composition vs baseline</h2>
-          <p data-i18n="cmp_sub">Full bar = baseline; dark segment = final expected; vertical line = actual.</p>
+          <h2 data-i18n="cmp_title">Loss Composition by Center</h2>
+          <p data-i18n="cmp_sub">Note: The full bar represents baseline productivity. The dark segment is final expected productivity and the vertical line is actual.</p>
         </div>
       </div>
       <div class="panel-bd"><svg id="compare" class="chart" role="img" aria-label="Loss composition vs baseline by center"></svg></div>
@@ -346,8 +346,8 @@ td.strong{color:var(--ink); font-weight:600}
     <section class="panel">
       <div class="panel-hd">
         <div>
-          <h2 data-i18n="heat_title">Loss intensity by constraint</h2>
-          <p data-i18n="heat_sub">Share of baseline lost (%). Darker = larger loss.</p>
+          <h2 data-i18n="heat_title">Loss Intensity by Constraint</h2>
+          <p data-i18n="heat_sub">Note: Values represent the share of baseline productivity lost, in percent. Darker cells indicate larger losses.</p>
         </div>
       </div>
       <div class="panel-bd"><svg id="heat" class="chart" role="img" aria-label="Loss-rate heatmap by center and constraint"></svg></div>
@@ -359,8 +359,8 @@ td.strong{color:var(--ink); font-weight:600}
   <section class="panel">
     <div class="panel-hd">
       <div>
-        <h2 data-i18n="exec_title">Execution gap — actual vs final expected</h2>
-        <p data-i18n="exec_sub">Actual minus the fully-constrained expectation. Positive = the floor out-performed the model.</p>
+        <h2 data-i18n="exec_title">Execution Gap</h2>
+        <p data-i18n="exec_sub">Note: Execution gap is defined as actual productivity less the fully-constrained expectation. A positive gap means the floor outperformed the model; a negative gap means the model is missing a loss.</p>
       </div>
       <div class="num" id="execSummary" style="font-size:12.5px; color:var(--ink-2)"></div>
     </div>
@@ -371,8 +371,8 @@ td.strong{color:var(--ink); font-weight:600}
   <section class="panel">
     <div class="panel-hd">
       <div>
-        <h2 data-i18n="best_title">Constraint response — best-performing center</h2>
-        <p data-i18n="best_sub">For each constraint, the center with the lowest loss rate handled it best. Use these as benchmarking targets.</p>
+        <h2 data-i18n="best_title">Best-Performing Center by Constraint</h2>
+        <p data-i18n="best_sub">Note: For each constraint, the center with the lowest loss rate is the benchmarking target.</p>
       </div>
     </div>
     <div class="cards" id="bestCards"></div>
@@ -388,8 +388,8 @@ td.strong{color:var(--ink); font-weight:600}
   <section class="panel">
     <div class="panel-hd">
       <div>
-        <h2 data-i18n="tbl_title">Detail table</h2>
-        <p data-i18n="tbl_sub">Loss in UPH per constraint — toggled-off constraints are excluded. *Execution gap always uses the all-constraints scenario, so toggles never move it.</p>
+        <h2 data-i18n="tbl_title">Loss Detail by Center</h2>
+        <p data-i18n="tbl_sub">Note: Losses are shown in UPH per constraint and exclude any lifted constraints. *Execution gap is always calculated on the all-constraints scenario and does not change with the toggles.</p>
       </div>
     </div>
     <div class="tbl-wrap"><table id="tbl"></table></div>
@@ -434,7 +434,7 @@ const I18N = {
  en:{
   doc_title:"Outbound Productivity Bridge",
   eyebrow:"Outbound Operations", h1:"Outbound Productivity Bridge",
-  sub:"Start from engineered baseline productivity (UPH), apply volume, workforce and operations constraints in sequence, land on the final expected productivity — then compare against actuals to find which center handles each constraint best.",
+  sub:"Volume, workforce, and operations constraints are applied in sequence to baseline UPH to arrive at final expected productivity. Comparing against actuals yields the execution gap and the best-performing center for each constraint.",
   st_period:"Period", st_unit:"Unit", unit_val:"UPH (pcs/man·hr)",
   src_sample:"Sample data", src_edited:" (edited)",
   rail_center:"Center", rail_con:"Constraints", rail_data:"Data",
@@ -446,44 +446,46 @@ const I18N = {
   f_rates:"LOSS RATE PER CENTER (%)", f_add:"Add constraint", f_cancel:"Cancel",
   f_manage:"MANAGE CONSTRAINTS", btn_delete:"Delete", f_rate_ph:"e.g. 3.0",
   g_vol:"Volume", g_hr:"Workforce", g_ops:"Operations", con_suffix:"{0} constraint",
-  kpi_base:"Weighted avg baseline", kpi_final:"Weighted avg final expected",
-  kpi_actual:"Weighted avg actual", kpi_recovery:"Recovery if lifted",
-  kpi_driver:"Largest loss driver", kpi_topexec:"Top execution center",
-  m_centers:"{0} centers · headcount-weighted ({1} people)",
-  m_vsbase:"vs baseline", m_vsmodel:"vs full-constraint model", m_noact:"No actuals in data",
-  m_lifted:"{0} lifted · vs all applied", m_toggle_hint:"Toggle a constraint off to see recovery",
-  m_combined:"Combined loss", m_nocon:"No active constraints",
-  m_vsmodel_short:"vs model", m_targets_met:"targets met {0}/{1}", m_targets_only:"Targets met {0}/{1}",
-  br_title:"{0} — productivity bridge",
-  br_sub:"Constraints applied in sequence — each loss is a share of what remains after the previous step.",
+  kpi_base:"Weighted Average Baseline Productivity", kpi_final:"Weighted Average Final Expected Productivity",
+  kpi_actual:"Weighted Average Actual Productivity", kpi_recovery:"Recovery If Constraints Lifted",
+  kpi_driver:"Largest Loss Driver", kpi_topexec:"Top Execution Center",
+  m_centers:"{0} centers (headcount-weighted, {1} people)",
+  m_vsbase:"Down {0} vs baseline", m_noact:"No actuals in data",
+  m_vsmodel_up:"Up {0} vs full-constraint model", m_vsmodel_dn:"Down {0} vs full-constraint model",
+  m_lifted:"{0} lifted, vs all constraints applied", m_toggle_hint:"Toggle a constraint off to see recoverable productivity.",
+  m_combined:"Combined loss of {0} UPH, {1}", m_nocon:"No active constraints",
+  m_topexec_up:"Up {0} vs model, {1}", m_topexec_dn:"Down {0} vs model, {1}",
+  m_targets_met:"{0} of {1} targets met", m_targets_only:"{0} of {1} targets met",
+  br_title:"{0} – Productivity Bridge",
+  br_sub:"Note: Constraints are applied in sequence. Each loss equals the productivity remaining after the previous step multiplied by that rate.",
   br_base_lab:"Baseline productivity", br_base_sub:"Engineered standard · {0}",
   br_final:"Final expected", br_final_sub:"−{0}% vs baseline",
   br_actual:"Actual", br_actual_sub:"Closed actuals, 2026-08", br_target:"Target {0}",
   br_summary:"Baseline <b>{0}</b> → Final <b>{1}</b> UPH &nbsp;·&nbsp; vs target ",
   tip_baseline:"Baseline", tip_loss:"Loss", tip_remaining:"Remaining", tip_target:"Target",
   tip_vs_scenario:"vs current scenario",
-  cmp_title:"Center comparison — loss composition vs baseline",
-  cmp_sub:"Full bar = baseline; dark segment = final expected; vertical line = actual.",
+  cmp_title:"Loss Composition by Center",
+  cmp_sub:"Note: The full bar represents baseline productivity. The dark segment is final expected productivity and the vertical line is actual.",
   seg_final:"Final expected", seg_vol:"Volume loss", seg_hr:"Workforce loss", seg_ops:"Operations loss",
   tip_fullmodel:"Full-constraint model", tip_execgap:"Execution gap", tip_actual:"Actual",
-  heat_title:"Loss intensity by constraint", heat_sub:"Share of baseline lost (%). Darker = larger loss.",
+  heat_title:"Loss Intensity by Constraint", heat_sub:"Note: Values represent the share of baseline productivity lost, in percent. Darker cells indicate larger losses.",
   heat_low:"Low", heat_high:"High (% of baseline lost)",
   heat_tip_pct:"<span class='tv'>{0}%</span> of baseline", tip_lifted:"<br>· currently lifted",
-  exec_title:"Execution gap — actual vs final expected",
-  exec_sub:"Actual minus the fully-constrained expectation. Positive = the floor out-performed the model.",
+  exec_title:"Execution Gap",
+  exec_sub:"Note: Execution gap is defined as actual productivity less the fully-constrained expectation. A positive gap means the floor outperformed the model; a negative gap means the model is missing a loss.",
   exec_noact:"No actuals in the current data — add an Actual column to the center table to see execution gaps.",
   exec_zero:"Final expected = 0", exec_below:"Below model ◀", exec_above:"▶ Above model",
   exec_attain:"attain. {0}%", exec_summary:"Above <b>{0}</b> / below <b>{1}</b> &nbsp;·&nbsp; #1 <b>{2}</b> ",
-  best_title:"Constraint response — best-performing center",
-  best_sub:"For each constraint, the center with the lowest loss rate handled it best. Use these as benchmarking targets.",
+  best_title:"Best-Performing Center by Constraint",
+  best_sub:"Note: For each constraint, the center with the lowest loss rate is the benchmarking target.",
   best_best:"Best", best_avg:"Avg", best_worst:"Worst", best_card_m:"avg −{0}pp · worst −{1}pp",
   best_axis:"Loss rate (% of what remained at that step)", best_avg_sub:"{0} · avg {1}%",
   best_spread:"spread {0}pp", tip_lossrate:"Loss rate", tip_vsbest:"vs best ({0})",
   tip_vsavg:"vs avg", tip_bestof:"{0} · best",
   th_center:"Center", th_base:"Baseline", th_final:"Final expected", th_actual:"Actual",
   th_gap:"Exec gap*", th_target:"Target", th_vstarget:"vs Target",
-  tbl_title:"Detail table",
-  tbl_sub:"Loss in UPH per constraint — toggled-off constraints are excluded. *Execution gap always uses the all-constraints scenario, so toggles never move it.",
+  tbl_title:"Loss Detail by Center",
+  tbl_sub:"Note: Losses are shown in UPH per constraint and exclude any lifted constraints. *Execution gap is always calculated on the all-constraints scenario and does not change with the toggles.",
   lg_baseline:"Baseline", lg_final:"Final expected", lg_actual:"Actual",
   lg_target_uph:"┆ Target UPH", lg_target:"┆ Target", lg_actual_line:"│ Actual",
   lg_execgap:"▲▼ Execution gap", lg_best:"Best (lowest loss rate)", lg_other:"Other centers",
@@ -503,7 +505,7 @@ const I18N = {
  ko:{
   doc_title:"출고 생산성 브릿지",
   eyebrow:"출고 운영", h1:"출고 생산성 브릿지",
-  sub:"설계 기준 생산성(UPH)에서 물량·인력·운영 제약을 차례로 적용해 최종 예상 생산성을 구하고, 실제 실적과 대조해 어느 센터가 각 제약에 가장 잘 대응했는지 가려냅니다.",
+  sub:"기준 UPH에 물량·인력·운영 제약을 순차 적용해 최종 예상 생산성을 산출합니다. 실적과 대조하면 실행 갭과 제약별 최우수 센터가 드러납니다.",
   st_period:"기준월", st_unit:"단위", unit_val:"UPH (개/인·시)",
   src_sample:"샘플 데이터", src_edited:" (수정됨)",
   rail_center:"센터", rail_con:"제약", rail_data:"데이터",
@@ -515,44 +517,46 @@ const I18N = {
   f_rates:"센터별 제약률 (%)", f_add:"제약 추가", f_cancel:"취소",
   f_manage:"제약 관리", btn_delete:"삭제", f_rate_ph:"예: 3.0",
   g_vol:"물량", g_hr:"인력", g_ops:"운영", con_suffix:"{0} 제약",
-  kpi_base:"가중 평균 기준 생산성", kpi_final:"가중 평균 최종 예상",
-  kpi_actual:"가중 평균 실적", kpi_recovery:"제약 해제 시 회복분",
+  kpi_base:"가중 평균 기준 생산성", kpi_final:"가중 평균 최종 예상 생산성",
+  kpi_actual:"가중 평균 실적 생산성", kpi_recovery:"제약 해제 시 회복분",
   kpi_driver:"최대 손실 제약", kpi_topexec:"실행력 1위 센터",
-  m_centers:"{0}개 센터 · 인원 가중 ({1}명)",
-  m_vsbase:"기준 대비", m_vsmodel:"전체 제약 예상 대비", m_noact:"데이터에 실적 없음",
-  m_lifted:"{0}개 해제 · 전체 적용 대비", m_toggle_hint:"제약을 해제하면 회복 가능분이 표시됩니다",
-  m_combined:"합산 손실", m_nocon:"적용 중인 제약 없음",
-  m_vsmodel_short:"예상 대비", m_targets_met:"목표 달성 {0}/{1}", m_targets_only:"목표 달성 {0}/{1}",
-  br_title:"{0} 생산성 브릿지",
-  br_sub:"제약을 순차 적용 — 각 단계의 손실은 직전 단계까지 남은 생산성에 대한 비율입니다.",
+  m_centers:"{0}개 센터 (인원 가중, {1}명)",
+  m_vsbase:"기준 대비 {0} 감소", m_noact:"데이터에 실적 없음",
+  m_vsmodel_up:"전체 제약 예상 대비 {0} 상회", m_vsmodel_dn:"전체 제약 예상 대비 {0} 하회",
+  m_lifted:"{0}개 해제, 전체 적용 대비", m_toggle_hint:"제약을 해제하면 회복 가능분이 표시됩니다.",
+  m_combined:"합산 손실 {0} UPH, {1}", m_nocon:"적용 중인 제약 없음",
+  m_topexec_up:"예상 대비 {0} 상회, {1}", m_topexec_dn:"예상 대비 {0} 하회, {1}",
+  m_targets_met:"목표 {1}개 중 {0}개 달성", m_targets_only:"목표 {1}개 중 {0}개 달성",
+  br_title:"{0} – 생산성 브릿지",
+  br_sub:"주: 제약은 순차 적용됩니다. 각 단계의 손실은 직전 단계까지 남은 생산성에 그 제약률을 곱한 값입니다.",
   br_base_lab:"기준 생산성", br_base_sub:"설계 기준 · {0}",
   br_final:"최종 예상", br_final_sub:"기준 대비 −{0}%",
   br_actual:"실적", br_actual_sub:"2026-08 확정 실적", br_target:"목표 {0}",
   br_summary:"기준 <b>{0}</b> → 최종 <b>{1}</b> UPH &nbsp;·&nbsp; 목표 대비 ",
   tip_baseline:"기준 생산성", tip_loss:"손실", tip_remaining:"잔여", tip_target:"목표",
   tip_vs_scenario:"현재 시나리오 예상 대비",
-  cmp_title:"센터 비교 — 기준 대비 손실 구성",
-  cmp_sub:"막대 전체 = 기준 생산성, 진한 구간 = 최종 예상, 세로선 = 실제 실적.",
+  cmp_title:"센터별 손실 구성",
+  cmp_sub:"주: 막대 전체는 기준 생산성입니다. 진한 구간은 최종 예상, 세로선은 실적입니다.",
   seg_final:"최종 예상", seg_vol:"물량 손실", seg_hr:"인력 손실", seg_ops:"운영 손실",
   tip_fullmodel:"전체 제약 예상", tip_execgap:"실행 갭", tip_actual:"실적",
-  heat_title:"제약별 손실 강도", heat_sub:"기준 생산성 대비 손실 비중(%). 진할수록 손실이 큽니다.",
+  heat_title:"제약별 손실 강도", heat_sub:"주: 수치는 기준 생산성 대비 손실 비중(%)입니다. 진한 셀일수록 손실이 큽니다.",
   heat_low:"낮음", heat_high:"높음 (기준 대비 손실 %)",
   heat_tip_pct:"기준 대비 <span class='tv'>{0}%</span>", tip_lifted:"<br>· 현재 해제됨",
-  exec_title:"실행 갭 — 최종 예상 대비 실적",
-  exec_sub:"실적에서 전체 제약을 적용한 예상을 뺀 값입니다. 양수면 현장이 모델보다 잘했다는 뜻입니다.",
+  exec_title:"실행 갭",
+  exec_sub:"주: 실행 갭은 실적에서 전체 제약을 적용한 예상을 뺀 값입니다. 양수는 현장이 모델을 상회했음을, 음수는 모델이 놓친 손실이 있음을 의미합니다.",
   exec_noact:"현재 데이터에 실적이 없습니다 — 센터 표에 실적(Actual) 열을 추가하면 실행 갭이 표시됩니다.",
   exec_zero:"최종 예상 = 0", exec_below:"예상 미달 ◀", exec_above:"▶ 예상 초과",
   exec_attain:"달성 {0}%", exec_summary:"예상 초과 <b>{0}</b> / 미달 <b>{1}</b> &nbsp;·&nbsp; 1위 <b>{2}</b> ",
-  best_title:"제약별 대응력 — 가장 잘 막은 센터",
-  best_sub:"각 제약에서 제약률이 가장 낮은 센터가 그 제약에 가장 잘 대응한 곳입니다. 벤치마킹 대상으로 삼으세요.",
+  best_title:"제약별 최우수 센터",
+  best_sub:"주: 각 제약에서 제약률이 가장 낮은 센터가 벤치마킹 대상입니다.",
   best_best:"최우수", best_avg:"평균", best_worst:"최저", best_card_m:"평균 −{0}pp · 최저 −{1}pp",
   best_axis:"제약률 (직전 단계 잔여 대비 손실 %)", best_avg_sub:"{0} · 평균 {1}%",
   best_spread:"격차 {0}pp", tip_lossrate:"제약률", tip_vsbest:"최우수({0}) 대비",
   tip_vsavg:"평균 대비", tip_bestof:"{0} · 최우수",
   th_center:"센터", th_base:"기준", th_final:"최종 예상", th_actual:"실적",
   th_gap:"실행 갭*", th_target:"목표", th_vstarget:"목표 대비",
-  tbl_title:"상세 표",
-  tbl_sub:"제약별 손실 UPH — 해제한 제약은 계산에서 제외됩니다. *실행 갭은 항상 전체 제약 적용 시나리오 기준이라 토글의 영향을 받지 않습니다.",
+  tbl_title:"센터별 손실 상세",
+  tbl_sub:"주: 제약별 손실은 UPH 기준이며 해제한 제약은 제외됩니다. *실행 갭은 항상 전체 제약 적용 시나리오로 계산되어 토글의 영향을 받지 않습니다.",
   lg_baseline:"기준 생산성", lg_final:"최종 예상", lg_actual:"실적",
   lg_target_uph:"┆ 목표 UPH", lg_target:"┆ 목표", lg_actual_line:"│ 실적",
   lg_execgap:"▲▼ 실행 갭", lg_best:"최우수 (손실률 최소)", lg_other:"기타 센터",
@@ -981,15 +985,18 @@ function renderKpis(){
   const kpis = [
     { k:T("kpi_base"), v:n1(wBase), u:"UPH", m:TF("m_centers", DB.centers.length, n0(hcSum)) },
     { k:T("kpi_final"), v:n1(wFinal), u:"UPH",
-      m:`${T("m_vsbase")} <span class="tag down">−${n1((wBase-wFinal)/wBase*100)}%</span>` },
+      m:TF("m_vsbase", `<span class="tag down">${n1((wBase-wFinal)/wBase*100)}%</span>`) },
     { k:T("kpi_actual"), v: HA ? n1(wAct) : "—", u: HA ? "UPH" : "",
-      m: HA ? `${T("m_vsmodel")} <span class="tag ${wAct-wFull>=0?"up":"down"}">${wAct-wFull>=0?"+":"−"}${n1(Math.abs(wAct-wFull))}</span>` : T("m_noact") },
+      m: HA ? TF(wAct-wFull>=0 ? "m_vsmodel_up" : "m_vsmodel_dn",
+                 `<span class="tag ${wAct-wFull>=0?"up":"down"}">${n1(Math.abs(wAct-wFull))} UPH</span>`) : T("m_noact") },
     { k:T("kpi_recovery"), v:(gain>0?"+":"")+n1(gain), u:"UPH",
       m: state.off.size ? TF("m_lifted", state.off.size) : T("m_toggle_hint") },
     { k:T("kpi_driver"), v: top ? LX(top,"short") : "—", u:"",
-      m: top ? `${T("m_combined")} <span class="num">${n1(topVal)}</span> UPH · ${esc(GNAME[top.group])}` : T("m_nocon"), small:true },
+      m: top ? TF("m_combined", `<span class="num">${n1(topVal)}</span>`, esc(GNAME[top.group])) : T("m_nocon"), small:true },
     { k:T("kpi_topexec"), v: ex ? LX(ex.c,"sname") : "—", u:"",
-      m: ex ? `${T("m_vsmodel_short")} <span class="tag ${ex.gap>=0?"up":"down"}">${ex.gap>=0?"+":"−"}${n1(Math.abs(ex.gap))} UPH</span> · ${TF("m_targets_met", met, DB.centers.length)}` : TF("m_targets_only", met, DB.centers.length), small:true }
+      m: ex ? TF(ex.gap>=0 ? "m_topexec_up" : "m_topexec_dn",
+                 `<span class="tag ${ex.gap>=0?"up":"down"}">${n1(Math.abs(ex.gap))} UPH</span>`,
+                 TF("m_targets_met", met, DB.centers.length)) : TF("m_targets_only", met, DB.centers.length), small:true }
   ];
   $("#kpis").innerHTML = kpis.map(x =>
     `<div class="kpi"><div class="k">${x.k}</div>
