@@ -13,7 +13,7 @@
   --page:#f4f4f1; --surface:#fcfcfb; --surface-2:#eeeeea; --sunken:#f7f7f4;
   --ink:#0b0b0b; --ink-2:#52514e; --muted:#8a8880;
   --grid:#e3e2db; --axis:#c9c8c0; --hair:rgba(11,11,11,.11); --hair-2:rgba(11,11,11,.06);
-  --vol:#2a78d6; --hr:#eb6834; --ops:#1baf7a;
+  --vol:#2a78d6; --hr:#eb6834; --ops:#1baf7a; --c4:#eda100; --c5:#e87ba4;
   --vol-soft:rgba(42,120,214,.14); --hr-soft:rgba(235,104,52,.14); --ops-soft:rgba(27,175,122,.14);
   --anchor:#373633; --anchor-2:#b4b2aa; --bar-final:#373633;
   --good:#0a7c0a; --crit:#c53434; --warn:#a97400;
@@ -28,7 +28,7 @@
     --page:#0d0d0c; --surface:#191918; --surface-2:#232321; --sunken:#131312;
     --ink:#ffffff; --ink-2:#c3c2b7; --muted:#8a8880;
     --grid:#2c2c29; --axis:#3d3d39; --hair:rgba(255,255,255,.12); --hair-2:rgba(255,255,255,.06);
-    --vol:#3987e5; --hr:#e2652f; --ops:#22b781;
+    --vol:#3987e5; --hr:#e2652f; --ops:#22b781; --c4:#c98500; --c5:#d55181;
     --vol-soft:rgba(57,135,229,.18); --hr-soft:rgba(226,101,47,.18); --ops-soft:rgba(34,183,129,.18);
     --anchor:#e6e5df; --anchor-2:#55544f; --bar-final:#cbcac2;
     --good:#0ca30c; --crit:#e05a5a; --warn:#fab219;
@@ -43,7 +43,7 @@
   --page:#0d0d0c; --surface:#191918; --surface-2:#232321; --sunken:#131312;
   --ink:#ffffff; --ink-2:#c3c2b7; --muted:#8a8880;
   --grid:#2c2c29; --axis:#3d3d39; --hair:rgba(255,255,255,.12); --hair-2:rgba(255,255,255,.06);
-  --vol:#3987e5; --hr:#e2652f; --ops:#22b781;
+  --vol:#3987e5; --hr:#e2652f; --ops:#22b781; --c4:#c98500; --c5:#d55181;
   --vol-soft:rgba(57,135,229,.18); --hr-soft:rgba(226,101,47,.18); --ops-soft:rgba(34,183,129,.18);
   --anchor:#e6e5df; --anchor-2:#55544f; --bar-final:#cbcac2;
   --good:#0ca30c; --crit:#e05a5a; --warn:#fab219;
@@ -77,7 +77,7 @@ h1{margin:6px 0 4px; font-size:clamp(26px,3.4vw,38px); font-weight:700; letter-s
 .panel-hd p{margin:2px 0 0; font-size:12.5px; color:var(--muted);}
 .panel-bd{padding:14px 18px 18px; overflow-x:auto;}
 #bridge{min-width:640px} #compare{min-width:460px} #heat{min-width:460px}
-#exec{min-width:640px} #dots{min-width:680px}
+#exec{min-width:640px} #dots{min-width:680px} #trend{min-width:640px}
 
 /* ---------- control rail ---------- */
 .rail{display:flex; flex-direction:column; gap:12px; padding:14px 18px;}
@@ -217,6 +217,16 @@ td.strong{color:var(--ink); font-weight:600}
   background:transparent; color:var(--muted); border:0; cursor:pointer; line-height:1.6}
 .lang button[aria-pressed="true"]{background:var(--anchor); color:var(--surface)}
 .lang button:hover:not([aria-pressed="true"]){color:var(--ink)}
+.per-sel{font:inherit; font-size:12.5px; padding:5px 10px; border:1px solid var(--hair);
+ border-radius:8px; background:var(--surface-2); color:var(--ink); max-width:200px}
+.per-sel:focus-visible{outline:2px solid var(--vol); outline-offset:1px}
+.btn.sq{padding:5px 10px; font-weight:600}
+a.btn{text-decoration:none}
+.ln1{stroke:var(--vol)} .ln2{stroke:var(--hr)} .ln3{stroke:var(--ops)} .ln4{stroke:var(--c4)} .ln5{stroke:var(--c5)}
+.dt1{fill:var(--vol)} .dt2{fill:var(--hr)} .dt3{fill:var(--ops)} .dt4{fill:var(--c4)} .dt5{fill:var(--c5)}
+.trend-line{fill:none; stroke-width:1.8; stroke-linejoin:round; stroke-linecap:round}
+.trend-line.sel{stroke-width:3}
+.trend-dim{opacity:.4}
 #toast{position:fixed; left:50%; bottom:26px; transform:translateX(-50%); z-index:60; background:var(--anchor);
   color:var(--surface); font-size:13px; padding:9px 16px; border-radius:9px; opacity:0; transition:opacity .2s; pointer-events:none;
   box-shadow:0 8px 24px -8px rgba(0,0,0,.5); max-width:min(90vw,560px); text-align:center}
@@ -229,11 +239,11 @@ td.strong{color:var(--ink); font-weight:600}
     <div>
       <div class="eyebrow" data-i18n="eyebrow">Outbound Operations</div>
       <h1 data-i18n="h1">Outbound Productivity Bridge</h1>
-      <p class="sub" data-i18n="sub">Volume, workforce, and operations constraints are applied in sequence to baseline UPH to arrive at final expected productivity. Comparing against actuals yields the execution gap and the best-performing center for each constraint.</p>
+      <p class="sub" data-i18n="sub">Volume, workforce, and operations constraints are applied in sequence to baseline HTP to arrive at final expected productivity. Comparing against actuals yields the execution gap and the best-performing center for each constraint.</p>
     </div>
     <div class="stamp">
-      <span data-i18n="st_period">Period</span> <b>2026-08</b><br>
-      <span data-i18n="st_unit">Unit</span> <b data-i18n="unit_val">UPH (pcs/man·hr)</b><br>
+      <span data-i18n="st_period">Period</span> <b id="stampPeriod">2026-08</b><br>
+      <span data-i18n="st_unit">Unit</span> <b data-i18n="unit_val">HTP (pcs/man·hr)</b><br>
       <span class="src" id="srcBadge"><i></i><span id="srcLabel">Sample data</span></span>
       <span class="lang" id="langTog" role="group" aria-label="Language / 언어"><button type="button" data-lang="en">EN</button><button type="button" data-lang="ko">한국어</button></span>
     </div>
@@ -256,7 +266,21 @@ td.strong{color:var(--ink); font-weight:600}
         <button class="btn" id="uploadBtn" type="button" data-i18n="btn_upload">⬆ Upload Excel</button>
         <input type="file" id="fileInput" accept=".xlsx" style="display:none">
         <button class="btn" id="resetDataBtn" type="button" data-i18n="btn_reset">Reset to sample</button>
+        <a class="btn" id="sampleBtn" href="upload_sample.xlsx" download data-i18n="btn_sample">⬇ Sample file</a>
+        <button class="btn" id="siteBtn" type="button" hidden data-i18n="btn_site">↻ Load site data</button>
         <span class="rail-note" style="padding-left:2px" data-i18n-html="rail_uphint">Upload the Excel model's <b>Data</b> sheet layout — Korean or English headers both work. Edits are saved in this browser.</span>
+      </div>
+      <div class="rail-row" id="periodRow" hidden>
+        <span class="rail-label" data-i18n="rail_period">Period</span>
+        <span class="lang" id="granTog" role="group" aria-label="Granularity">
+          <button type="button" data-gran="day" data-i18n="gr_day">Daily</button>
+          <button type="button" data-gran="week" data-i18n="gr_week">Weekly</button>
+          <button type="button" data-gran="month" data-i18n="gr_month">Monthly</button>
+        </span>
+        <button class="btn sq" id="perPrev" type="button" aria-label="Previous period">‹</button>
+        <select id="perSel" class="per-sel" aria-label="Select period"></select>
+        <button class="btn sq" id="perNext" type="button" aria-label="Next period">›</button>
+        <span class="rail-note" id="perRange"></span>
       </div>
       <p class="rail-note" id="railNote"></p>
     </div>
@@ -317,7 +341,7 @@ td.strong{color:var(--ink); font-weight:600}
       <span><i class="sw-ops"></i><span data-i18n="g_ops">Operations</span></span>
       <span><i class="sw-anchor"></i><span data-i18n="lg_final">Final expected</span></span>
       <span><i class="sw-actual"></i><span data-i18n="lg_actual">Actual</span></span>
-      <span style="color:var(--muted)" data-i18n="lg_target_uph">┆ Target UPH</span>
+      <span style="color:var(--muted)" data-i18n="lg_target_uph">┆ Target HTP</span>
     </div>
   </section>
 
@@ -355,6 +379,19 @@ td.strong{color:var(--ink); font-weight:600}
     </section>
   </div>
 
+  <!-- TREND -->
+  <section class="panel" id="trendPanel" hidden>
+    <div class="panel-hd">
+      <div>
+        <h2 data-i18n="trend_h">Actual HTP Trend</h2>
+        <p data-i18n="trend_p">Actual HTP by period (ΣVolume ÷ ΣHours) — switch daily / weekly / monthly above. The selected center is emphasized.</p>
+      </div>
+      <div class="num" id="trendSummary" style="font-size:12.5px; color:var(--ink-2)"></div>
+    </div>
+    <div class="panel-bd"><svg id="trend" class="chart" role="img" aria-label="Actual HTP trend by period"></svg></div>
+    <div class="legend" id="trendLegend"></div>
+  </section>
+
   <!-- EXECUTION GAP -->
   <section class="panel">
     <div class="panel-hd">
@@ -389,14 +426,14 @@ td.strong{color:var(--ink); font-weight:600}
     <div class="panel-hd">
       <div>
         <h2 data-i18n="tbl_title">Loss Detail by Center</h2>
-        <p data-i18n="tbl_sub">Note: Losses are shown in UPH per constraint and exclude any lifted constraints. *Execution gap is always calculated on the all-constraints scenario and does not change with the toggles.</p>
+        <p data-i18n="tbl_sub">Note: Losses are shown in HTP per constraint and exclude any lifted constraints. *Execution gap is always calculated on the all-constraints scenario and does not change with the toggles.</p>
       </div>
     </div>
     <div class="tbl-wrap"><table id="tbl"></table></div>
   </section>
 
   <p class="foot">
-    <span data-i18n-html="foot1">Formula — <code>final expected = baseline × Π(1 − rateᵢ)</code>, applied in the order listed (volume → workforce → operations); each loss in UPH is the rate times what remained after the previous step. Execution gap = actual − fully-constrained expectation: positive means the floor beat the model, negative means the model is missing a loss.</span><br>
+    <span data-i18n-html="foot1">Formula — <code>final expected = baseline × Π(1 − rateᵢ)</code>, applied in the order listed (volume → workforce → operations); each loss in HTP is the rate times what remained after the previous step. Execution gap = actual − fully-constrained expectation: positive means the floor beat the model, negative means the model is missing a loss.</span><br>
     <span data-i18n-html="foot2">Figures are sample data. Upload your own Excel (same layout as the model's Data sheet) or edit constraints directly — everything recalculates.</span>
   </p>
 </div>
@@ -426,7 +463,8 @@ const SAMPLE = {
     {id:"wait",  group:"ops", name:"Waiting & supply delays",   short:"Wait/delay",  desc:"Pick waiting caused by upstream process delays", nameKo:"대기·물량 공급 지연", shortKo:"대기지연", descKo:"전공정 지연으로 발생하는 집품 대기", rates:{DT:5.5, IC:7.0, GH:4.2, GJ:6.4, DJ:3.6}},
     {id:"stock", group:"ops", name:"Stock-outs & rework",       short:"Stockout",    desc:"Re-search and re-pick driven by inventory inaccuracy", nameKo:"결품·재작업", shortKo:"결품재작업", descKo:"재고 부정확에 따른 재탐색·재집품", rates:{DT:2.0, IC:3.2, GH:2.6, GJ:4.5, DJ:1.8}},
     {id:"brk",   group:"ops", name:"Breaks & indirect work",    short:"Breaks",      desc:"Statutory breaks plus tidy-up and reporting time", nameKo:"휴게·간접업무", shortKo:"휴게간접", descKo:"법정 휴게 및 정리·보고 등 간접업무 시간", rates:{DT:6.5, IC:6.2, GH:6.8, GJ:7.0, DJ:6.4}}
-  ]
+  ],
+  actualsPacked: {"start":"2026-06-15","ids":["DT","IC","GH","GJ","DJ"],"vol":{"DT":[239451,230155,213726,215140,231745,152429,77475,232681,235820,221534,211774,233709,151117,77406,242031,225375,205428,214728,232137,149212,75953,248309,235236,229082,210254,234404,155611,73599,256214,237521,231573,207468,234280,150989,77581,260360,232206,217936,220819,239539,147017,72186,244601,239097,227770,228846,234012,155697,79934,257082,242872,218321,225023,246204,144644,78070,243813,238740,230723,216296,233433,149260,79855,264199,236267,228552,222974,248413,160732,77653,242513,243680,226478,211422,245932,158529,77135,255905,237239,233012,232417,253342,153653,81457],"IC":[180679,171413,157064,157229,177252,107489,54064,179848,166474,162990,162824,169335,113870,54037,175989,175545,170224,157554,168084,108412,54982,182826,164064,172163,149939,174946,111494,53015,184305,158770,174905,160412,162198,109606,55887,169054,164040,151463,163550,173688,105523,56261,182673,180235,165073,163039,171149,107857,54990,159957,165583,160185,145511,172071,112265,56563,173018,161865,152778,156010,167340,112364,53899,170903,165343,171345,157654,167760,109221,56264,171074,166311,161985,150756,166209,115013,55177,171593,172635,161903,151915,167027,106413,55235],"GH":[126925,112830,110446,110152,118532,75948,37182,125530,116210,113470,110407,121934,73598,37116,121820,119411,119048,104259,114723,75448,37743,125383,114103,114241,109011,123057,77663,39441,125729,119497,111576,106664,118323,72737,38877,129452,114347,112762,108648,120997,78449,39340,123235,123312,112790,111157,116763,79646,42514,124808,123507,111519,102384,112157,78097,38618,125630,120933,114078,115915,119504,75822,40999,128982,118136,120698,112120,121118,77563,39043,121607,120529,117116,113883,122874,76938,38737,130613,120785,118436,113649,122576,78362,40151],"GJ":[93041,87342,84270,81207,84475,52719,28332,92394,86242,77451,75308,86929,55568,29419,87354,80395,85087,78481,84070,55066,28424,90890,83310,78511,83627,85589,59737,27652,87936,82102,81285,85721,80722,53070,26384,91742,81212,79496,81682,85444,54716,27210,88886,83860,85180,79498,83751,57967,29394,85376,80543,77948,80737,83492,52505,27106,87195,82046,82134,79981,81290,55468,26888,91113,84280,82859,79196,83409,55824,27502,88885,83953,79366,79471,86829,53904,29111,90144,81406,82108,76786,84416,52624,26926],"DJ":[261986,231822,222990,232337,242958,159339,83105,250450,251413,228830,214305,242973,146867,79631,240491,242552,242121,223041,249852,151265,82685,255537,251124,237660,248440,247079,169008,79396,271300,236508,238530,219558,246366,158806,76733,261022,252124,234546,226481,253544,157006,84344,251553,251300,231293,227708,232883,155212,88844,253693,254677,234849,243173,247790,158371,79412,268137,249661,231406,234754,252593,163994,79694,248166,248957,211538,228617,244362,153910,80742,272510,240810,238082,224561,249165,151360,84379,270524,231176,240403,225338,245703,157598,77802]},"hrs":{"DT":[1436.9,1433.4,1357.6,1377.9,1431.0,1041.5,566.7,1412.6,1450.7,1396.5,1345.1,1441.7,1012.9,568.2,1409.8,1370.8,1382.5,1409.6,1392.9,997.4,562.1,1465.5,1423.5,1412.9,1365.5,1442.0,1065.3,553.0,1482.9,1437.2,1396.8,1370.6,1386.5,1022.9,573.6,1508.8,1396.4,1376.2,1369.6,1449.1,1011.8,553.2,1453.9,1413.1,1404.2,1410.1,1398.9,1025.5,565.1,1431.5,1416.9,1367.9,1424.8,1447.4,1032.3,559.2,1441.8,1383.8,1437.6,1375.2,1392.3,993.2,565.5,1450.0,1376.8,1408.5,1338.8,1444.6,1032.3,559.5,1447.5,1470.7,1408.4,1374.4,1451.3,1016.9,570.6,1456.1,1445.6,1419.1,1402.2,1489.2,1011.8,582.2],"IC":[1206.2,1158.4,1165.6,1133.0,1196.5,851.4,454.3,1192.7,1182.6,1145.3,1170.3,1191.1,880.9,474.7,1191.4,1170.2,1148.4,1135.7,1183.6,846.1,486.9,1235.4,1177.2,1138.5,1134.5,1198.5,838.4,464.1,1204.9,1169.6,1208.0,1154.1,1162.2,851.2,463.7,1175.2,1185.5,1151.0,1181.9,1205.8,830.1,482.5,1205.4,1169.6,1165.8,1200.1,1149.0,849.9,455.5,1148.3,1168.0,1140.9,1100.6,1190.9,856.0,480.8,1178.0,1156.7,1162.3,1138.7,1190.9,843.3,462.6,1163.6,1171.8,1180.6,1130.6,1155.2,849.7,486.9,1148.4,1160.9,1169.5,1100.2,1200.4,874.8,448.9,1148.1,1176.3,1205.3,1103.6,1164.8,834.8,454.8],"GH":[972.0,923.5,897.8,903.0,961.5,659.9,362.1,935.2,916.2,908.3,897.9,941.3,650.7,362.4,954.2,948.5,910.8,894.3,901.1,665.9,362.2,971.5,904.3,927.8,909.9,942.7,654.8,362.0,960.4,919.6,920.6,884.6,933.4,666.9,363.5,949.5,907.3,882.8,889.8,932.7,677.1,365.5,951.5,946.3,910.9,899.6,896.9,670.8,384.4,937.3,955.3,919.2,854.7,903.1,650.6,359.3,917.3,901.3,912.6,926.9,906.4,654.5,370.7,954.3,917.1,938.2,894.9,941.5,666.7,375.5,923.4,895.1,911.8,925.4,892.2,672.8,365.0,951.0,921.4,933.9,907.3,930.8,660.0,373.7],"GJ":[763.4,757.3,741.8,742.5,737.6,516.0,300.4,762.0,744.8,716.5,710.0,749.1,537.0,304.2,755.5,720.6,754.9,722.7,717.0,537.8,306.2,755.7,739.0,718.1,744.9,735.8,557.5,292.5,766.1,744.3,715.1,752.8,731.0,525.2,282.5,787.1,740.7,746.8,758.2,746.6,530.8,299.7,762.2,737.2,763.0,755.3,740.7,537.9,302.8,761.5,724.8,738.9,735.6,740.2,530.3,296.7,746.1,733.5,744.8,736.8,746.6,543.1,298.9,757.0,751.5,747.3,732.1,749.7,534.1,295.0,746.7,730.8,740.4,734.2,746.0,526.5,301.7,762.6,739.9,737.1,710.1,741.8,534.6,302.1],"DJ":[1572.0,1513.6,1453.3,1532.0,1542.8,1118.6,617.3,1559.1,1590.8,1495.2,1448.6,1515.8,1066.9,624.1,1518.6,1532.3,1550.0,1472.7,1573.8,1078.9,612.0,1574.2,1550.9,1548.2,1553.9,1523.3,1084.2,608.5,1586.9,1551.1,1517.6,1490.0,1558.9,1127.1,595.8,1616.1,1615.0,1491.8,1519.3,1632.2,1125.9,615.8,1565.1,1569.8,1484.6,1491.6,1536.5,1123.9,640.1,1558.9,1575.5,1523.0,1508.7,1562.0,1088.1,602.7,1632.7,1539.9,1517.9,1495.0,1515.4,1149.5,631.8,1570.8,1568.2,1468.8,1513.1,1551.3,1101.9,620.1,1618.8,1533.0,1518.4,1464.7,1529.7,1075.5,615.4,1582.2,1509.4,1504.0,1506.5,1526.7,1100.2,623.3]}}
 };
 
 /* ============ I18N ============ */
@@ -434,8 +472,18 @@ const I18N = {
  en:{
   doc_title:"Outbound Productivity Bridge",
   eyebrow:"Outbound Operations", h1:"Outbound Productivity Bridge",
-  sub:"Volume, workforce, and operations constraints are applied in sequence to baseline UPH to arrive at final expected productivity. Comparing against actuals yields the execution gap and the best-performing center for each constraint.",
-  st_period:"Period", st_unit:"Unit", unit_val:"UPH (pcs/man·hr)",
+  sub:"Volume, workforce, and operations constraints are applied in sequence to baseline HTP to arrive at final expected productivity. Comparing against actuals yields the execution gap and the best-performing center for each constraint.",
+  st_period:"Period", st_unit:"Unit", unit_val:"HTP (pcs/man·hr)",
+  rail_period:"Period", gr_day:"Daily", gr_week:"Weekly", gr_month:"Monthly",
+  btn_sample:"⬇ Sample file", btn_site:"↻ Load site data",
+  trend_h:"Actual HTP Trend",
+  trend_p:"Actual HTP by period (ΣVolume ÷ ΣHours) — switch daily / weekly / monthly above. The selected center is emphasized.",
+  ts_site:"Loaded site data (data.xlsx) — {0} centers · {1} constraints",
+  ts_site_avail:"Site data has been updated — press “Load site data” to apply it.",
+  d_day:"DoD", d_week:"WoW", d_month:"MoM",
+  no_data_period:"no data",
+  m_period:" · {0}",
+  br_actual_sub2:"Actuals · {0}",
   src_sample:"Sample data", src_edited:" (edited)",
   rail_center:"Center", rail_con:"Constraints", rail_data:"Data",
   btn_reapply:"Re-apply all", btn_upload:"⬆ Upload Excel", btn_reset:"Reset to sample",
@@ -453,7 +501,7 @@ const I18N = {
   m_vsbase:"Down {0} vs baseline", m_noact:"No actuals in data",
   m_vsmodel_up:"Up {0} vs full-constraint model", m_vsmodel_dn:"Down {0} vs full-constraint model",
   m_lifted:"{0} lifted, vs all constraints applied", m_toggle_hint:"Toggle a constraint off to see recoverable productivity.",
-  m_combined:"Combined loss of {0} UPH, {1}", m_nocon:"No active constraints",
+  m_combined:"Combined loss of {0} HTP, {1}", m_nocon:"No active constraints",
   m_topexec_up:"Up {0} vs model, {1}", m_topexec_dn:"Down {0} vs model, {1}",
   m_targets_met:"{0} of {1} targets met", m_targets_only:"{0} of {1} targets met",
   br_title:"{0} – Productivity Bridge",
@@ -461,7 +509,7 @@ const I18N = {
   br_base_lab:"Baseline productivity", br_base_sub:"Engineered standard · {0}",
   br_final:"Final expected", br_final_sub:"−{0}% vs baseline",
   br_actual:"Actual", br_actual_sub:"Closed actuals, 2026-08", br_target:"Target {0}",
-  br_summary:"Baseline <b>{0}</b> → Final <b>{1}</b> UPH &nbsp;·&nbsp; vs target ",
+  br_summary:"Baseline <b>{0}</b> → Final <b>{1}</b> HTP &nbsp;·&nbsp; vs target ",
   tip_baseline:"Baseline", tip_loss:"Loss", tip_remaining:"Remaining", tip_target:"Target",
   tip_vs_scenario:"vs current scenario",
   cmp_title:"Loss Composition by Center",
@@ -485,9 +533,9 @@ const I18N = {
   th_center:"Center", th_base:"Baseline", th_final:"Final expected", th_actual:"Actual",
   th_gap:"Exec gap*", th_target:"Target", th_vstarget:"vs Target",
   tbl_title:"Loss Detail by Center",
-  tbl_sub:"Note: Losses are shown in UPH per constraint and exclude any lifted constraints. *Execution gap is always calculated on the all-constraints scenario and does not change with the toggles.",
+  tbl_sub:"Note: Losses are shown in HTP per constraint and exclude any lifted constraints. *Execution gap is always calculated on the all-constraints scenario and does not change with the toggles.",
   lg_baseline:"Baseline", lg_final:"Final expected", lg_actual:"Actual",
-  lg_target_uph:"┆ Target UPH", lg_target:"┆ Target", lg_actual_line:"│ Actual",
+  lg_target_uph:"┆ Target HTP", lg_target:"┆ Target", lg_actual_line:"│ Actual",
   lg_execgap:"▲▼ Execution gap", lg_best:"Best (lowest loss rate)", lg_other:"Other centers",
   lg_hint:"Further left = smaller loss — hover a dot for center detail",
   note_lifted:"{0} lifted — {1} · showing productivity if these were fully resolved.",
@@ -499,14 +547,24 @@ const I18N = {
   err_zip:"Not a valid .xlsx file (zip signature missing)",
   err_nocenter:"No center table found — need a header row with ID + Base (기준 생산성)",
   err_nocon:"No constraint table found — need ID + Active (적용) + one rate column per center ID",
-  foot1:"Formula — <code>final expected = baseline × Π(1 − rate\u1d62)</code>, applied in the order listed (volume → workforce → operations); each loss in UPH is the rate times what remained after the previous step. Execution gap = actual − fully-constrained expectation: positive means the floor beat the model, negative means the model is missing a loss.",
+  foot1:"Formula — <code>final expected = baseline × Π(1 − rate\u1d62)</code>, applied in the order listed (volume → workforce → operations); each loss in HTP is the rate times what remained after the previous step. Execution gap = actual − fully-constrained expectation: positive means the floor beat the model, negative means the model is missing a loss.",
   foot2:"Figures are sample data. Upload your own Excel (same layout as the model's Data sheet) or edit constraints directly — everything recalculates."
  },
  ko:{
   doc_title:"출고 생산성 브릿지",
   eyebrow:"출고 운영", h1:"출고 생산성 브릿지",
-  sub:"기준 UPH에 물량·인력·운영 제약을 순차 적용해 최종 예상 생산성을 산출합니다. 실적과 대조하면 실행 갭과 제약별 최우수 센터가 드러납니다.",
-  st_period:"기준월", st_unit:"단위", unit_val:"UPH (개/인·시)",
+  sub:"기준 HTP에 물량·인력·운영 제약을 순차 적용해 최종 예상 생산성을 산출합니다. 실적과 대조하면 실행 갭과 제약별 최우수 센터가 드러납니다.",
+  st_period:"기간", st_unit:"단위", unit_val:"HTP (개/인·시)",
+  rail_period:"기간", gr_day:"일별", gr_week:"주별", gr_month:"월별",
+  btn_sample:"⬇ 샘플 파일", btn_site:"↻ 사이트 데이터 불러오기",
+  trend_h:"실적 HTP 추이",
+  trend_p:"기간별 실적 HTP (Σ물량 ÷ Σ공수) — 위에서 일별/주별/월별을 전환할 수 있습니다. 선택한 센터가 강조됩니다.",
+  ts_site:"사이트 데이터(data.xlsx)를 불러왔습니다 — 센터 {0}개 · 제약 {1}개",
+  ts_site_avail:"사이트 데이터가 갱신됐습니다 — “사이트 데이터 불러오기”를 누르면 반영됩니다.",
+  d_day:"전일 대비", d_week:"전주 대비", d_month:"전월 대비",
+  no_data_period:"데이터 없음",
+  m_period:" · {0}",
+  br_actual_sub2:"확정 실적 · {0}",
   src_sample:"샘플 데이터", src_edited:" (수정됨)",
   rail_center:"센터", rail_con:"제약", rail_data:"데이터",
   btn_reapply:"전체 적용으로 되돌리기", btn_upload:"⬆ 엑셀 업로드", btn_reset:"샘플로 초기화",
@@ -524,7 +582,7 @@ const I18N = {
   m_vsbase:"기준 대비 {0} 감소", m_noact:"데이터에 실적 없음",
   m_vsmodel_up:"전체 제약 예상 대비 {0} 상회", m_vsmodel_dn:"전체 제약 예상 대비 {0} 하회",
   m_lifted:"{0}개 해제, 전체 적용 대비", m_toggle_hint:"제약을 해제하면 회복 가능분이 표시됩니다.",
-  m_combined:"합산 손실 {0} UPH, {1}", m_nocon:"적용 중인 제약 없음",
+  m_combined:"합산 손실 {0} HTP, {1}", m_nocon:"적용 중인 제약 없음",
   m_topexec_up:"예상 대비 {0} 상회, {1}", m_topexec_dn:"예상 대비 {0} 하회, {1}",
   m_targets_met:"목표 {1}개 중 {0}개 달성", m_targets_only:"목표 {1}개 중 {0}개 달성",
   br_title:"{0} – 생산성 브릿지",
@@ -532,7 +590,7 @@ const I18N = {
   br_base_lab:"기준 생산성", br_base_sub:"설계 기준 · {0}",
   br_final:"최종 예상", br_final_sub:"기준 대비 −{0}%",
   br_actual:"실적", br_actual_sub:"2026-08 확정 실적", br_target:"목표 {0}",
-  br_summary:"기준 <b>{0}</b> → 최종 <b>{1}</b> UPH &nbsp;·&nbsp; 목표 대비 ",
+  br_summary:"기준 <b>{0}</b> → 최종 <b>{1}</b> HTP &nbsp;·&nbsp; 목표 대비 ",
   tip_baseline:"기준 생산성", tip_loss:"손실", tip_remaining:"잔여", tip_target:"목표",
   tip_vs_scenario:"현재 시나리오 예상 대비",
   cmp_title:"센터별 손실 구성",
@@ -556,9 +614,9 @@ const I18N = {
   th_center:"센터", th_base:"기준", th_final:"최종 예상", th_actual:"실적",
   th_gap:"실행 갭*", th_target:"목표", th_vstarget:"목표 대비",
   tbl_title:"센터별 손실 상세",
-  tbl_sub:"주: 제약별 손실은 UPH 기준이며 해제한 제약은 제외됩니다. *실행 갭은 항상 전체 제약 적용 시나리오로 계산되어 토글의 영향을 받지 않습니다.",
+  tbl_sub:"주: 제약별 손실은 HTP 기준이며 해제한 제약은 제외됩니다. *실행 갭은 항상 전체 제약 적용 시나리오로 계산되어 토글의 영향을 받지 않습니다.",
   lg_baseline:"기준 생산성", lg_final:"최종 예상", lg_actual:"실적",
-  lg_target_uph:"┆ 목표 UPH", lg_target:"┆ 목표", lg_actual_line:"│ 실적",
+  lg_target_uph:"┆ 목표 HTP", lg_target:"┆ 목표", lg_actual_line:"│ 실적",
   lg_execgap:"▲▼ 실행 갭", lg_best:"최우수 (손실률 최소)", lg_other:"기타 센터",
   lg_hint:"왼쪽일수록 손실이 적음 — 점에 마우스를 올리면 센터별 값이 표시됩니다",
   note_lifted:"{0}개 해제 — {1} · 해당 제약이 완전히 개선됐을 때의 생산성입니다.",
@@ -570,7 +628,7 @@ const I18N = {
   err_zip:"올바른 .xlsx 파일이 아닙니다 (zip 서명 없음)",
   err_nocenter:"센터 표를 찾지 못했습니다 — ID + 기준 생산성(Base) 헤더 행이 필요합니다",
   err_nocon:"제약 표를 찾지 못했습니다 — ID + 적용(Active) + 센터ID별 제약률 열이 필요합니다",
-  foot1:"계산식 — <code>최종 예상 = 기준 × Π(1 − 제약률\u1d62)</code>, 표시된 순서(물량 → 인력 → 운영)대로 적용합니다. 각 손실 UPH는 제약률 × 직전 단계 잔여값입니다. 실행 갭 = 실적 − 전체 제약 적용 예상: 양수면 현장이 모델을 넘어선 것이고, 음수면 모델이 놓친 손실이 있다는 신호입니다.",
+  foot1:"계산식 — <code>최종 예상 = 기준 × Π(1 − 제약률\u1d62)</code>, 표시된 순서(물량 → 인력 → 운영)대로 적용합니다. 각 손실 HTP는 제약률 × 직전 단계 잔여값입니다. 실행 갭 = 실적 − 전체 제약 적용 예상: 양수면 현장이 모델을 넘어선 것이고, 음수면 모델이 놓친 손실이 있다는 신호입니다.",
   foot2:"수치는 샘플입니다. 직접 만든 엑셀(모델의 Data 시트와 같은 형식)을 업로드하거나 제약을 바로 수정하면 전체가 다시 계산됩니다."
  }
 };
@@ -600,10 +658,101 @@ function loadDB(){
   }catch(e){ return null; }
 }
 function saveDB(){
+  DB._local = true;
+  if(SITE) $("#siteBtn").hidden = false;
   try{ localStorage.setItem(LS_KEY, JSON.stringify(DB)); }catch(e){}
 }
+let SITE = null;   // parsed site data.xlsx, when present
 let DB = loadDB() || clone(SAMPLE);
-const state = { center: DB.centers[0].id, off: new Set() };
+const state = { center: DB.centers[0].id, off: new Set(), gran: "week", period: null };
+
+/* ============ PERIOD ENGINE ============ */
+function unpackActuals(pk){
+  if(!pk || !pk.start || !pk.ids) return null;
+  const rows = [];
+  const t0 = new Date(pk.start + "T00:00:00Z").getTime();
+  pk.ids.forEach(id => {
+    const vs = pk.vol[id] || [], hs = pk.hrs[id] || [];
+    for(let i = 0; i < vs.length; i++){
+      const d = new Date(t0 + i * 86400000).toISOString().slice(0,10);
+      rows.push({d, id, vol: vs[i], hrs: hs[i]});
+    }
+  });
+  return rows;
+}
+function ensureActuals(db){
+  if(!db.actuals && db.actualsPacked) db.actuals = unpackActuals(db.actualsPacked);
+  return db.actuals && db.actuals.length ? db.actuals : null;
+}
+function isoWeek(dstr){
+  const dt = new Date(dstr + "T00:00:00Z");
+  const day = (dt.getUTCDay() + 6) % 7;
+  dt.setUTCDate(dt.getUTCDate() - day + 3);
+  const y = dt.getUTCFullYear();
+  const jan4 = new Date(Date.UTC(y, 0, 4));
+  const wk = 1 + Math.round(((dt - jan4) / 86400000 - 3 + ((jan4.getUTCDay() + 6) % 7)) / 7);
+  return y + "-W" + String(wk).padStart(2, "0");
+}
+function pKey(dstr, g){
+  if(g === "day") return dstr;
+  if(g === "month") return dstr.slice(0,7);
+  return isoWeek(dstr);
+}
+/* periods for current granularity: [{key, from, to, agg:{centerId:{vol,hrs}}}] sorted asc */
+function buildPeriods(){
+  const acts = ensureActuals(DB);
+  if(!acts) return [];
+  const map = new Map();
+  acts.forEach(r => {
+    if(!centerOf(r.id)) return;
+    const k = pKey(r.d, state.gran);
+    let e = map.get(k);
+    if(!e){ e = {key:k, from:r.d, to:r.d, agg:{}}; map.set(k, e); }
+    if(r.d < e.from) e.from = r.d;
+    if(r.d > e.to) e.to = r.d;
+    const a = e.agg[r.id] || (e.agg[r.id] = {vol:0, hrs:0});
+    a.vol += (+r.vol || 0); a.hrs += (+r.hrs || 0);
+  });
+  return [...map.values()].sort((a,b) => a.key < b.key ? -1 : 1);
+}
+let PERIODS = [];
+function periodUph(per, cid){
+  const a = per && per.agg[cid];
+  return (a && a.hrs > 0) ? a.vol / a.hrs : null;
+}
+/* write the selected period's actual HTP into each center's `actual` field */
+function applyPeriod(){
+  PERIODS = buildPeriods();
+  const row = $("#periodRow"), tp = $("#trendPanel");
+  if(!PERIODS.length){
+    if(row) row.hidden = true;
+    if(tp) tp.hidden = true;
+    return;
+  }
+  if(row) row.hidden = false;
+  if(tp) tp.hidden = false;
+  if(!state.period || !PERIODS.some(x => x.key === state.period))
+    state.period = PERIODS[PERIODS.length - 1].key;
+  const per = PERIODS.find(x => x.key === state.period);
+  DB.centers.forEach(c => {
+    const u = periodUph(per, c.id);
+    c.actual = u == null ? null : Math.round(u * 10) / 10;
+  });
+}
+function renderPeriodUI(){
+  if(!PERIODS.length) return;
+  document.querySelectorAll("#granTog button").forEach(b =>
+    b.setAttribute("aria-pressed", String(b.dataset.gran === state.gran)));
+  const sel = $("#perSel");
+  sel.innerHTML = PERIODS.map(x =>
+    `<option value="${esc(x.key)}"${x.key === state.period ? " selected" : ""}>${esc(x.key)}</option>`).join("");
+  const per = PERIODS.find(x => x.key === state.period);
+  $("#perRange").textContent = per ? (per.from === per.to ? per.from : per.from + " → " + per.to) : "";
+  const idx = PERIODS.findIndex(x => x.key === state.period);
+  $("#perPrev").disabled = idx <= 0;
+  $("#perNext").disabled = idx >= PERIODS.length - 1;
+  const st = $("#stampPeriod"); if(st) st.textContent = state.period;
+}
 
 /* ============ HELPERS ============ */
 const $ = s => document.querySelector(s);
@@ -839,7 +988,80 @@ function extractData(sheets){
   }
   if(!centers) throw new Error(T("err_nocenter"));
   if(!cons) throw new Error(T("err_nocon"));
-  return {centers, constraints: cons};
+  const actuals = extractActuals(sheets, centers);
+  return {centers, constraints: cons, actuals};
+}
+
+const HA_SYN = {
+  date:["date","날짜","일자"],
+  id:["id","center","센터","센터id","center id"],
+  vol:["volume","물량","출고량","qty","pcs","수량"],
+  hrs:["hours","공수","투입시간","시간","man-hr","manhr","mh","man hr"]
+};
+function excelDate(v){
+  if(typeof v === "number" && v > 20000 && v < 80000)
+    return new Date(Math.round((v - 25569) * 86400000)).toISOString().slice(0,10);
+  const t = String(v).trim().replace(/\./g, "-").replace(/\//g, "-");
+  const m = t.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+  if(m) return m[1] + "-" + m[2].padStart(2,"0") + "-" + m[3].padStart(2,"0");
+  const m2 = t.match(/^(\d{1,2})-(\d{1,2})-(\d{4})/);   // M-D-YYYY
+  if(m2) return m2[3] + "-" + m2[1].padStart(2,"0") + "-" + m2[2].padStart(2,"0");
+  return null;
+}
+function extractActuals(sheets, centers){
+  const idset = {};
+  centers.forEach(c => { idset[c.id.toLowerCase()] = c.id; });
+  for(const sh of sheets){
+    const cell = (r,c) => sh.grid[r + ":" + c];
+    for(let r = 1; r <= Math.min(sh.maxR, 40); r++){
+      const cols = {};
+      for(let c = 1; c <= sh.maxC; c++){
+        const h = cell(r,c); if(h == null) continue;
+        const n = String(h).trim().toLowerCase();
+        for(const key of ["date","id","vol","hrs"])
+          if(cols[key] == null && HA_SYN[key].includes(n)) cols[key] = c;
+      }
+      if(cols.date == null || cols.id == null || cols.vol == null || cols.hrs == null) continue;
+      const rows = [];
+      for(let rr = r + 1; rr <= sh.maxR; rr++){
+        const dv = cell(rr, cols.date);
+        if(dv == null || dv === "") break;
+        const d = excelDate(dv); if(!d) continue;
+        const rawId = String(cell(rr, cols.id) ?? "").trim().toLowerCase();
+        const id = idset[rawId]; if(!id) continue;
+        const vol = parseFloat(cell(rr, cols.vol)), hrs = parseFloat(cell(rr, cols.hrs));
+        if(isNaN(vol) || isNaN(hrs) || hrs <= 0) continue;
+        rows.push({d, id, vol, hrs});
+      }
+      if(rows.length) return rows;
+    }
+  }
+  return null;
+}
+
+/* ============ SITE DATA (data.xlsx on this origin) ============ */
+async function loadSite(){
+  try{
+    const resp = await fetch("data.xlsx?t=" + Date.now(), {cache:"no-store"});
+    if(!resp.ok) return null;
+    const data = extractData(await parseXlsx(await resp.arrayBuffer()));
+    return { source: "data.xlsx",
+      centers: data.centers,
+      constraints: data.constraints.map(k => { const {active, ...rest} = k; return rest; }),
+      actuals: data.actuals || null,
+      off: data.constraints.filter(k => k.active === false).map(k => k.id) };
+  }catch(e){ return null; }
+}
+function adoptSite(site){
+  DB = { source: site.source, centers: clone(site.centers),
+         constraints: clone(site.constraints), actuals: site.actuals ? clone(site.actuals) : null };
+  state.center = DB.centers[0].id;
+  state.off = new Set(site.off);
+  state.period = null;
+  try{ localStorage.removeItem(LS_KEY); }catch(e){}
+  $("#siteBtn").hidden = true;
+  render(); renderForm();
+  toast(TF("ts_site", DB.centers.length, DB.constraints.length));
 }
 
 /* ============ TOOLTIP ============ */
@@ -917,9 +1139,19 @@ document.addEventListener("click", e => {
   if(e.target.id === "fCancelBtn"){ $("#addForm").classList.remove("open"); return; }
   if(e.target.id === "uploadBtn"){ $("#fileInput").click(); return; }
   if(e.target.id === "resetDataBtn"){
-    DB = clone(SAMPLE); state.center = DB.centers[0].id; state.off.clear();
+    DB = clone(SAMPLE); state.center = DB.centers[0].id; state.off.clear(); state.period = null;
     try{ localStorage.removeItem(LS_KEY); }catch(err){}
+    if(SITE) $("#siteBtn").hidden = false;
     render(); renderForm(); toast(T("ts_reset")); return;
+  }
+  if(e.target.id === "siteBtn" && SITE){ adoptSite(SITE); return; }
+  const gb = e.target.closest("[data-gran]");
+  if(gb){ state.gran = gb.dataset.gran; state.period = null; render(); return; }
+  if(e.target.id === "perPrev" || e.target.id === "perNext"){
+    const idx = PERIODS.findIndex(x => x.key === state.period);
+    const nx = e.target.id === "perPrev" ? idx - 1 : idx + 1;
+    if(nx >= 0 && nx < PERIODS.length){ state.period = PERIODS[nx].key; render(); }
+    return;
   }
   if(e.target.id === "fAddBtn"){
     const name = $("#fName").value.trim();
@@ -945,6 +1177,7 @@ document.addEventListener("click", e => {
   }
 });
 
+$("#perSel").addEventListener("change", e => { state.period = e.target.value; render(); });
 $("#fileInput").addEventListener("change", async e => {
   const f = e.target.files[0]; e.target.value = "";
   if(!f) return;
@@ -954,9 +1187,11 @@ $("#fileInput").addEventListener("change", async e => {
     const sheets = await parseXlsx(buf);
     const data = extractData(sheets);
     DB = { source: f.name, centers: data.centers,
-           constraints: data.constraints.map(k => { const {active, ...rest} = k; return rest; }) };
+           constraints: data.constraints.map(k => { const {active, ...rest} = k; return rest; }),
+           actuals: data.actuals || null };
     state.center = DB.centers[0].id;
     state.off = new Set(data.constraints.filter(k => k.active === false).map(k => k.id));
+    state.period = null;
     saveDB(); render(); renderForm();
     toast(TF("ts_loaded", DB.centers.length, DB.constraints.length, f.name));
   }catch(err){
@@ -983,19 +1218,19 @@ function renderKpis(){
   const ex = HA ? execRows()[0] : null;
 
   const kpis = [
-    { k:T("kpi_base"), v:n1(wBase), u:"UPH", m:TF("m_centers", DB.centers.length, n0(hcSum)) },
-    { k:T("kpi_final"), v:n1(wFinal), u:"UPH",
+    { k:T("kpi_base"), v:n1(wBase), u:"HTP", m:TF("m_centers", DB.centers.length, n0(hcSum)) },
+    { k:T("kpi_final"), v:n1(wFinal), u:"HTP",
       m:TF("m_vsbase", `<span class="tag down">${n1((wBase-wFinal)/wBase*100)}%</span>`) },
-    { k:T("kpi_actual"), v: HA ? n1(wAct) : "—", u: HA ? "UPH" : "",
+    { k:T("kpi_actual") + (PERIODS.length && state.period ? TF("m_period", state.period) : ""), v: HA ? n1(wAct) : "—", u: HA ? "HTP" : "",
       m: HA ? TF(wAct-wFull>=0 ? "m_vsmodel_up" : "m_vsmodel_dn",
-                 `<span class="tag ${wAct-wFull>=0?"up":"down"}">${n1(Math.abs(wAct-wFull))} UPH</span>`) : T("m_noact") },
-    { k:T("kpi_recovery"), v:(gain>0?"+":"")+n1(gain), u:"UPH",
+                 `<span class="tag ${wAct-wFull>=0?"up":"down"}">${n1(Math.abs(wAct-wFull))} HTP</span>`) : T("m_noact") },
+    { k:T("kpi_recovery"), v:(gain>0?"+":"")+n1(gain), u:"HTP",
       m: state.off.size ? TF("m_lifted", state.off.size) : T("m_toggle_hint") },
     { k:T("kpi_driver"), v: top ? LX(top,"short") : "—", u:"",
       m: top ? TF("m_combined", `<span class="num">${n1(topVal)}</span>`, esc(GNAME[top.group])) : T("m_nocon"), small:true },
     { k:T("kpi_topexec"), v: ex ? LX(ex.c,"sname") : "—", u:"",
       m: ex ? TF(ex.gap>=0 ? "m_topexec_up" : "m_topexec_dn",
-                 `<span class="tag ${ex.gap>=0?"up":"down"}">${n1(Math.abs(ex.gap))} UPH</span>`,
+                 `<span class="tag ${ex.gap>=0?"up":"down"}">${n1(Math.abs(ex.gap))} HTP</span>`,
                  TF("m_targets_met", met, DB.centers.length)) : TF("m_targets_only", met, DB.centers.length), small:true }
   ];
   $("#kpis").innerHTML = kpis.map(x =>
@@ -1023,7 +1258,7 @@ function renderBridge(){
     s += `<line class="grid-line" x1="${x(t).toFixed(1)}" y1="${top-14}" x2="${x(t).toFixed(1)}" y2="${top + rows.length*rowH + 4}"/>`;
     s += `<text class="tick val" x="${x(t).toFixed(1)}" y="${top-20}" text-anchor="middle">${n0(t)}</text>`;
   }
-  s += `<text class="tick" x="${L}" y="${top-38}" text-anchor="start">UPH</text>`;
+  s += `<text class="tick" x="${L}" y="${top-38}" text-anchor="start">HTP</text>`;
 
   let prevEndX = null;
   rows.forEach((row, i) => {
@@ -1033,7 +1268,7 @@ function renderBridge(){
       s += `<text class="row-label" x="${L-14}" y="${y+rowH/2+1}" text-anchor="end" style="font-weight:600;fill:var(--ink)">${esc(T("br_base_lab"))}</text>`;
       s += `<text class="row-sub" x="${L-14}" y="${y+rowH/2+15}" text-anchor="end">${esc(TF("br_base_sub", r.c.code))}</text>`;
       s += `<rect class="bar-anchor-2" x="${x(0)}" y="${by}" width="${w.toFixed(1)}" height="${bh}" rx="4"
-             data-tip="<b>${esc(T("tip_baseline"))}</b><span class='tv'>${n1(r.base)}</span> UPH"/>`;
+             data-tip="<b>${esc(T("tip_baseline"))}</b><span class='tv'>${n1(r.base)}</span> HTP"/>`;
       s += `<text class="val" x="${(x(r.base)+10).toFixed(1)}" y="${by+16}">${n1(r.base)}</text>`;
       prevEndX = x(r.base);
     } else if(row.type === "step"){
@@ -1043,7 +1278,7 @@ function renderBridge(){
       s += `<text class="row-sub" x="${L-14}" y="${y+rowH/2+15}" text-anchor="end">${esc(GNAME[st.group])} · −${n1(st.rate)}%</text>`;
       if(prevEndX !== null) s += `<line class="connector" x1="${prevEndX.toFixed(1)}" y1="${y-(rowH-bh)/2}" x2="${x2.toFixed(1)}" y2="${by}"/>`;
       s += `<rect class="${GCLASS[st.group]}" x="${x1.toFixed(1)}" y="${by}" width="${w.toFixed(1)}" height="${bh}" rx="4"
-             data-tip="<b>${esc(LX(st,"name"))}</b>${esc(LX(st,"desc") || TF("con_suffix", GNAME[st.group]))}<br>${esc(T("tip_loss"))} <span class='tv'>−${n1(st.loss)}</span> UPH (−${n1(st.rate)}%)<br>${esc(T("tip_remaining"))} <span class='tv'>${n1(st.to)}</span> UPH"/>`;
+             data-tip="<b>${esc(LX(st,"name"))}</b>${esc(LX(st,"desc") || TF("con_suffix", GNAME[st.group]))}<br>${esc(T("tip_loss"))} <span class='tv'>−${n1(st.loss)}</span> HTP (−${n1(st.rate)}%)<br>${esc(T("tip_remaining"))} <span class='tv'>${n1(st.to)}</span> HTP"/>`;
       s += `<text class="val-neg" x="${(x1-10).toFixed(1)}" y="${by+16}" text-anchor="end">−${n1(st.loss)}</text>`;
       prevEndX = x1;
     } else if(row.type === "final"){
@@ -1052,7 +1287,7 @@ function renderBridge(){
       s += `<text class="row-sub" x="${L-14}" y="${y+rowH/2+15}" text-anchor="end">${esc(TF("br_final_sub", n1(r.lossPct)))}</text>`;
       if(prevEndX !== null) s += `<line class="connector" x1="${prevEndX.toFixed(1)}" y1="${y-(rowH-bh)/2}" x2="${x(r.final).toFixed(1)}" y2="${by}"/>`;
       s += `<rect class="bar-anchor" x="${x(0)}" y="${by}" width="${w.toFixed(1)}" height="${bh}" rx="4"
-             data-tip="<b>${esc(T("br_final"))}</b><span class='tv'>${n1(r.final)}</span> UPH<br>${esc(T("tip_target"))} <span class='tv'>${n1(r.target)}</span> UPH"/>`;
+             data-tip="<b>${esc(T("br_final"))}</b><span class='tv'>${n1(r.final)}</span> HTP<br>${esc(T("tip_target"))} <span class='tv'>${n1(r.target)}</span> HTP"/>`;
       s += `<text class="val" x="${(x(r.final)+10).toFixed(1)}" y="${by+16}">${n1(r.final)}</text>`;
       const tx = x(r.target), yb = top + rows.length*rowH + 4;
       s += `<line class="target" x1="${tx.toFixed(1)}" y1="${by-9}" x2="${tx.toFixed(1)}" y2="${yb}"/>`;
@@ -1061,9 +1296,9 @@ function renderBridge(){
       const act = r.c.actual, gap = act - r.final;
       const w = x(act) - x(0);
       s += `<text class="row-label" x="${L-14}" y="${y+rowH/2+1}" text-anchor="end" style="font-weight:600;fill:var(--ink)">${esc(T("br_actual"))}</text>`;
-      s += `<text class="row-sub" x="${L-14}" y="${y+rowH/2+15}" text-anchor="end">${esc(T("br_actual_sub"))}</text>`;
+      s += `<text class="row-sub" x="${L-14}" y="${y+rowH/2+15}" text-anchor="end">${esc(PERIODS.length ? TF("br_actual_sub2", state.period) : T("br_actual_sub"))}</text>`;
       s += `<rect class="bar-actual" x="${(x(0)+0.75).toFixed(1)}" y="${(by+0.75).toFixed(1)}" width="${(w-1.5).toFixed(1)}" height="${bh-1.5}" rx="4"
-             data-tip="<b>${esc(T("br_actual"))}</b><span class='tv'>${n1(act)}</span> UPH<br>${esc(T("tip_vs_scenario"))} <span class='tv'>${gap>=0?"+":"−"}${n1(Math.abs(gap))}</span> UPH"/>`;
+             data-tip="<b>${esc(T("br_actual"))}</b><span class='tv'>${n1(act)}</span> HTP<br>${esc(T("tip_vs_scenario"))} <span class='tv'>${gap>=0?"+":"−"}${n1(Math.abs(gap))}</span> HTP"/>`;
       s += `<text class="val" x="${(x(act)+10).toFixed(1)}" y="${by+16}">${n1(act)}</text>`;
       s += `<text class="val" x="${(x(act)+10+String(n1(act)).length*8.4).toFixed(1)}" y="${by+16}" style="font-size:11.5px;fill:var(--${gap>=0?"good":"crit"})">${gap>=0?"▲":"▼"}${n1(Math.abs(gap))}</text>`;
     }
@@ -1109,7 +1344,7 @@ function renderCompare(){
       const x1 = x(acc), x2 = x(acc + sg.w);
       const w = Math.max(1, x2 - x1 - (j < segs.length-1 ? 2 : 0));
       s += `<rect class="${sg.cls}" x="${x1.toFixed(1)}" y="${by}" width="${w.toFixed(1)}" height="${bh}" rx="${j===0?4:2}"
-             data-tip="<b>${esc(LX(r.c,"name"))} · ${esc(sg.lab)}</b><span class='tv'>${n1(sg.w)}</span> UPH (${n1(sg.w/r.base*100)}%)"/>`;
+             data-tip="<b>${esc(LX(r.c,"name"))} · ${esc(sg.lab)}</b><span class='tv'>${n1(sg.w)}</span> HTP (${n1(sg.w/r.base*100)}%)"/>`;
       acc += sg.w;
     });
     const tx = x(r.target);
@@ -1118,7 +1353,7 @@ function renderCompare(){
       const ax = x(r.c.actual), gap = r.c.actual - fullOf(r.c.id).final;
       s += `<line class="actual-mark" x1="${ax.toFixed(1)}" y1="${by-4}" x2="${ax.toFixed(1)}" y2="${by+bh+4}"/>`;
       s += `<rect class="hit" x="${(ax-6).toFixed(1)}" y="${by-6}" width="12" height="${bh+12}"
-             data-tip="<b>${esc(LX(r.c,"name"))} · ${esc(T("tip_actual"))}</b><span class='tv'>${n1(r.c.actual)}</span> UPH<br>${esc(T("tip_fullmodel"))} <span class='tv'>${n1(fullOf(r.c.id).final)}</span> UPH<br>${esc(T("tip_execgap"))} <span class='tv'>${gap>=0?"+":"−"}${n1(Math.abs(gap))}</span>"/>`;
+             data-tip="<b>${esc(LX(r.c,"name"))} · ${esc(T("tip_actual"))}</b><span class='tv'>${n1(r.c.actual)}</span> HTP<br>${esc(T("tip_fullmodel"))} <span class='tv'>${n1(fullOf(r.c.id).final)}</span> HTP<br>${esc(T("tip_execgap"))} <span class='tv'>${gap>=0?"+":"−"}${n1(Math.abs(gap))}</span>"/>`;
       s += `<text class="val" x="${(x(r.base)+8).toFixed(1)}" y="${by+15}" style="font-size:11.5px">${n1(r.final)}</text>`;
       s += `<text class="val" x="${(x(r.base)+56).toFixed(1)}" y="${by+15}" style="font-size:11px;fill:var(--${gap>=0?"good":"crit"})">${gap>=0?"▲":"▼"}${n1(Math.abs(gap))}</text>`;
     } else {
@@ -1154,7 +1389,7 @@ function renderHeat(){
       const lv = heatLevel(pct);
       const dim = state.off.has(k.id) ? ' opacity=".18"' : "";
       s += `<g${dim}><rect class="lv${lv}" x="${(L+j*cw).toFixed(1)}" y="${y}" width="${(cw-3).toFixed(1)}" height="${cellH}" rx="4"
-        data-tip="<b>${esc(LX(r.c,"name"))} · ${esc(LX(k,"name"))}</b>${esc(T("tip_loss"))} <span class='tv'>${n1(st.loss)}</span> UPH<br>${TF("heat_tip_pct", n1(pct))}${state.off.has(k.id)?T("tip_lifted"):""}"/>
+        data-tip="<b>${esc(LX(r.c,"name"))} · ${esc(LX(k,"name"))}</b>${esc(T("tip_loss"))} <span class='tv'>${n1(st.loss)}</span> HTP<br>${TF("heat_tip_pct", n1(pct))}${state.off.has(k.id)?T("tip_lifted"):""}"/>
         <text class="cell-txt t${lv}" x="${(L+j*cw+(cw-3)/2).toFixed(1)}" y="${y+cellH/2+4}" text-anchor="middle">${n1(pct)}</text></g>`;
     });
   });
@@ -1194,7 +1429,7 @@ function renderExec(){
     s += `<text class="row-label" x="${L-14}" y="${by+13}" text-anchor="end" ${sel?'style="fill:var(--ink);font-weight:600"':""}>${esc(LX(r.c,"name"))}</text>`;
     s += `<text class="rank" x="18" y="${by+13}" text-anchor="start">${i+1}</text>`;
     s += `<rect class="${pos?"b-good":"b-crit"}" x="${x1.toFixed(1)}" y="${by}" width="${w.toFixed(1)}" height="${bh}" rx="3"
-           data-tip="<b>${esc(LX(r.c,"name"))}</b>${esc(T("br_final"))} <span class='tv'>${n1(r.exp)}</span> UPH<br>${esc(T("tip_actual"))} <span class='tv'>${n1(r.act)}</span> UPH<br>${esc(T("tip_execgap"))} <span class='tv'>${pos?"+":"−"}${n1(Math.abs(r.gap))}</span> UPH (${n1((r.ratio-1)*100)}%)"/>`;
+           data-tip="<b>${esc(LX(r.c,"name"))}</b>${esc(T("br_final"))} <span class='tv'>${n1(r.exp)}</span> HTP<br>${esc(T("tip_actual"))} <span class='tv'>${n1(r.act)}</span> HTP<br>${esc(T("tip_execgap"))} <span class='tv'>${pos?"+":"−"}${n1(Math.abs(r.gap))}</span> HTP (${n1((r.ratio-1)*100)}%)"/>`;
     s += `<text class="val" x="${(pos ? x(r.gap)+8 : x(r.gap)-8).toFixed(1)}" y="${by+13}" text-anchor="${pos?"start":"end"}"
            style="font-size:12px;fill:var(--${pos?"good":"crit"})">${pos?"+":"−"}${n1(Math.abs(r.gap))}</text>`;
     s += `<text class="val" x="${W-124}" y="${by+13}" text-anchor="end" style="font-size:11.5px;fill:var(--ink-2);font-weight:400">${n1(r.exp)} → ${n1(r.act)}</text>`;
@@ -1241,11 +1476,11 @@ function renderBest(){
     s += `<line x1="${x(d.best.rate).toFixed(1)}" y1="${cy}" x2="${x(d.worst.rate).toFixed(1)}" y2="${cy}" stroke="var(--grid)" stroke-width="3" stroke-linecap="round"/>`;
     d.rows.slice(1).forEach(rw => {
       s += `<circle class="dot-o" cx="${x(rw.rate).toFixed(1)}" cy="${cy}" r="5.5"
-             data-tip="<b>${esc(LX(rw.c,"name"))} · ${esc(LX(d.k,"name"))}</b>${esc(T("tip_lossrate"))} <span class='tv'>${n1(rw.rate)}%</span><br>${esc(T("tip_loss"))} <span class='tv'>${n1(rw.loss)}</span> UPH<br>${esc(TF("tip_vsbest", LX(d.best.c,"sname")))} <span class='tv'>+${n1(rw.rate-d.best.rate)}pp</span>"/>`;
+             data-tip="<b>${esc(LX(rw.c,"name"))} · ${esc(LX(d.k,"name"))}</b>${esc(T("tip_lossrate"))} <span class='tv'>${n1(rw.rate)}%</span><br>${esc(T("tip_loss"))} <span class='tv'>${n1(rw.loss)}</span> HTP<br>${esc(TF("tip_vsbest", LX(d.best.c,"sname")))} <span class='tv'>+${n1(rw.rate-d.best.rate)}pp</span>"/>`;
     });
     const bx = x(d.best.rate), wx = x(d.worst.rate);
     s += `<circle class="${GCLASS[d.k.group]}" cx="${bx.toFixed(1)}" cy="${cy}" r="7"
-           data-tip="<b>${esc(TF("tip_bestof", LX(d.best.c,"name")))}</b>${esc(T("tip_lossrate"))} <span class='tv'>${n1(d.best.rate)}%</span><br>${esc(T("tip_loss"))} <span class='tv'>${n1(d.best.loss)}</span> UPH<br>${esc(T("tip_vsavg"))} <span class='tv'>−${n1(d.avg-d.best.rate)}pp</span>"/>`;
+           data-tip="<b>${esc(TF("tip_bestof", LX(d.best.c,"name")))}</b>${esc(T("tip_lossrate"))} <span class='tv'>${n1(d.best.rate)}%</span><br>${esc(T("tip_loss"))} <span class='tv'>${n1(d.best.loss)}</span> HTP<br>${esc(T("tip_vsavg"))} <span class='tv'>−${n1(d.avg-d.best.rate)}pp</span>"/>`;
     s += `<text class="best-lab" x="${(bx-13).toFixed(1)}" y="${cy+4}" text-anchor="end">${esc(LX(d.best.c,"sname"))} ${n1(d.best.rate)}</text>`;
     s += `<text class="worst-lab" x="${(wx+13).toFixed(1)}" y="${cy+4}" text-anchor="start">${esc(LX(d.worst.c,"sname"))} ${n1(d.worst.rate)}</text>`;
     s += `<text class="val" x="${W-10}" y="${cy+4}" text-anchor="end" style="font-size:11.5px;fill:var(--ink-2);font-weight:400">${esc(TF("best_spread", n1(d.worst.rate-d.best.rate)))}</text>`;
@@ -1278,8 +1513,83 @@ function renderTable(){
 }
 
 /* ============ RENDER ============ */
+/* ============ TREND ============ */
+function renderTrend(){
+  if(!PERIODS.length) return;
+  const KEEP = state.gran === "day" ? 35 : state.gran === "week" ? 20 : 14;
+  const ps = PERIODS.slice(-KEEP);
+  const n = ps.length;
+  const centers = DB.centers.slice(0, 5);   // fixed palette slots 1..5
+  const series = centers.map((c, i) => ({
+    c, slot: i + 1,
+    pts: ps.map((per, j) => ({ j, per, u: periodUph(per, c.id) }))
+  }));
+  const allU = series.flatMap(sr => sr.pts.map(pt => pt.u).filter(u => u != null));
+  if(!allU.length){ $("#trendPanel").hidden = true; return; }
+  const lo = Math.floor(Math.min(...allU) / 10) * 10 - 10;
+  const hi = Math.ceil(Math.max(...allU) / 10) * 10 + 10;
+
+  const W = 980, L = 64, R = 880, top = 26, bot = 46;
+  const H = 300;
+  const x = j => n === 1 ? (L + R) / 2 : L + (j / (n - 1)) * (R - L);
+  const y = u => top + (1 - (u - lo) / (hi - lo)) * (H - top - bot);
+
+  let sv = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" style="width:100%;height:auto">`;
+  for(let t = lo; t <= hi; t += Math.max(10, Math.round((hi - lo) / 5 / 10) * 10)){
+    sv += `<line class="grid-line" x1="${L}" y1="${y(t).toFixed(1)}" x2="${R}" y2="${y(t).toFixed(1)}"/>`;
+    sv += `<text class="tick val" x="${L - 8}" y="${(y(t) + 4).toFixed(1)}" text-anchor="end">${n0(t)}</text>`;
+  }
+  const step = Math.max(1, Math.ceil(n / 9));
+  ps.forEach((per, j) => {
+    if(j % step && j !== n - 1) return;
+    const lab = state.gran === "day" ? per.key.slice(5) : state.gran === "week" ? per.key.slice(5) : per.key;
+    sv += `<text class="tick" x="${x(j).toFixed(1)}" y="${H - bot + 18}" text-anchor="middle">${esc(lab)}</text>`;
+  });
+  // selected-period marker
+  const selIdx = ps.findIndex(per => per.key === state.period);
+  if(selIdx >= 0)
+    sv += `<line class="target" x1="${x(selIdx).toFixed(1)}" y1="${top - 6}" x2="${x(selIdx).toFixed(1)}" y2="${H - bot + 4}"/>`;
+
+  const dName = T("d_" + state.gran);
+  series.forEach(sr => {
+    const sel = sr.c.id === state.center;
+    const pts = sr.pts.filter(pt => pt.u != null);
+    if(!pts.length) return;
+    const path = pts.map((pt, i) => (i ? "L" : "M") + x(pt.j).toFixed(1) + " " + y(pt.u).toFixed(1)).join(" ");
+    sv += `<path class="trend-line ln${sr.slot}${sel ? " sel" : ""}${sel ? "" : " trend-dim"}" d="${path}"/>`;
+    pts.forEach((pt, i) => {
+      const prev = i > 0 ? pts[i - 1].u : null;
+      const dl = prev != null ? (pt.u - prev >= 0 ? "+" : "−") + n1(Math.abs(pt.u - prev)) : "—";
+      const a = pt.per.agg[sr.c.id];
+      sv += `<circle class="dt${sr.slot}${sel ? "" : " trend-dim"}" cx="${x(pt.j).toFixed(1)}" cy="${y(pt.u).toFixed(1)}" r="${sel ? 4 : 3}"
+        data-tip="<b>${esc(LX(sr.c, "name"))} · ${esc(pt.per.key)}</b>HTP <span class='tv'>${n1(pt.u)}</span><br>${esc(T("th_vol"))} <span class='tv'>${n0(a.vol)}</span> · ${esc(T("th_hrs"))} <span class='tv'>${n0(a.hrs)}</span><br>${esc(dName)} <span class='tv'>${dl}</span>"/>`;
+    });
+    const last = pts[pts.length - 1];
+    if(sel) sv += `<text class="best-lab" x="${(x(last.j) + 9).toFixed(1)}" y="${(y(last.u) + 4).toFixed(1)}">${esc(LX(sr.c, "sname"))} ${n1(last.u)}</text>`;
+  });
+  sv += `</svg>`;
+  $("#trend").outerHTML = sv.replace("<svg ", `<svg id="trend" class="chart" role="img" aria-label="Actual HTP trend by period" `);
+
+  $("#trendLegend").innerHTML = series.map(sr => {
+    const per = PERIODS.find(pp => pp.key === state.period);
+    const u = periodUph(per, sr.c.id);
+    return `<span${sr.c.id === state.center ? ' style="font-weight:600;color:var(--ink)"' : ""}><i class="dt${sr.slot}" style="background:var(${["--vol","--hr","--ops","--c4","--c5"][sr.slot-1]})"></i>${esc(LX(sr.c, "sname"))} <span class="num">${u != null ? n1(u) : "—"}</span></span>`;
+  }).join("");
+
+  // summary: selected center, selected vs previous period
+  const idxAll = PERIODS.findIndex(pp => pp.key === state.period);
+  const cur = periodUph(PERIODS[idxAll], state.center);
+  const prv = idxAll > 0 ? periodUph(PERIODS[idxAll - 1], state.center) : null;
+  const c0 = centerOf(state.center);
+  $("#trendSummary").innerHTML = cur == null ? esc(T("no_data_period")) :
+    `${esc(LX(c0, "sname"))} · ${esc(state.period)} <b>${n1(cur)}</b> HTP` +
+    (prv != null ? ` &nbsp;·&nbsp; ${esc(dName)} <span class="tag ${cur - prv >= 0 ? "up" : "down"}">${cur - prv >= 0 ? "+" : "−"}${n1(Math.abs(cur - prv))}</span>` : "");
+}
+
 function render(){
   if(!centerOf(state.center)) state.center = DB.centers[0].id;
+  applyPeriod();
+  renderPeriodUI();
   renderChips();
   renderKpis();
   renderBridge();
@@ -1287,6 +1597,7 @@ function render(){
   renderHeat();
   renderExec();
   renderBest();
+  renderTrend();
   renderTable();
   const offNames = DB.constraints.filter(k => state.off.has(k.id)).map(k => LX(k,"short"));
   $("#railNote").textContent = offNames.length
@@ -1296,6 +1607,12 @@ function render(){
 applyStatic();
 render();
 renderForm();
+loadSite().then(site => {
+  if(!site) return;
+  SITE = site;
+  if(!DB._local){ adoptSite(site); }
+  else { $("#siteBtn").hidden = false; toast(T("ts_site_avail"), 4500); }
+});
 })();
 
 </script>
