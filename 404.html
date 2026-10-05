@@ -192,6 +192,7 @@ td.strong{color:var(--ink); font-weight:600}
 .btn:hover{border-color:var(--axis)}
 .btn:focus-visible{outline:2px solid var(--vol); outline-offset:2px}
 .btn.primary{background:var(--anchor); color:var(--surface); border-color:var(--anchor)}
+.btn:disabled{opacity:.5; cursor:progress}
 .btn.danger{color:var(--crit)}
 .chip.add{border-style:dashed; color:var(--muted)}
 .form{display:none; border-top:1px solid var(--hair-2); padding:14px 18px 16px; background:var(--sunken)}
@@ -268,6 +269,7 @@ a.btn{text-decoration:none}
         <button class="btn" id="resetDataBtn" type="button" data-i18n="btn_reset">Reset to sample</button>
         <a class="btn" id="sampleBtn" href="upload_sample.xlsx" download data-i18n="btn_sample">⬇ Sample file</a>
         <button class="btn" id="siteBtn" type="button" hidden data-i18n="btn_site">↻ Load site data</button>
+        <button class="btn primary" id="refreshBtn" type="button" hidden data-i18n="btn_refresh">⟳ Refresh Excel queries</button>
         <span class="rail-note" style="padding-left:2px" data-i18n-html="rail_uphint">Upload the Excel model's <b>Data</b> sheet layout — Korean or English headers both work. Edits are saved in this browser.</span>
       </div>
       <div class="rail-row" id="periodRow" hidden>
@@ -476,6 +478,16 @@ const I18N = {
   st_period:"Period", st_unit:"Unit", unit_val:"HTP (pcs/man·hr)",
   rail_period:"Period", gr_day:"Daily", gr_week:"Weekly", gr_month:"Monthly",
   btn_sample:"⬇ Sample file", btn_site:"↻ Load site data",
+  btn_refresh:"⟳ Refresh Excel queries",
+  ts_refreshing:"Refreshing the Excel queries. This can take a while…",
+  ts_refreshed:"Queries refreshed in {0}s ({1} connections). Data reloaded.",
+  ts_refresh_fail:"Refresh failed: ",
+  rf_locked:"the workbook is open in Excel. Close it and try again.",
+  rf_notfound:"the workbook set in config.json was not found.",
+  rf_noexcel:"Excel could not be started on this PC.",
+  rf_failed:"Excel reported an error while refreshing.",
+  rf_busy:"a refresh is already running.",
+  rf_read:"the refreshed file could not be read.",
   trend_h:"Actual HTP Trend",
   trend_p:"Actual HTP by period (ΣVolume ÷ ΣHours) — switch daily / weekly / monthly above. The selected center is emphasized.",
   ts_site:"Loaded site data (data.xlsx) — {0} centers · {1} constraints",
@@ -557,6 +569,16 @@ const I18N = {
   st_period:"기간", st_unit:"단위", unit_val:"HTP (개/인·시)",
   rail_period:"기간", gr_day:"일별", gr_week:"주별", gr_month:"월별",
   btn_sample:"⬇ 샘플 파일", btn_site:"↻ 사이트 데이터 불러오기",
+  btn_refresh:"⟳ 엑셀 쿼리 새로고침",
+  ts_refreshing:"엑셀 쿼리를 새로고침하는 중입니다. 시간이 걸릴 수 있습니다…",
+  ts_refreshed:"쿼리 새로고침 완료 ({0}초, 연결 {1}개). 데이터를 다시 불러왔습니다.",
+  ts_refresh_fail:"새로고침 실패: ",
+  rf_locked:"엑셀에서 파일이 열려 있습니다. 파일을 닫고 다시 시도하세요.",
+  rf_notfound:"config.json에 지정한 엑셀 파일을 찾지 못했습니다.",
+  rf_noexcel:"이 PC에서 엑셀을 실행하지 못했습니다.",
+  rf_failed:"새로고침 중 엑셀에서 오류가 발생했습니다.",
+  rf_busy:"이미 새로고침이 진행 중입니다.",
+  rf_read:"새로고침한 파일을 읽지 못했습니다.",
   trend_h:"실적 HTP 추이",
   trend_p:"기간별 실적 HTP (Σ물량 ÷ Σ공수) — 위에서 일별/주별/월별을 전환할 수 있습니다. 선택한 센터가 강조됩니다.",
   ts_site:"사이트 데이터(data.xlsx)를 불러왔습니다 — 센터 {0}개 · 제약 {1}개",
@@ -1064,6 +1086,33 @@ function adoptSite(site){
   toast(TF("ts_site", DB.centers.length, DB.constraints.length));
 }
 
+/* ============ LOCAL HELPER (intranet HTML version: Excel query refresh) ============ */
+let HELPER = false, REFRESHING = false;
+function probeHelper(){
+  fetch("api/status?t=" + Date.now(), {cache:"no-store"})
+    .then(r => r.ok ? r.json() : null)
+    .then(j => { if(j && j.helper){ HELPER = true; $("#refreshBtn").hidden = false; } })
+    .catch(() => {});
+}
+async function refreshQueries(){
+  if(!HELPER || REFRESHING) return;
+  REFRESHING = true;
+  const b = $("#refreshBtn"); b.disabled = true;
+  toast(T("ts_refreshing"), 1800000);
+  try{
+    const r = await fetch("api/refresh", {method:"POST", cache:"no-store"});
+    const j = await r.json().catch(() => null);
+    if(!r.ok || !j || !j.ok) throw new Error((j && j.error) || "failed");
+    const site = await loadSite();
+    if(!site) throw new Error("read");
+    SITE = site; adoptSite(site);
+    toast(TF("ts_refreshed", j.seconds, j.connections), 5200);
+  }catch(err){
+    const k = "rf_" + err.message;
+    toast(T("ts_refresh_fail") + (I18N.en[k] ? T(k) : err.message), 9000);
+  }finally{ REFRESHING = false; b.disabled = false; }
+}
+
 /* ============ TOOLTIP ============ */
 const tip = $("#tip");
 document.body.addEventListener("mousemove", e => {
@@ -1145,6 +1194,7 @@ document.addEventListener("click", e => {
     render(); renderForm(); toast(T("ts_reset")); return;
   }
   if(e.target.id === "siteBtn" && SITE){ adoptSite(SITE); return; }
+  if(e.target.id === "refreshBtn"){ refreshQueries(); return; }
   const gb = e.target.closest("[data-gran]");
   if(gb){ state.gran = gb.dataset.gran; state.period = null; render(); return; }
   if(e.target.id === "perPrev" || e.target.id === "perNext"){
@@ -1607,6 +1657,7 @@ function render(){
 applyStatic();
 render();
 renderForm();
+probeHelper();
 loadSite().then(site => {
   if(!site) return;
   SITE = site;

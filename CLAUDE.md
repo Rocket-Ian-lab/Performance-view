@@ -72,6 +72,13 @@ Cloudflare Workers 정적 배포가 GitHub `main`에 연동 — **main에 push�
 - `buildPeriods()`가 Actuals를 기간별로 합산 → `applyPeriod()`가 선택 기간의 실적 HTP를 각 센터의 `actual`에 써넣음 → KPI·실행 갭·표가 그 값을 사용. 추이 차트는 `renderTrend()`.
 - Actuals가 없으면 기간 선택 줄(`#periodRow`)과 추이 패널(`#trendPanel`)이 자동으로 숨겨짐.
 
+### 엑셀 쿼리 새로고침 (회사 네트워크용 HTML 버전과 공용 코드)
+
+- 사용자 PC에는 이 저장소 밖에 `html-version/` 패키지가 있다: 로컬 도우미(`server.ps1`, localhost 전용)가 대시보드를 띄우고 `GET /api/status`, `POST /api/refresh`(엑셀 COM으로 쿼리 새로고침)를 제공.
+- 대시보드는 `probeHelper()`로 `api/status`를 확인해 도우미가 있을 때만 `#refreshBtn`(⟳ 엑셀 쿼리 새로고침)을 표시하고, `refreshQueries()`가 새로고침 후 `loadSite()`+`adoptSite()`로 다시 그린다.
+- **공개 웹에서는 `api/status`가 404라 버튼이 항상 숨겨진다** — 이 코드를 지우지 말 것. 오류 문구는 i18n 키 `rf_*`.
+- index.html을 고치면 사용자가 PC에서 `html-version/index.html`에도 복사해야 한다고 알려줄 것.
+
 ### 언어 전환 (한/영)
 
 - 헤더 우측 EN/한국어 토글. 선택은 localStorage `opb-lang`, 없으면 `navigator.language`로 자동 판별.
